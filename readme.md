@@ -1,7 +1,7 @@
 # Личный проект «Типотека» [![Build status][travis-image]][travis-url]
 
 * Студент: [Максим Воропай](https://up.htmlacademy.ru/nodejs/3/user/300063).
-* Наставник: `Неизвестно`.
+* Наставник: [Игорь Антонов](https://up.htmlacademy.ru/nodejs/3/user/3162).
 
 ---
 
