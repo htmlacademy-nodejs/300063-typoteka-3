@@ -7,8 +7,7 @@
   "devDependencies": {
     "eslint": "6.8.0",
     "eslint-config-htmlacademy": "0.5.2",
-    "husky": "4.2.3",
-    "lint-staged": "10.0.9"
+    "husky": "4.2.3"
   },
   "scripts": {
     "test": "npm run eslint",
@@ -18,9 +17,6 @@
     "hooks": {
       "pre-commit": "npm test"
     }
-  },
-  "lint-staged": {
-    "*": "test"
   },
   "repository": {
     "type": "git",
