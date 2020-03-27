@@ -11,13 +11,13 @@
     "lint-staged": "10.0.9"
   },
   "scripts": {
-    "precommit": "npm test",
     "test": "npm run eslint",
     "eslint": "eslint --ext .js src/"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "echo\"10000\" & lint-staged"
+      "pre-commit": "npm test",
+      "commit-msg": "commitlint -E HUSKY_GIT_PARAMS"
     }
   },
   "lint-staged": {
