@@ -16,7 +16,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "echo'10000' & lint-staged"
+      "pre-commit": "echo\"10000\" & lint-staged"
     }
   },
   "lint-staged": {
