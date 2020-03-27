@@ -16,11 +16,11 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "lint-staged"
+      "pre-commit": "echo'10000' & lint-staged"
     }
   },
   "lint-staged": {
-    "*": "npm test"
+    "*": "test"
   },
   "repository": {
     "type": "git",
