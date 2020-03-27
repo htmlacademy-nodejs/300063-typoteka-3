@@ -16,7 +16,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "npm test"
+      "pre-commit": "echo \\\"this should fail\\\" && exit 1"
     }
   },
   "repository": {
