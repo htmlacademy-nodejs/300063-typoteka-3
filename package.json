@@ -7,7 +7,8 @@
   "devDependencies": {
     "eslint": "6.8.0",
     "eslint-config-htmlacademy": "0.5.2",
-    "husky": "4.2.3"
+    "husky": "4.2.3",
+    "lint-staged": "10.0.9"
   },
   "scripts": {
     "test": "npm run eslint",
@@ -25,7 +26,14 @@
   "homepage": "https://github.com/Kvezal/300063-typoteka-3#readme",
   "husky": {
     "hooks": {
-      "pre-commit": "npm run test"
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "linters": {
+      "src/**/*.{js}": [
+        "test"
+      ]
     }
   }
 }
