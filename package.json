@@ -14,6 +14,11 @@
     "test": "npm run eslint",
     "eslint": "eslint --ext .js src/"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm test"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Kvezal/300063-typoteka-3.git"
@@ -23,17 +28,5 @@
   "bugs": {
     "url": "https://github.com/Kvezal/300063-typoteka-3/issues"
   },
-  "homepage": "https://github.com/Kvezal/300063-typoteka-3#readme",
-  "husky": {
-    "hooks": {
-      "pre-commit": "npm test"
-    }
-  },
-  "lint-staged": {
-    "linters": {
-      "src/**/*.{js}": [
-        "test"
-      ]
-    }
-  }
+  "homepage": "https://github.com/Kvezal/300063-typoteka-3#readme"
 }
