@@ -25,7 +25,7 @@
   "homepage": "https://github.com/Kvezal/300063-typoteka-3#readme",
   "husky": {
     "hooks": {
-      "pre-commit": "test"
+      "pre-commit": "npm run test"
     }
   }
 }
