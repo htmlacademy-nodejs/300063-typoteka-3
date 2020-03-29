@@ -26,6 +26,9 @@ const runCheckedUserCommand = () => {
 const runUserCommands = () => {
   for (let userInput of userInputList) {
     if (Cli.hasOwnProperty(userInput)) {
+      if (userCommand) {
+        runCheckedUserCommand();
+      }
       userCommand = userInput;
       continue;
     }
