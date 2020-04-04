@@ -36,11 +36,11 @@ const generateArticles = (count) => (
 );
 
 const showErrorIfCountIsNotCorrect = (count) => {
-  if (count < 1) {
+  if (count < Count.MIN) {
     console.error(chalk.red(`Generating count can't be less then '${Count.MIN}'`));
     process.exit(ExitCode.ERROR);
   }
-  if (count > 1000) {
+  if (count > Count.MAX) {
     console.error(chalk.red(`Generating count can't be more then '${Count.MAX}'`));
     process.exit(ExitCode.ERROR);
   }
@@ -50,7 +50,7 @@ module.exports = {
   name: `--generate`,
   alias: `-g`,
   async run(argv) {
-    const count = Number(argv);
+    const count = Number(argv) || Count.DEFAULT;
     showErrorIfCountIsNotCorrect(count);
     const content = JSON.stringify(generateArticles(count));
     try {
