@@ -16,6 +16,11 @@ const descriptions = {
     info: `формирует файл mocks.json`,
     option: `<count>`,
   },
+  '--server': {
+    alias: `-s`,
+    info: `запускает сервер на указанном порту (по-умолчанию :3000)`,
+    option: `<port>`,
+  },
 };
 
 module.exports = {
