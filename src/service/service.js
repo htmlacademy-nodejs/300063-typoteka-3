@@ -6,10 +6,21 @@ const chalk = require(`chalk`);
 
 const userInputList = process.argv.slice(USER_ARGV_INDEX);
 
+const checkToBeCommandOrAlias = (userInput) => {
+  const isCommand = userInput.search(`--`) === 0;
+  const isAlias = !parseInt(userInput, 10) && userInput.search(`-`) === 0;
+  return isCommand || isAlias;
+};
+
 const formAnArrayOfCommands = () => {
   return userInputList.reduce((commandList, userInput) => {
     const hasCliCommand = Cli.hasOwnProperty(userInput);
-    if (hasCliCommand) {
+    const isCommandOrAlias = checkToBeCommandOrAlias(userInput);
+
+    if (!hasCliCommand && isCommandOrAlias) {
+      console.error(chalk.red(`Command ${userInput} doesn't exist`));
+      process.exit(ExitCode.ERROR);
+    } else if (hasCliCommand) {
       commandList.push({
         name: userInput,
         arguments: [],
@@ -19,7 +30,7 @@ const formAnArrayOfCommands = () => {
       lastCommandListItem.arguments.push(userInput);
       commandList = [...commandList, lastCommandListItem];
     } else {
-      console.error(chalk.red(`Команды ${userInput} не существует`));
+      console.log(chalk.red(`Commands need start with "--" or "-"`));
       process.exit(ExitCode.ERROR);
     }
     return commandList;
