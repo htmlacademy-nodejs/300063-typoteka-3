@@ -1,8 +1,8 @@
 'use strict';
 
-const {getNumbersDayInMilliseconds} = require(`./getNumberDayInMilliseconds`);
-const {getRandomInt} = require(`./getRandomInt`);
-const {shuffle} = require(`./shuffle`);
+const getNumbersDayInMilliseconds = require(`./get-number-day-in-milliseconds`);
+const getRandomInt = require(`./get-random-int`);
+const shuffle = require(`./shuffle`);
 
 module.exports = {
   getNumbersDayInMilliseconds,

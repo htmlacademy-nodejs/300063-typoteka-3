@@ -1,17 +1,17 @@
 'use strict';
 
-const fs = require(`fs`);
+const fs = require(`fs`).promises;
 const dateFormat = require(`date-format`);
 const chalk = require(`chalk`);
 
 const {getNumbersDayInMilliseconds, getRandomInt, shuffle} = require(`../../utils`);
 const {
-  fileName: FILE_NAME,
-  titles: TITLES,
-  texts: TEXTS,
-  oldestPublicationCountDay: OLDEST_PUBLICATION_COUNT_DAY,
-  categories: CATEGORIES,
-  count: Count,
+  FILE_NAME,
+  TITLES,
+  TEXTS,
+  OLDEST_PUBLICATION_COUNT_DAY,
+  CATEGORIES,
+  Count,
 } = require(`./mock-params`);
 const {ExitCode} = require(`../../constants`);
 
@@ -37,27 +37,27 @@ const generateArticles = (count) => (
 
 const showErrorIfCountIsNotCorrect = (count) => {
   if (count < 1) {
-    console.error(chalk.red(`Generating count can't be less then '${Count.min}'`));
+    console.error(chalk.red(`Generating count can't be less then '${Count.MIN}'`));
     process.exit(ExitCode.ERROR);
   }
   if (count > 1000) {
-    console.error(chalk.red(`Generating count can't be more then '${Count.max}'`));
+    console.error(chalk.red(`Generating count can't be more then '${Count.MAX}'`));
     process.exit(ExitCode.ERROR);
   }
 };
 
 module.exports = {
   name: `--generate`,
-  run(argv) {
+  alias: `-g`,
+  async run(argv) {
     const count = Number(argv);
     showErrorIfCountIsNotCorrect(count);
     const content = JSON.stringify(generateArticles(count));
-    fs.writeFile(FILE_NAME, content, (err) => {
-      if (err) {
-        console.info(chalk.red(`Can't write data to file...`));
-        process.exit(ExitCode.ERROR);
-      }
-      return console.info(chalk.green(`Operation success. File created.`));
-    });
+    try {
+      await fs.writeFile(FILE_NAME, content);
+      console.info(chalk.green(`Operation success. File created.`));
+    } catch (error) {
+      console.error(chalk.red(`Can't write data to file...`));
+    }
   }
 };
