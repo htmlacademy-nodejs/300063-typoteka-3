@@ -8,10 +8,12 @@
     "date-format": "3.0.0",
     "eslint": "6.8.0",
     "eslint-config-htmlacademy": "0.5.2",
-    "husky": "4.2.3"
+    "husky": "4.2.3",
+    "nodemon": "2.0.2"
   },
   "scripts": {
     "start": "node ./src/service/service.js",
+    "start.dev": "nodemon ./src/service/service.js --server",
     "test": "npm run eslint",
     "eslint": "eslint --ext .js src/"
   },
