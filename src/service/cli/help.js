@@ -4,14 +4,17 @@ const chalk = require(`chalk`);
 
 const descriptions = {
   '--version': {
+    alias: `-v`,
     info: `выводит номер версии`,
   },
   '--help': {
+    alias: `-h`,
     info: `печатает этот текст`,
   },
   '--generate': {
+    alias: `-g`,
     info: `формирует файл mocks.json`,
-    option: `<count>`
+    option: `<count>`,
   },
 };
 
@@ -19,17 +22,15 @@ module.exports = {
   name: `--help`,
   alias: `-h`,
   run() {
-    console.info(`Программа запускает http-сервер и формирует файл с данными для API.`);
-    console.info(`  Гайд`);
-    console.info(`  server "command"`);
-    console.info(`  Команды:`);
-    for (let key in descriptions) {
-      if (descriptions.hasOwnProperty(key)) {
-        const description = descriptions[key];
-        const command = chalk.cyan(key);
-        const option = chalk.yellow(description.option || ``);
-        const info = description.info;
-        console.info(`  ${command} ${option} — ${info}`);
+    console.info(chalk.grey(`Программа запускает http-сервер и формирует файл с данными для API.`));
+    console.info(chalk.grey(`  Гайд`));
+    console.info(chalk.grey(`  server "command"`));
+    console.info(chalk.grey(`  Команды:`));
+    for (let command in descriptions) {
+      if (descriptions.hasOwnProperty(command)) {
+        const description = descriptions[command];
+        const option = description.option || ``;
+        console.info(chalk.grey(`  ${command} [${description.alias}] ${option} — ${description.info}.`));
       }
     }
   }
