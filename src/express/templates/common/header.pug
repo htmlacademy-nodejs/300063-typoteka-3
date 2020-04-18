@@ -2,18 +2,31 @@ header.header
   a.header__logo.logo(href='#')
     img.logo__image(src='img/icons/logo-image-only.svg' alt='логотип Тайпотеки')
     span.logo__name Типотека
-  if isAuth
-    button.button.button--colored.header__button-new Новая запись
-    .header__dropdown
-      a.button.button--burger.header__burger(href='#') Открыть меню
-      ul.navigation.header__navigation
-        li.navigation__item
-          a(href='#') Пункт меню
-  else
+
+  if !account
     nav.header__nav
       ul.header__nav-list
         li.header__list-item
           a.header__registration(href='#') Регистрация
         li.header__list-item
           a.header__enter(href='#') Вход с паролем
+
+  else if account.type === `admin`
+    button.button.button--colored.header__button-new Новая запись
+    .header__dropdown
+      a.button.button--burger.header__burger(href='#') Открыть меню
+      ul.navigation.header__navigation
+        li.navigation__item
+          a(href='#') Пункт меню
+
+  else if account.type === `user`
+    nav.header__nav
+      ul.header__nav-list
+        li.header__list-item
+          p= account.name
+        li.header__list-item
+          a.header__exit Выйти
+    a.header__avatar.avatar
+      img(src=account.avatar alt="аватар пользователя")
+
   a.header__search.button.button--search(href='#' aria-label='поиск по сайту')
