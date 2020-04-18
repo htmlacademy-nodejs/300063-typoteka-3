@@ -16,6 +16,12 @@ mainRoute.use(`/login`, loginRoute);
 mainRoute.use(`/my`, myRoute);
 mainRoute.use(`/register`, registerRoute);
 mainRoute.use(`/search`, searchRoute);
-mainRoute.get(`/`, (req, res) => res.send(`/`));
+mainRoute.get(`/`, (req, res) => {
+  const content = {
+    title: `Типотека`,
+    isAuth: true,
+  };
+  res.render(`pages/main/main`, content);
+});
 
 module.exports = mainRoute;

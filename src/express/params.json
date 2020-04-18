@@ -1,3 +1,5 @@
 {
-  "DEFAULT_PORT": 8080
+  "DIR_WITH_VIEW": "templates",
+  "DEFAULT_PORT": 8080,
+  "PUBLIC_DIR": "public"
 }
