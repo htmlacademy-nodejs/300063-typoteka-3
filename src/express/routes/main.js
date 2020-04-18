@@ -31,7 +31,7 @@ mainRoute.get(`/`, (req, res) => {
     hasHot: true,
     hasLastComments: true,
   };
-  res.render(`pages/main/main`, content);
+  res.render(`pages/main`, content);
 });
 
 module.exports = mainRoute;
