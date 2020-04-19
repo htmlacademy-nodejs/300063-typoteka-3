@@ -26,7 +26,10 @@ mainRoute.get(`/`, (req, res) => {
       name: `Алёна Фролова`,
       avatar: `img/avatar-2.png`,
     },
-    hasScripts: false,
+    script: {
+      vendor: false,
+      main: false,
+    },
     hasContent: true,
     hasHot: true,
     hasLastComments: true,

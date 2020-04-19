@@ -11,7 +11,10 @@ registerRoute.get(`/`, (req, res) => {
       email: false,
       password: false,
     },
-    hasScripts: false,
+    script: {
+      vendor: false,
+      main: false,
+    },
   };
   res.render(`pages/register`, content);
 });

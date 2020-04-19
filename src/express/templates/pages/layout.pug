@@ -14,6 +14,7 @@ html(lang='ru')
       include ../common/header
       block content
       include ../common/footer
-    if hasScripts
+    if script && script.vendor
       script(src='js/vendor.js')
+    if script && script.main
       script(src='js/main.js')
