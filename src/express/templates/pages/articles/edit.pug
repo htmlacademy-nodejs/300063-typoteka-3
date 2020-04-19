@@ -6,7 +6,10 @@ block content
       .popup.popup--new-publication.popup--flex
         .new-publication
           .new-publication__header
-            h1 Редактирование публикации
+            if type === `add`
+              h1 Новая публикация
+            if type === `edit`
+              h1 Редактирование публикации
             .new-publication__date-form
               h3 Дата публикации
               form(action='#' method='POST')

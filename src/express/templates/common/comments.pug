@@ -5,10 +5,10 @@
       each comment in comments.list
         li.comments__comment
           .comments__avatar.avatar
-            img(src= comment.avatar alt='аватар пользователя')
+            img(src= comment.account.avatar alt='аватар пользователя')
           .comments__text
             .comments__head
-              p= comment.name + ` •`
+              p= comment.account.name + ` •`
               time.comments__date(datetime=comment.date.stamp)= `${comment.date.day}, ${comment.date.time}`
             p.comments__message= comment.text
 

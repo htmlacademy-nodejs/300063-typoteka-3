@@ -6,6 +6,7 @@ const editRoute = new Router();
 
 editRoute.get(`/:id`, (req, res) => {
   const content = {
+    type: `edit`,
     article: {
       image: {
         fileName: `sea-fullsize@1x.jpg`,
@@ -24,15 +25,15 @@ editRoute.get(`/:id`, (req, res) => {
       ],
       categoryList: [
         {
-          id: `checkbox-auto`,
+          id: `category-1`,
           name: `Автомобили`,
         },
         {
-          id: `checkbox-business`,
+          id: `category-2`,
           name: `Бизнес`,
         },
         {
-          id: `checkbox-design`,
+          id: `category-3`,
           name: `Дизайн`,
         }
       ],

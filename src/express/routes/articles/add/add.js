@@ -6,6 +6,7 @@ const addRoute = new Router();
 
 addRoute.get(`/`, (req, res) => {
   const content = {
+    type: `add`,
     article: {
       image: null,
       date: null,

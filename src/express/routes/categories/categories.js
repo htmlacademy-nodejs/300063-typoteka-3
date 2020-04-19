@@ -6,21 +6,25 @@ const categoriesRoute = new Router();
 
 categoriesRoute.get(`/`, (req, res) => {
   const content = {
-    title: `Типотека`,
-    displayedTitle: `Бизнес`,
-    description: `Это приветственный текст, который владелец блога может выбрать, чтобы описать себя 👏`,
     account: {
       type: `admin`,
       name: `Алёна Фролова`,
       avatar: `img/avatar-2.png`,
     },
-    script: {
-      vendor: false,
-      main: false,
-    },
-    hasContent: true,
-    hasHot: true,
-    hasLastComments: true,
+    categoryList: [
+      {
+        id: `category-1`,
+        name: `Автомобили`,
+      },
+      {
+        id: `category-2`,
+        name: `Бизнес`,
+      },
+      {
+        id: `category-3`,
+        name: `Дизайн`,
+      },
+    ],
   };
   res.render(`pages/categories`, content);
 });
