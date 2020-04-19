@@ -21,15 +21,12 @@ mainRoute.get(`/`, (req, res) => {
     title: `Типотека`,
     hiddenTitle: ` Главная страница личного блога Типотека`,
     description: `Это приветственный текст, который владелец блога может выбрать, чтобы описать себя 👏`,
-    account: {
-      type: `admin`,
-      name: `Алёна Фролова`,
-      avatar: `img/avatar-2.png`,
-    },
-    script: {
-      vendor: false,
-      main: false,
-    },
+    // account: {
+    //   type: `admin`,
+    //   name: `Алёна Фролова`,
+    //   avatar: `img/avatar-2.png`,
+    // },
+    account: null,
     hasContent: true,
     hasHot: true,
     hasLastComments: true,

@@ -11,10 +11,6 @@ loginRoute.get(`/`, (req, res) => {
       email: false,
       password: false,
     },
-    script: {
-      vendor: false,
-      main: false,
-    },
   };
 
   res.render(`pages/login`, content);

@@ -18,16 +18,22 @@ searchRoute.get(`/`, (req, res) => {
       type: `list`,
       list: [
         {
-          datetime: `2019-03-21T20:33 `,
-          data: `21.03.2019, 20:33`,
+          date: {
+            stamp: `2019-03-21T20:33`,
+            day: `21.03.2019`,
+            time: `20:33`
+          },
           link: {
             text: `Huawei открыла в России путешествия на смартфон Mate 30 Pro без сервисов Google`,
             href: `#`,
           }
         },
         {
-          datetime: `2019-03-21T20:33 `,
-          data: `21.03.2019, 20:33`,
+          date: {
+            stamp: `2019-03-21T20:33`,
+            day: `21.03.2019`,
+            time: `20:33`
+          },
           link: {
             text: `«Яндекс.Метрика» запустила путешествия сервис для оценки эффективности баннеров и видеорекламы в реальном времени`,
             href: `#`,
@@ -35,10 +41,7 @@ searchRoute.get(`/`, (req, res) => {
         },
       ],
     },
-    script: {
-      vendor: false,
-      main: true,
-    },
+    scriptList: [`js/main.js`],
   };
   res.render(`pages/search`, content);
 });
