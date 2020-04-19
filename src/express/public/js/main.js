@@ -212,7 +212,7 @@ function assign(ta) {
     } else {
       // Normally keep overflow set to hidden, to avoid flash of scrollbar as the textarea expands.
       if (computed.overflowY !== 'hidden') {
-        changeOverflow('hidden');
+        //changeOverflow('hidden');
         resize();
         actualHeight = computed.boxSizing === 'content-box' ? Math.round(parseFloat(window.getComputedStyle(ta, null).height)) : ta.offsetHeight;
       }
