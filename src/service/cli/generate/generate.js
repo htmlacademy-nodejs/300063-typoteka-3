@@ -1,6 +1,7 @@
 'use strict';
 
 const fs = require(`fs`).promises;
+const {nanoid} = require(`nanoid`);
 const dateFormat = require(`date-format`);
 const chalk = require(`chalk`);
 
@@ -18,13 +19,20 @@ const getDatePublication = () => {
   return dateFormat(`yyyy-MM-dd hh:mm:ss`, date);
 };
 
-const generateArticles = (count, titles, texts, categories) => (
+const generateComments = (comments) => shuffle(comments).slice(1, getRandomInt(1, comments.length - 1)).map((comment) => ({
+  id: nanoid(),
+  text: comment,
+}));
+
+const generateArticles = (count, titles, texts, categories, comments) => (
   Array(count).fill({}).map(() => ({
+    id: nanoid(),
     title: titles[getRandomInt(0, titles.length - 1)],
     announce: texts[getRandomInt(0, texts.length - 1)],
     fullText: shuffle(texts).slice(1, getRandomInt(1, texts.length - 1)).join(` `),
     createdDate: getDatePublication(),
     category: shuffle(categories).slice(1, getRandomInt(1, categories.length - 1)),
+    comments: generateComments(comments),
   }))
 );
 
@@ -58,7 +66,8 @@ module.exports = {
     const TITLES = await readFile(params.FILE_TITLES_PATH);
     const TEXTS = await readFile(params.FILE_TEXTS_PATH);
     const CATEGORIES = await readFile(params.FILE_CATEGORIES_PATH);
-    const content = JSON.stringify(generateArticles(count, TITLES, TEXTS, CATEGORIES));
+    const COMMENTS = await readFile(params.FILE_COMMENTS_PATH);
+    const content = JSON.stringify(generateArticles(count, TITLES, TEXTS, CATEGORIES, COMMENTS));
     try {
       await fs.writeFile(params.FILE_NAME, content);
       console.info(chalk.green(`Operation success. File created.`));

@@ -8,5 +8,6 @@
   "FILE_NAME": "mock.json",
   "FILE_TITLES_PATH": "./data/titles.txt",
   "FILE_TEXTS_PATH": "./data/texts.txt",
-  "FILE_CATEGORIES_PATH": "./data/categories.txt"
+  "FILE_CATEGORIES_PATH": "./data/categories.txt",
+  "FILE_COMMENTS_PATH": "./data/comments.txt"
 }
