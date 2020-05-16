@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "Типотека",
   "main": "./src/service/service.js",
+  "exports": {
+    "src": "./src"
+  },
   "devDependencies": {
     "chalk": "3.0.0",
     "concurrently": "5.2.0",
@@ -18,8 +21,11 @@
     "supertest": "4.0.2"
   },
   "scripts": {
-    "start": "node ./src/service/service.js",
-    "start.dev": "nodemon ./src/service/service.js --server",
+    "start": "npm run start::rest",
+    "start::dev": "npm run start::rest::dev",
+    "start::rest": "node -r pino-debug -r dotenv/config ./src/service/service.js --server ./src/service/logs/app.log 1> ./src/service/logs/info.log 2> ./src/service/logs/error.log",
+    "start::rest::dev": "nodemon -r pino-debug -r dotenv/config ./src/service/service.js --server | ./node_modules/.bin/pino-pretty",
+    "start::rest::debug": "cross-env LOG_LEVEL=debug node -r pino-debug -r dotenv/config ./src/service/service.js --server | ./node_modules/.bin/pino-pretty",
     "test": "npm run eslint",
     "eslint": "eslint --ext .js src/",
     "start-from-server": "node ./src/express/index.js",
