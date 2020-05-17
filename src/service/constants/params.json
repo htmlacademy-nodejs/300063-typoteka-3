@@ -1,5 +1,7 @@
 {
   "DEFAULT_COMMAND": "--help",
   "USER_ARGV_INDEX": 2,
-  "DEFAULT_PORT": 3000
+  "DEFAULT_PORT": 3000,
+  "MOCK_FILE_NAME": "mock.json",
+  "FILE_CATEGORIES_PATH":  "./data/categories.txt"
 }
