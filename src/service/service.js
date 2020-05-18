@@ -1,8 +1,10 @@
 'use strict';
 
-const {Cli} = require(`./cli`);
-const {ExitCode, USER_ARGV_INDEX} = require(`./constants`);
 const chalk = require(`chalk`);
+
+const {Cli} = require(`service/cli`);
+const {ExitCode, USER_ARGV_INDEX} = require(`service/constants`);
+
 
 const userInputList = process.argv.slice(USER_ARGV_INDEX);
 
