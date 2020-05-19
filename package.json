@@ -37,6 +37,7 @@
     "start::backend": "npm run build::backend && mkdir ./build/service/logs && node -r pino-debug -r dotenv/config ./build/service/index.js --server ./build/service/logs/app.log 1> ./build/service/logs/info.log 2> ./build/service/logs/error.log",
     "start::backend::dev": "webpack --config webpack/backend.dev.config.js",
     "start::backend::debug": "cross-env LOG_LEVEL=debug npm run start::backend::dev",
+    "test::backend": "",
 
     "build::frontend": "webpack --config webpack/frontend.prod.config.js",
     "start::frontend": "npm run build::frontend && mkdir ./build/express/logs && node -r pino-debug -r dotenv/config ./build/express/index.js --server ./build/express/logs/app.log 1> ./build/express/logs/info.log 2> ./build/express/logs/error.log",

@@ -1,9 +1,14 @@
 'use strict';
 
-const {ArticleAdapter, ArticleValidator} = require(`./article`);
+const {articleAdapter, articleValidator} = require(`./article`);
+const {commentAdapter, commentValidator} = require(`./comment`);
+const {categoryAdapter} = require(`./category`);
 
 
 module.exports = {
-  ArticleAdapter,
-  ArticleValidator,
+  articleAdapter,
+  articleValidator,
+  commentAdapter,
+  commentValidator,
+  categoryAdapter,
 };

@@ -20,7 +20,7 @@ class ArticleAdapter {
   }
 
   getList() {
-    return this._list;
+    return this._list.slice();
   }
 
   addItem(articleParams) {
@@ -32,19 +32,29 @@ class ArticleAdapter {
   }
 
   getItemById(articleId) {
-    return this._list.find((article) => article.id === articleId);
+    const gotArticle = this._list.find((article) => article.id === articleId);
+    return gotArticle || null;
   }
 
   updateItemById(articleId, articleParams) {
     const articleIndex = this._list.findIndex((article) => article.id === articleId);
+    if (articleIndex === -1) {
+      return null;
+    }
     this._list[articleIndex] = {
       ...this._list[articleIndex],
       ...articleParams,
     };
+    return this._list[articleIndex];
   }
 
   removeItemById(articleId) {
-    this._list = this._list.filter((article) => article.id !== articleId);
+    const articleIndex = this._list.findIndex((article) => article.id === articleId);
+    if (articleIndex === -1) {
+      return null;
+    }
+    this._list.splice(articleIndex, 1);
+    return {};
   }
 
   searchByTitle(searchedTitle) {
