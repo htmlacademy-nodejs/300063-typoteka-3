@@ -1,1 +1,2 @@
 /src/express/public
+**/*.test.js

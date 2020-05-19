@@ -10,8 +10,10 @@ const log = logger.getLogger();
 
 class CategoryAdapter {
   constructor() {
+    this._list = [];
     try {
-      this._list = JSON.parse(fs.readFileSync(FILE_CATEGORIES_PATH, `utf8`));
+      const content = fs.readFileSync(FILE_CATEGORIES_PATH, `utf8`);
+      this._list = content.trim().split(`\n`);
       log.debug(`Category adapter init`);
     } catch (error) {
       log.error(`Can't read file ${FILE_CATEGORIES_PATH} ${error}`);
