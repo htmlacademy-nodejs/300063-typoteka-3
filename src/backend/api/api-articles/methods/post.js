@@ -2,7 +2,7 @@
 
 const HttpCodes = require(`http-status-codes`);
 
-const {articleAdapter, articleValidator} = require(`service/adapters`);
+const {articleAdapter, articleValidator} = require(`backend/adapters`);
 
 
 module.exports = async (req, res) => {

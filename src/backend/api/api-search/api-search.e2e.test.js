@@ -3,7 +3,7 @@
 const HttpCodes = require(`http-status-codes`);
 const request = require(`supertest`);
 
-const server = require(`service/api`);
+const server = require(`backend/api`);
 
 
 describe(`Search API end-points`, () => {

@@ -10,10 +10,10 @@ const {CleanWebpackPlugin} = require(`clean-webpack-plugin`);
 
 module.exports = (env, argv) => {
   const config = {
-    entry: `./src/service/service.js`,
+    entry: `./src/backend/service.js`,
     mode: `development`,
     output: {
-      path: path.resolve(__dirname, `../dist/service`),
+      path: path.resolve(__dirname, `../dist/backend`),
       filename: `index.js`
     },
     target: `node`,
@@ -27,7 +27,7 @@ module.exports = (env, argv) => {
     resolve: {
       alias: {
         common: path.resolve(__dirname, `../src/common`),
-        service: path.resolve(__dirname, `../src/service`),
+        backend: path.resolve(__dirname, `../src/backend`),
       },
     },
     externals: [nodeExternals()],
@@ -36,7 +36,7 @@ module.exports = (env, argv) => {
     config.plugins = [
       ...config.plugins,
       new NodemonPlugin({
-        watch: `./dist/service`,
+        watch: `./dist/backend`,
         args: [`--server`],
       }),
     ];
@@ -51,7 +51,7 @@ module.exports = (env, argv) => {
     config.plugins = [
       ...config.plugins,
       new NodemonPlugin({
-        watch: `./dist/service`,
+        watch: `./dist/backend`,
         nodeArgs: [
           `-r`,
           `pino-debug`,

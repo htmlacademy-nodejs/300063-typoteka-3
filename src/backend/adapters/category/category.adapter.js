@@ -2,8 +2,8 @@
 
 const fs = require(`fs`);
 
-const {logger} = require(`service/utils`);
-const {FILE_CATEGORIES_PATH} = require(`service/constants`);
+const {logger} = require(`backend/utils`);
+const {FILE_CATEGORIES_PATH} = require(`backend/constants`);
 
 
 const log = logger.getLogger();

@@ -2,7 +2,7 @@
 
 const HttpCodes = require(`http-status-codes`);
 
-const {articleAdapter} = require(`service/adapters`);
+const {articleAdapter} = require(`backend/adapters`);
 
 
 module.exports = async (req, res) => {

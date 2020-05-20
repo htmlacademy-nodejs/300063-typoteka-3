@@ -2,8 +2,8 @@
 
 const chalk = require(`chalk`);
 
-const {Cli} = require(`service/cli`);
-const {ExitCode, USER_ARGV_INDEX} = require(`service/constants`);
+const {Cli} = require(`backend/cli`);
+const {ExitCode, USER_ARGV_INDEX} = require(`backend/constants`);
 
 
 const userInputList = process.argv.slice(USER_ARGV_INDEX);

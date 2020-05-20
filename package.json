@@ -33,19 +33,19 @@
     "test": "npm run eslint",
 
     "build::backend": "webpack --mode=production --notest --config webpack/backend.config.js",
-    "start::backend": "npm run build::backend && mkdir ./dist/service/logs && node -r pino-debug -r dotenv/config ./dist/service/index.js --server ./dist/service/logs/app.log 1> ./dist/service/logs/info.log 2> ./dist/service/logs/error.log",
+    "start::backend": "npm run build::backend && mkdir ./dist/backend/logs && node -r pino-debug -r dotenv/config ./dist/backend/index.js --server ./dist/backend/logs/app.log 1> ./dist/backend/logs/info.log 2> ./dist/backend/logs/error.log",
     "start::backend::dev": "webpack --mode=development --watch --notest --config webpack/backend.config.js",
     "start::backend::debug": "cross-env LOG_LEVEL=debug npm run start::backend::dev",
     "test::backend": "cross-env LOG_LEVEL=error jest ./src/service --verbose --runInBand",
     "test::backend::dev": "cross-env LOG_LEVEL=error jest ./src/service --verbose --runInBand --watch",
 
     "build::frontend": "webpack --mode=production --config webpack/frontend.config.js",
-    "start::frontend": "npm run build::frontend && mkdir ./dist/express/logs && node -r pino-debug -r dotenv/config ./dist/express/index.js --server ./dist/express/logs/app.log 1> ./dist/express/logs/info.log 2> ./dist/express/logs/error.log",
+    "start::frontend": "npm run build::frontend && mkdir ./dist/frontend/logs && node -r pino-debug -r dotenv/config ./dist/frontend/index.js --server ./dist/frontend/logs/app.log 1> ./dist/frontend/logs/info.log 2> ./dist/frontend/logs/error.log",
     "start::frontend::dev": "webpack --mode=development --watch --config webpack/frontend.config.js",
     "start::frontend::debug": "cross-env LOG_LEVEL=debug npm run start::frontend::dev",
     "eslint": "eslint --ext .js src/",
-    "start-from-server": "node ./src/express/index.js",
-    "start-from-server.dev": "nodemon ./src/express/index.js"
+    "start-from-server": "node ./src/frontend/index.js",
+    "start-from-server.dev": "nodemon ./src/frontend/index.js"
   },
   "jest": {
     "resolver": "jest-webpack-resolver"

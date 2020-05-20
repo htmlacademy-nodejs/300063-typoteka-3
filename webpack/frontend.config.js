@@ -9,10 +9,10 @@ const {CleanWebpackPlugin} = require(`clean-webpack-plugin`);
 
 
 module.exports = {
-  entry: `./src/express/index.js`,
+  entry: `./src/frontend/index.js`,
   mode: `development`,
   output: {
-    path: path.resolve(__dirname, `../dist/express`),
+    path: path.resolve(__dirname, `../dist/frontend`),
     filename: `index.js`
   },
   target: `node`,
@@ -25,17 +25,17 @@ module.exports = {
     new CopyPlugin({
       patterns: [
         {
-          from: `src/express/templates`,
+          from: `src/frontend/templates`,
           to: `templates`,
         },
         {
-          from: `src/express/public`,
+          from: `src/frontend/public`,
           to: `public`,
         },
       ]
     }),
     new NodemonPlugin({
-      watch: `./dist/express`,
+      watch: `./dist/frontend`,
       nodeArgs: [
         `-r`,
         `pino-debug`,
@@ -51,7 +51,7 @@ module.exports = {
   resolve: {
     alias: {
       common: path.resolve(__dirname, `../src/common`),
-      express: path.resolve(__dirname, `../scr/express`),
+      frontend: path.resolve(__dirname, `../scr/frontend`),
     },
   },
   externals: [nodeExternals()],
