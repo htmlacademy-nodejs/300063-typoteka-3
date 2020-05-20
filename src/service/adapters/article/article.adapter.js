@@ -24,11 +24,13 @@ class ArticleAdapter {
   }
 
   addItem(articleParams) {
-    this._list.push({
+    const article = {
       id: nanoid(),
       ...articleParams,
       comments: [],
-    });
+    };
+    this._list.push(article);
+    return article;
   }
 
   getItemById(articleId) {
