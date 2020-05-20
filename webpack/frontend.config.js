@@ -35,7 +35,7 @@ module.exports = {
       ]
     }),
     new NodemonPlugin({
-      watch: path.resolve(__dirname, `dist`),
+      watch: `./dist/express`,
       nodeArgs: [
         `-r`,
         `pino-debug`,

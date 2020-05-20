@@ -23,10 +23,6 @@ module.exports = (env, argv) => {
     },
     plugins: [
       new CleanWebpackPlugin(),
-      new NodemonPlugin({
-        watch: path.resolve(__dirname, `./dist/service`),
-        args: [`--server`],
-      }),
     ],
     resolve: {
       alias: {
@@ -37,6 +33,13 @@ module.exports = (env, argv) => {
     externals: [nodeExternals()],
   };
   if (!argv) {
+    config.plugins = [
+      ...config.plugins,
+      new NodemonPlugin({
+        watch: `./dist/service`,
+        args: [`--server`],
+      }),
+    ];
     return config;
   }
   config.mode = argv.mode || config.mode;
@@ -48,7 +51,7 @@ module.exports = (env, argv) => {
     config.plugins = [
       ...config.plugins,
       new NodemonPlugin({
-        watch: path.resolve(__dirname, `./dist/service`),
+        watch: `./dist/service`,
         nodeArgs: [
           `-r`,
           `pino-debug`,
@@ -63,6 +66,5 @@ module.exports = (env, argv) => {
       }),
     ];
   }
-
   return config;
 };
