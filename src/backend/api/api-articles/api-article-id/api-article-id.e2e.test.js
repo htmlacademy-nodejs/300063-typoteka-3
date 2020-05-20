@@ -17,7 +17,7 @@ describe(`Article ID API end-points`, () => {
   });
 
   afterEach(async () => {
-    const c = await request(server).delete(`${mock.path.article}/${article.id}`);
+    await request(server).delete(`${mock.path.article}/${article.id}`);
   });
 
   test(`When GET exist article by ID status code should be ${HttpCodes.OK}`, async () => {
