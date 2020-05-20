@@ -11,7 +11,6 @@ const {CleanWebpackPlugin} = require(`clean-webpack-plugin`);
 module.exports = {
   entry: `./src/express/index.js`,
   mode: `development`,
-  watch: true,
   output: {
     path: path.resolve(__dirname, `../dist/express`),
     filename: `index.js`

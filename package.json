@@ -31,15 +31,17 @@
     "start::dev": "concurrently \"npm run start::backend::dev\" \"npm run start::frontend::dev\"",
     "start::debug": "concurrently \"npm run start::backend::debug\" \"npm run start::frontend::debug\"",
     "test": "npm run eslint",
-    "build::backend": "webpack --config webpack/backend.prod.config.js",
-    "start::backend": "npm run build::backend && mkdir ./build/service/logs && node -r pino-debug -r dotenv/config ./build/service/index.js --server ./build/service/logs/app.log 1> ./build/service/logs/info.log 2> ./build/service/logs/error.log",
-    "start::backend::dev": "webpack --config webpack/backend.dev.config.js",
+
+    "build::backend": "webpack --mode=production --notest --config webpack/backend.config.js",
+    "start::backend": "npm run build::backend && mkdir ./dist/service/logs && node -r pino-debug -r dotenv/config ./dist/service/index.js --server ./dist/service/logs/app.log 1> ./dist/service/logs/info.log 2> ./dist/service/logs/error.log",
+    "start::backend::dev": "webpack --mode=development --watch --notest --config webpack/backend.config.js",
     "start::backend::debug": "cross-env LOG_LEVEL=debug npm run start::backend::dev",
-    "test::backend": "jest ./src/service --verbose --runInBand",
-    "test::backend::dev": "jest ./src/service --verbose --runInBand --watch",
-    "build::frontend": "webpack --config webpack/frontend.prod.config.js",
-    "start::frontend": "npm run build::frontend && mkdir ./build/express/logs && node -r pino-debug -r dotenv/config ./build/express/index.js --server ./build/express/logs/app.log 1> ./build/express/logs/info.log 2> ./build/express/logs/error.log",
-    "start::frontend::dev": "webpack --config webpack/frontend.dev.config.js",
+    "test::backend": "cross-env LOG_LEVEL=error jest ./src/service --verbose --runInBand",
+    "test::backend::dev": "cross-env LOG_LEVEL=error jest ./src/service --verbose --runInBand --watch",
+
+    "build::frontend": "webpack --mode=production --config webpack/frontend.config.js",
+    "start::frontend": "npm run build::frontend && mkdir ./dist/express/logs && node -r pino-debug -r dotenv/config ./dist/express/index.js --server ./dist/express/logs/app.log 1> ./dist/express/logs/info.log 2> ./dist/express/logs/error.log",
+    "start::frontend::dev": "webpack --mode=development --watch --config webpack/frontend.config.js",
     "start::frontend::debug": "cross-env LOG_LEVEL=debug npm run start::frontend::dev",
     "eslint": "eslint --ext .js src/",
     "start-from-server": "node ./src/express/index.js",
@@ -49,7 +51,7 @@
     "resolver": "jest-webpack-resolver"
   },
   "jestWebpackResolver": {
-    "webpackConfig": "./webpack/backend.prod.config.js"
+    "webpackConfig": "./webpack/backend.config.js"
   },
   "husky": {
     "hooks": {
