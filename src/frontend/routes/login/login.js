@@ -1,6 +1,8 @@
 'use strict';
 
 const {Router} = require(`express`);
+const {logger} = require(`frontend/utils`);
+
 
 const loginRoute = new Router();
 
@@ -14,6 +16,7 @@ loginRoute.get(`/`, (req, res) => {
   };
 
   res.render(`pages/login`, content);
+  logger.endRequest(req, res);
 });
 
 module.exports = loginRoute;

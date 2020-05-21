@@ -1,12 +1,15 @@
 'use strict';
 
 const {Router} = require(`express`);
+const {logger} = require(`frontend/utils`);
+
 const articlesRoute = require(`./articles`);
 const categoriesRoute = require(`./categories`);
 const loginRoute = require(`./login`);
 const myRoute = require(`./my`);
 const registerRoute = require(`./register`);
 const searchRoute = require(`./search`);
+
 
 const mainRoute = new Router();
 
@@ -32,6 +35,7 @@ mainRoute.get(`/`, (req, res) => {
     hasLastComments: true,
   };
   res.render(`pages/main`, content);
+  logger.endRequest(req, res);
 });
 
 module.exports = mainRoute;

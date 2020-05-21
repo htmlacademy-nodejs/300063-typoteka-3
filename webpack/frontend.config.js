@@ -51,7 +51,7 @@ module.exports = {
   resolve: {
     alias: {
       common: path.resolve(__dirname, `../src/common`),
-      frontend: path.resolve(__dirname, `../scr/frontend`),
+      frontend: path.resolve(__dirname, `../src/frontend`),
     },
   },
   externals: [nodeExternals()],

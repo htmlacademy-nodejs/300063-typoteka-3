@@ -1,6 +1,8 @@
 'use strict';
 
 const {Router} = require(`express`);
+const {logger} = require(`frontend/utils`);
+
 
 const categoryRoute = new Router();
 
@@ -19,6 +21,7 @@ categoryRoute.get(`/:id`, (req, res) => {
     hasLastComments: true,
   };
   res.render(`pages/articles/categories`, content);
+  logger.endRequest(req, res);
 });
 
 module.exports = categoryRoute;
