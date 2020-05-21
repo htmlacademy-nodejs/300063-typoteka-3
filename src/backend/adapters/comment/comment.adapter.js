@@ -26,6 +26,25 @@ class CommentAdapter {
     commentList.push(comment);
     return comment;
   }
+
+  removeItemById(articleId, commentId) {
+    const article = articleAdapter.getItemById(articleId);
+    if (article === null) {
+      return this._getError(`article`);
+    }
+    const commentIndex = article.comments.findIndex((item) => item.id === commentId);
+    if (commentIndex === -1) {
+      return this._getError(`comment`);
+    }
+    article.comments.splice(commentIndex, 1);
+    return {};
+  }
+
+  _getError(entity) {
+    return {
+      error: {entity},
+    };
+  }
 }
 
 module.exports = new CommentAdapter();

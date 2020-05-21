@@ -36,6 +36,13 @@ describe(`Article comments API end-points`, () => {
     expect(res.statusCode).toBe(HttpCodes.CREATED);
   });
 
+  test.each(commentParams.requestPropertyList)(`When POST article comment without %p property should have ${HttpCodes.BAD_REQUEST}`, async (property) => {
+    const comment = {...mock.comment};
+    delete comment[property];
+    const putArticleResponse = await request(server).post(`${mock.path.article}/${article.id}/comments`).send(comment);
+    expect(putArticleResponse.statusCode).toBe(HttpCodes.BAD_REQUEST);
+  });
+
   test.each(commentParams.responsePropertyList)(`When POST article comment should have %p property`, async (property) => {
     const putArticleResponse = await request(server).post(`${mock.path.article}/${article.id}/comments`).send(mock.comment);
     expect(putArticleResponse.body).toHaveProperty(property);

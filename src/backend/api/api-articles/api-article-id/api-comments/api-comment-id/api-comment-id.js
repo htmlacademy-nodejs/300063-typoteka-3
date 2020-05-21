@@ -5,8 +5,8 @@ const {Router} = require(`express`);
 const {deleteCommentId} = require(`./methods`);
 
 
-const apiCommentId = new Router();
+const apiCommentId = new Router({mergeParams: true});
 
-apiCommentId.get(`/`, deleteCommentId);
+apiCommentId.delete(`/`, deleteCommentId);
 
 module.exports = apiCommentId;

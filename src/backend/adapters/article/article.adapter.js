@@ -34,8 +34,8 @@ class ArticleAdapter {
   }
 
   getItemById(articleId) {
-    const gotArticle = this._list.find((article) => article.id === articleId);
-    return gotArticle || null;
+    const article = this._list.find((item) => item.id === articleId);
+    return article || null;
   }
 
   updateItemById(articleId, articleParams) {

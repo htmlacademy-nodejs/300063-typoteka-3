@@ -1,6 +1,7 @@
 {
   "path": {
-    "article": "/api/articles"
+    "article": "/api/articles",
+    "search": "/api/search?title="
   },
   "article": {
     "data": {
