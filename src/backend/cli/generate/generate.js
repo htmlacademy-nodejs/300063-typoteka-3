@@ -15,7 +15,7 @@ const maxPublishedDaysAgoInMilliseconds = getNumbersDayInMilliseconds(params.gen
 const getDatePublication = () => {
   const publishedMillisecondsAgo = getRandomInt(0, maxPublishedDaysAgoInMilliseconds);
   const date = new Date(currentDate - publishedMillisecondsAgo);
-  return dateFormat(date, `yyyy-MM-dd hh:mm:ss`);
+  return dateFormat(date, `yyyy-mm-dd hh:MM:ss`);
 };
 
 const generateComments = (comments) => shuffle(comments).slice(1, getRandomInt(1, comments.length - 1)).map((comment) => ({

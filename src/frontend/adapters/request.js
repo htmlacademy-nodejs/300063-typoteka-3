@@ -20,8 +20,8 @@ class Request {
     };
   }
 
-  async get(path) {
-    return await axios.get(`${this._url}/${path}`)
+  get(path) {
+    return axios.get(`${this._url}/${path}`)
       .then((res) => res.data)
       .catch(this._getErrorStatus);
   }
