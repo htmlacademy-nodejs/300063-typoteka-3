@@ -2,7 +2,7 @@
 
 const server = require(`backend/api`);
 const {logger} = require(`backend/utils`);
-const {DEFAULT_PORT} = require(`backend/constants`);
+const {params} = require(`common`);
 
 
 module.exports = {
@@ -10,7 +10,7 @@ module.exports = {
   alias: `-s`,
   async run(...args) {
     const [customPort] = args;
-    const port = parseInt(customPort, 10) || parseInt(process.env.BACKED_PORT, 10) || DEFAULT_PORT;
+    const port = parseInt(customPort, 10) || parseInt(process.env.BACKED_PORT, 10) || params.DEFAULT_BACKEND_PORT;
 
     server
       .listen(port, () => logger.startServer(port))

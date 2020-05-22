@@ -3,8 +3,5 @@
   "DEFAULT_DOMAIN": "localhost",
   "DEFAULT_FRONTEND_PORT": 8080,
   "DEFAULT_BACKED_PORT": 3000,
-  "DEFAULT_PUBLIC_DIR": "public",
-  "DEFAULT_DIR_WITH_VIEW": "templates",
-  "DEFAULT_TEMP_DIR": "temp",
   "DEFAULT_LOG_LEVEL": "info"
 }

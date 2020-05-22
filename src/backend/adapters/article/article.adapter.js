@@ -4,7 +4,7 @@ const fs = require(`fs`);
 const {nanoid} = require(`nanoid`);
 
 const {logger} = require(`backend/utils`);
-const {MOCK_FILE_NAME} = require(`backend/constants`);
+const {params} = require(`common`);
 
 
 const log = logger.getLogger();
@@ -12,10 +12,10 @@ const log = logger.getLogger();
 class ArticleAdapter {
   constructor() {
     try {
-      this._list = JSON.parse(fs.readFileSync(MOCK_FILE_NAME, `utf8`));
+      this._list = JSON.parse(fs.readFileSync(params.DEFAULT_MOCK_FILE_NAME, `utf8`));
       log.debug(`Offer adapter init`);
     } catch (error) {
-      log.error(`Can't read file ${MOCK_FILE_NAME} ${error}`);
+      log.error(`Can't read file ${params.DEFAULT_MOCK_FILE_NAME} ${error}`);
     }
   }
 
