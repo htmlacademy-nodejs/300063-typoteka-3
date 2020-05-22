@@ -2,6 +2,7 @@
 
 const {Router} = require(`express`);
 const {logger} = require(`frontend/utils`);
+const {accountAdapter} = require(`frontend/adapters`);
 
 
 const addRoute = new Router();
@@ -17,9 +18,7 @@ addRoute.get(`/`, (req, res) => {
       text: [],
       categoryList: [],
     },
-    account: {
-      type: `admin`
-    },
+    account: accountAdapter.getAuth(),
     scriptList: [
       `js/vendor.js`,
       `js/main.js`

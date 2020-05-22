@@ -2,7 +2,7 @@
 
 const fs = require(`fs`).promises;
 const {nanoid} = require(`nanoid`);
-const dateFormat = require(`date-format`);
+const dateFormat = require(`dateformat`);
 const chalk = require(`chalk`);
 
 const {getNumbersDayInMilliseconds, getRandomInt, shuffle} = require(`backend/utils`);
@@ -15,7 +15,7 @@ const maxPublishedDaysAgoInMilliseconds = getNumbersDayInMilliseconds(params.gen
 const getDatePublication = () => {
   const publishedMillisecondsAgo = getRandomInt(0, maxPublishedDaysAgoInMilliseconds);
   const date = new Date(currentDate - publishedMillisecondsAgo);
-  return dateFormat(`yyyy-MM-dd hh:mm:ss`, date);
+  return dateFormat(date, `yyyy-MM-dd hh:mm:ss`);
 };
 
 const generateComments = (comments) => shuffle(comments).slice(1, getRandomInt(1, comments.length - 1)).map((comment) => ({

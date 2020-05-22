@@ -2,6 +2,7 @@
 
 const {Router} = require(`express`);
 const {logger} = require(`frontend/utils`);
+const {accountAdapter} = require(`frontend/adapters`);
 
 
 const categoryRoute = new Router();
@@ -11,11 +12,7 @@ categoryRoute.get(`/:id`, (req, res) => {
     title: `Типотека`,
     displayedTitle: `Бизнес`,
     description: `Это приветственный текст, который владелец блога может выбрать, чтобы описать себя 👏`,
-    account: {
-      type: `user`,
-      name: `Алёна Фролова`,
-      avatar: `img/avatar-2.png`,
-    },
+    account: accountAdapter.getAuth(),
     hasContent: true,
     hasHot: true,
     hasLastComments: true,

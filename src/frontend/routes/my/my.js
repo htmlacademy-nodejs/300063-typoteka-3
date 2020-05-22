@@ -2,6 +2,7 @@
 
 const {Router} = require(`express`);
 const {logger} = require(`frontend/utils`);
+const {dateAdapter} = require(`frontend/adapters`);
 
 const commentsRoute = require(`./comments`);
 
@@ -14,29 +15,17 @@ myRoute.get(`/`, (req, res) => {
     articleList: [
       {
         id: 1,
-        date: {
-          stamp: `2019-03-21T20:33`,
-          day: `21.03.2019`,
-          time: `20:33`
-        },
+        date: dateAdapter.get(`2019-03-21T20:33`),
         title: `AirPods в один клик`,
       },
       {
         id: 2,
-        date: {
-          stamp: `2019-03-21T20:33`,
-          day: `21.03.2019`,
-          time: `20:33`
-        },
+        date: dateAdapter.get(`2019-03-21T20:33`),
         title: `AirPods в один клик`,
       },
       {
         id: 3,
-        date: {
-          stamp: `2019-03-21T20:33`,
-          day: `21.03.2019`,
-          time: `20:33`
-        },
+        date: dateAdapter.get(`2019-03-21T20:33`),
         title: `AirPods в один клик`,
       },
     ],

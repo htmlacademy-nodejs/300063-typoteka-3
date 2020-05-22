@@ -2,6 +2,7 @@
 
 const {Router} = require(`express`);
 const {logger} = require(`frontend/utils`);
+const {accountAdapter} = require(`frontend/adapters`);
 
 const articlesRoute = require(`./articles`);
 const categoriesRoute = require(`./categories`);
@@ -24,12 +25,7 @@ mainRoute.get(`/`, (req, res) => {
     title: `Типотека`,
     hiddenTitle: ` Главная страница личного блога Типотека`,
     description: `Это приветственный текст, который владелец блога может выбрать, чтобы описать себя 👏`,
-    // account: {
-    //   type: `admin`,
-    //   name: `Алёна Фролова`,
-    //   avatar: `img/avatar-2.png`,
-    // },
-    account: null,
+    account: accountAdapter.getAuth(),
     hasContent: true,
     hasHot: true,
     hasLastComments: true,

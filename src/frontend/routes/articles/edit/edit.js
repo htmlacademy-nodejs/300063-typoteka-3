@@ -2,6 +2,7 @@
 
 const {Router} = require(`express`);
 const {logger} = require(`frontend/utils`);
+const {accountAdapter, dateAdapter} = require(`frontend/adapters`);
 
 
 const editRoute = new Router();
@@ -14,11 +15,7 @@ editRoute.get(`/:id`, (req, res) => {
         fileName: `sea-fullsize@1x.jpg`,
         alt: `пейзаж море, скалы, пляж`,
       },
-      date: {
-        stamp: `2019-03-21T20:33`,
-        day: `21.03.2019`,
-        time: `20:33`
-      },
+      date: dateAdapter.get(`2019-03-21T20:33`),
       title: `AirPods в один клик`,
       subTitle: `Бирюзовое доверие`,
       text: [
@@ -40,9 +37,7 @@ editRoute.get(`/:id`, (req, res) => {
         }
       ],
     },
-    account: {
-      type: `admin`
-    },
+    account: accountAdapter.getAuth(),
     scriptList: [
       `js/vendor.js`,
       `js/main.js`
