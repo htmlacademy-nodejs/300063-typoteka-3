@@ -10,7 +10,7 @@ block content
             .publication__header
               img.publication__list-image(src=comment.account.avatar width='20' height='20' alt='Аватар пользователя')
               b.publication__list-name= comment.account.name
-              time.publication__item-time(datetime=comment.date.stamp)= `${comment.date.day}, ${comment.date.time}`
+              time.publication__item-time(datetime=comment.createdDate.stamp)= `${comment.createdDate.day}, ${comment.createdDate.time}`
             a.publication__item-text(href='#')= comment.text
             p.publication__text-strong= comment.articleTitle
             button.publication__button.button.button--close-item(type='button')
