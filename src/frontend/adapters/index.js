@@ -4,6 +4,7 @@ const date = require(`./date`);
 const account = require(`./account`);
 const article = require(`./article`);
 const comment = require(`./comment`);
+const file = require(`./file`);
 
 
 module.exports = {
@@ -11,4 +12,5 @@ module.exports = {
   ...account,
   ...article,
   ...comment,
+  ...file,
 };

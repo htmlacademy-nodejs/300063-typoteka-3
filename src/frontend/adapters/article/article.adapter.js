@@ -10,6 +10,15 @@ class ArticleAdapter {
     return articleList.map(this._adaptArticle);
   }
 
+  async getItemById(articleId) {
+    const article = await request.get(`articles/${articleId}`);
+    return this._adaptArticle(article);
+  }
+
+  updateItemById(articleId, params) {
+    return request.put(`articles/${articleId}`, params);
+  }
+
   _adaptArticle(article) {
     return {
       ...article,

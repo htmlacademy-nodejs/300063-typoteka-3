@@ -1,6 +1,7 @@
 {
   "requestPropertyList": [
     "title",
+    "image",
     "announce",
     "fullText",
     "createdDate",
@@ -9,6 +10,7 @@
   "responsePropertyList": [
     "id",
     "title",
+    "image",
     "announce",
     "fullText",
     "createdDate",
