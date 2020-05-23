@@ -19,6 +19,14 @@ class ArticleAdapter {
     return request.put(`articles/${articleId}`, params);
   }
 
+  async searchByTitle(title) {
+    let articleList = await request.get(`search?title=${encodeURI(title)}`);
+    if (articleList.statusCode >= 400) {
+      articleList = [];
+    }
+    return articleList.map(this._adaptArticle);
+  }
+
   _adaptArticle(article) {
     return {
       ...article,

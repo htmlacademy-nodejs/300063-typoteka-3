@@ -9,10 +9,8 @@ const setFileName = async (req, res) => {
   if (!req.file) {
     return;
   }
-  console.log(req.file);
   const fileResponse = await FileAdapter.download(req.file);
   if (fileResponse.error) {
-    console.log(fileResponse.error);
     logger.endRequest(req, fileResponse);
     await getAddArticlePage(req, res);
   } else {
@@ -31,7 +29,6 @@ const addArticleItemAndRedirectToMyArticles = async (req, res) => {
 };
 
 module.exports = async (req, res) => {
-  console.log(req.body, req.file);
   await setFileName(req, res);
   await addArticleItemAndRedirectToMyArticles(req, res);
   logger.endRequest(req, res);

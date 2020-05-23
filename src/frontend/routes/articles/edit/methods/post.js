@@ -21,7 +21,6 @@ const setFileName = async (req, res) => {
 };
 
 const updateArticleItemAndRedirect = async (req, res) => {
-  console.log(req.body);
   const articleResponse = await articleAdapter.updateItemById(req.params.id, req.body);
   if (articleResponse.error) {
     logger.endRequest(req, articleResponse);
