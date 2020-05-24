@@ -1,7 +1,7 @@
 'use strict';
 
 const {articleAdapter, FileAdapter} = require(`frontend/adapters`);
-const {logger} = require(`frontend/utils`);
+const {logger, transformDate} = require(`frontend/utils`);
 const getEditArticlePage = require(`./get`);
 
 
@@ -21,7 +21,17 @@ const setFileName = async (req, res) => {
 };
 
 const updateArticleItemAndRedirect = async (req, res) => {
-  const articleResponse = await articleAdapter.updateItemById(req.params.id, req.body);
+  if (!req.body.categories) {
+    req.body.categories = [];
+  }
+  if (Object.keys(req.body.categories).length !== 0) {
+    req.body.categories = Object.keys(req.body.categories);
+  }
+  const articleParams = {
+    ...req.body,
+    createdDate: transformDate(req.body.createdDate),
+  };
+  const articleResponse = await articleAdapter.updateItemById(req.params.id, articleParams);
   if (articleResponse.error) {
     logger.endRequest(req, articleResponse);
     await getEditArticlePage(req, res);

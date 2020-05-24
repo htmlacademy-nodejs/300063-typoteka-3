@@ -10,6 +10,10 @@ class ArticleAdapter {
     return articleList.map(this._adaptArticle);
   }
 
+  addItem(params) {
+    return request.post(`articles`, params);
+  }
+
   async getItemById(articleId) {
     const article = await request.get(`articles/${articleId}`);
     return this._adaptArticle(article);

@@ -2,10 +2,11 @@
 
 const HttpCodes = require(`http-status-codes`);
 const {logger} = require(`frontend/utils`);
-const {accountAdapter, articleAdapter} = require(`frontend/adapters`);
+const {accountAdapter, articleAdapter, categoryAdapter} = require(`frontend/adapters`);
 
 
 module.exports = async (req, res) => {
+  const categoryList = await categoryAdapter.getList();
   let article = await articleAdapter.getItemById(req.params.id);
   if (article.statusCode >= HttpCodes.BAD_REQUEST) {
     res.status(article.statusCode).send();
@@ -22,6 +23,7 @@ module.exports = async (req, res) => {
     type: `edit`,
     article,
     account: accountAdapter.getAuth(),
+    categoryList,
     scriptList: [
       `js/vendor.js`,
       `js/main.js`

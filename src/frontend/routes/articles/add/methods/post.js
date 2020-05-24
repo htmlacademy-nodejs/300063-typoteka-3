@@ -1,8 +1,8 @@
 'use strict';
 
-const getAddArticlePage = require(`./get`);
 const {articleAdapter, FileAdapter} = require(`frontend/adapters`);
-const {logger} = require(`frontend/utils`);
+const {logger, transformDate} = require(`frontend/utils`);
+const getAddArticlePage = require(`./get`);
 
 
 const setFileName = async (req, res) => {
@@ -14,14 +14,24 @@ const setFileName = async (req, res) => {
     logger.endRequest(req, fileResponse);
     await getAddArticlePage(req, res);
   } else {
-    req.body.picture = fileResponse;
+    req.body.image = fileResponse;
   }
 };
 
 const addArticleItemAndRedirectToMyArticles = async (req, res) => {
-  const offerRes = await articleAdapter.addItem(req.body);
-  if (offerRes.error) {
-    logger.endRequest(req, offerRes);
+  if (!req.body.categories) {
+    req.body.categories = [];
+  }
+  if (Object.keys(req.body.categories).length !== 0) {
+    req.body.categories = Object.keys(req.body.categories);
+  }
+  const articleParams = {
+    ...req.body,
+    createdDate: transformDate(req.body.createdDate),
+  };
+  const articleRes = await articleAdapter.addItem(articleParams);
+  if (articleRes.content && articleRes.content.error) {
+    logger.endRequest(req, articleRes);
     await getAddArticlePage(req, res);
   } else {
     res.redirect(`/my`);

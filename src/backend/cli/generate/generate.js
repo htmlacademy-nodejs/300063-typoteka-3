@@ -30,7 +30,7 @@ const generateArticles = (count, titles, texts, categories, comments) => (
     announce: texts[getRandomInt(0, texts.length - 1)],
     fullText: shuffle(texts).slice(1, getRandomInt(1, texts.length - 1)).join(` `),
     createdDate: getDatePublication(),
-    category: shuffle(categories).slice(1, getRandomInt(1, categories.length - 1)),
+    categories: shuffle(categories).slice(1, getRandomInt(1, categories.length - 1)),
     comments: generateComments(comments),
   }))
 );

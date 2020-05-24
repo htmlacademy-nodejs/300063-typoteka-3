@@ -8,6 +8,6 @@ const {upload} = require(`frontend/utils`);
 const addRoute = new Router();
 
 addRoute.get(`/`, getAddArticlePage);
-addRoute.post(`/`, upload(`image`), postAddArticlePage);
+addRoute.post(`/`, upload(`picture`), postAddArticlePage);
 
 module.exports = addRoute;

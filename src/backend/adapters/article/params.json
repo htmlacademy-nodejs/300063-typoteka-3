@@ -5,7 +5,7 @@
     "announce",
     "fullText",
     "createdDate",
-    "category"
+    "categories"
   ],
   "responsePropertyList": [
     "id",
@@ -14,7 +14,7 @@
     "announce",
     "fullText",
     "createdDate",
-    "category",
+    "categories",
     "comments"
   ]
 }

@@ -19,7 +19,7 @@ block content
                     label(for='new-publication-date' aria-label='Календарь')
                     input#new-publication-date(
                       type='text'
-                      name='dateCreated'
+                      name='createdDate'
                       placeholder=(article.createdDate ? article.createdDate.day : ``)
                       value=(article.createdDate ? article.createdDate.day : ``)
                     )
@@ -30,17 +30,28 @@ block content
                     input(type='text' placeholder='Заголовок' name='title' value=article.title required)
                 .form__field.form__field--post-image
                   label
-                    input#image-name-field(type='text' placeholder='Фотография' readonly)
+                    input#image-name-field(
+                      type='text'
+                      placeholder='Фотография'
+                      name='image'
+                      value=(article.image ? article.image : ``)
+                      readonly
+                    )
                   .form__image-loader.form__image-loader--publication
                     label
-                      input.visually-hidden(type='file' name='image' value=(article.image ? article.image : ``))
+                      input.visually-hidden(type='file' name='picture' value=(article.image ? article.image : ``))
                       | Обзор
                   button.button.button--transparent(type='button') Удалить
                 .new-publication__checkbox.new-publication__checkbox--auto
-                  each categoryItem in article.category
-                    input(id=categoryItem type='checkbox' name=categoryItem)
-                    label(for=categoryItem)= categoryItem
-                a.new-publication__form-link.button.button--transparent(href='#') Добавить категорию
+                  each category in categoryList
+                    input(
+                      id=category
+                      type='checkbox'
+                      name=`categories[${category}]`
+                      checked=(article.categories && article.categories.includes(category))
+                    )
+                    label(for=category)= category
+                  a.new-publication__form-link.button.button--transparent(href='#') Добавить категорию
               .form__wrapper.form__wrapper--text
                 .form__field.form__field--publication-text
                   label
