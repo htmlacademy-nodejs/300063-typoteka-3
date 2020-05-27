@@ -1,0 +1,18 @@
+{
+  "requestPropertyList": [
+    "title",
+    "announce",
+    "fullText",
+    "createdDate",
+    "category"
+  ],
+  "responsePropertyList": [
+    "id",
+    "title",
+    "announce",
+    "fullText",
+    "createdDate",
+    "category",
+    "comments"
+  ]
+}

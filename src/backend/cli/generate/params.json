@@ -1,0 +1,13 @@
+{
+  "Count":{
+    "DEFAULT": 1,
+    "MIN": 1,
+    "MAX": 1000
+  },
+  "OLDEST_PUBLICATION_COUNT_DAY": 256,
+  "FILE_NAME": "mock.json",
+  "FILE_TITLES_PATH": "./data/titles.txt",
+  "FILE_TEXTS_PATH": "./data/texts.txt",
+  "FILE_CATEGORIES_PATH": "./data/categories.txt",
+  "FILE_COMMENTS_PATH": "./data/comments.txt"
+}

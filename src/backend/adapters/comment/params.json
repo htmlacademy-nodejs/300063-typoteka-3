@@ -1,0 +1,9 @@
+{
+  "requestPropertyList": [
+    "text"
+  ],
+  "responsePropertyList": [
+    "id",
+    "text"
+  ]
+}
