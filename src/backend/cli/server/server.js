@@ -1,8 +1,8 @@
 'use strict';
 
-const server = require(`../../api`);
-const {logger} = require(`../../utils`);
-const {DEFAULT_PORT} = require(`../../constants`);
+const server = require(`backend/api`);
+const {logger} = require(`backend/utils`);
+const {DEFAULT_PORT} = require(`backend/constants`);
 
 
 module.exports = {
@@ -10,7 +10,7 @@ module.exports = {
   alias: `-s`,
   async run(...args) {
     const [customPort] = args;
-    const port = parseInt(customPort, 10) || parseInt(process.env.SERVER_API_PORT, 10) || DEFAULT_PORT;
+    const port = parseInt(customPort, 10) || parseInt(process.env.BACKED_PORT, 10) || DEFAULT_PORT;
 
     server
       .listen(port, () => logger.startServer(port))

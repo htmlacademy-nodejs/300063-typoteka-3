@@ -1,6 +1,8 @@
 'use strict';
 
 const {Router} = require(`express`);
+const {logger} = require(`frontend/utils`);
+
 
 const commentsRoute = new Router();
 
@@ -66,6 +68,7 @@ commentsRoute.get(`/`, (req, res) => {
     ],
   };
   res.render(`pages/my/comments`, content);
+  logger.endRequest(req, res);
 });
 
 module.exports = commentsRoute;

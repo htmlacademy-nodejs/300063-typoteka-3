@@ -1,6 +1,8 @@
 'use strict';
 
 const {Router} = require(`express`);
+const {logger} = require(`frontend/utils`);
+
 
 const editRoute = new Router();
 
@@ -47,6 +49,7 @@ editRoute.get(`/:id`, (req, res) => {
     ],
   };
   res.render(`pages/articles/edit`, content);
+  logger.endRequest(req, res);
 });
 
 module.exports = editRoute;

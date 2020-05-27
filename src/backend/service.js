@@ -3,7 +3,7 @@
 const chalk = require(`chalk`);
 
 const {Cli} = require(`backend/cli`);
-const {ExitCode, USER_ARGV_INDEX} = require(`backend/constants`);
+const {ExitCode, USER_ARGV_INDEX, DEFAULT_COMMAND} = require(`backend/constants`);
 
 
 const userInputList = process.argv.slice(USER_ARGV_INDEX);
@@ -42,6 +42,9 @@ const formAnArrayOfCommands = () => {
 const runUserCommands = () => {
   const commandList = formAnArrayOfCommands();
   commandList.forEach((command) => Cli[command.name].run(...command.arguments));
+  if (commandList.length === 0) {
+    Cli[DEFAULT_COMMAND].run();
+  }
 };
 
 runUserCommands();

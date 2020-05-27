@@ -3,4 +3,4 @@
 const {LoggerCenter} = require(`common`);
 
 
-module.exports = new LoggerCenter(`backend`);
+module.exports = new LoggerCenter(`frontend`);

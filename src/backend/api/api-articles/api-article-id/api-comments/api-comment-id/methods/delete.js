@@ -3,6 +3,7 @@
 const HttpCodes = require(`http-status-codes`);
 
 const {commentAdapter} = require(`backend/adapters`);
+const {logger} = require(`backend/utils`);
 
 
 const commentResponseMap = new Map([
@@ -20,7 +21,9 @@ module.exports = async (req, res) => {
   const result = commentAdapter.removeItemById(req.params.articleId, req.params.commentId);
   if (result.error) {
     commentResponseMap.get(result.error.entity)(res, req, result);
+    logger.endRequest(req, res);
   } else {
     res.status(HttpCodes.NO_CONTENT).send(result);
+    logger.endRequest(req, res);
   }
 };

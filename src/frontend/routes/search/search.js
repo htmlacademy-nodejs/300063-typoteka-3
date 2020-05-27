@@ -1,6 +1,8 @@
 'use strict';
 
 const {Router} = require(`express`);
+const {logger} = require(`frontend/utils`);
+
 
 const searchRoute = new Router();
 
@@ -44,6 +46,7 @@ searchRoute.get(`/`, (req, res) => {
     scriptList: [`js/main.js`],
   };
   res.render(`pages/search`, content);
+  logger.endRequest(req, res);
 });
 
 module.exports = searchRoute;

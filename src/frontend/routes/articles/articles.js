@@ -1,6 +1,7 @@
 'use strict';
 
 const {Router} = require(`express`);
+const {logger} = require(`frontend/utils`);
 
 const addRoute = require(`./add`);
 const categoryRoute = require(`./category`);
@@ -100,6 +101,7 @@ articlesRoute.get(`/:id`, (req, res) => {
     },
   };
   res.render(`pages/articles/article`, content);
+  logger.endRequest(req, res);
 });
 
 module.exports = articlesRoute;
