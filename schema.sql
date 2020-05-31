@@ -51,7 +51,8 @@ CREATE TABLE public.accounts (
     lastname character varying(50),
     email character varying(100),
     avatar character varying(100),
-    password character(128)
+    password character(128),
+    type character varying(20)
 );
 
 
