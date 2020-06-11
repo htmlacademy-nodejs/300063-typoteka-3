@@ -2,6 +2,7 @@
 
 const {Router} = require(`express`);
 const {logger} = require(`frontend/utils`);
+const {accountAdapter, dateAdapter} = require(`frontend/adapters`);
 
 const addRoute = require(`./add`);
 const categoryRoute = require(`./category`);
@@ -20,11 +21,7 @@ articlesRoute.get(`/:id`, (req, res) => {
         fileName: `sea-fullsize@1x.jpg`,
         alt: `пейзаж море, скалы, пляж`,
       },
-      date: {
-        stamp: `2019-03-21T20:33`,
-        day: `21.03.2019`,
-        time: `20:33`
-      },
+      date: dateAdapter.get(`2019-03-21 20:33`),
       title: `AirPods в один клик`,
       subTitle: `Бирюзовое доверие`,
       text: [
@@ -32,68 +29,32 @@ articlesRoute.get(`/:id`, (req, res) => {
         `Или интерфейс подключения AirPods на макбуке. Чтобы переключить наушники между телефоном и компьютером, нужно сначала нажать на значок звука, затем дождаться, когда в списке устройств появятся наушники, потом нажать на них и дождаться, пока случится вся магия подключения. Иногда по загадочным причинам магия не случается, и операцию нужно повторить, выполняя все те же клики-ожидания-клики — бесит.`
       ],
     },
-    account: {
-      type: `user`,
-      name: `Алёна Фролова`,
-      avatar: `img/avatar-2.png`,
-    },
+    account: accountAdapter.getAuth(),
     scriptList: [`js/main.js`],
     comments: {
       hasUserError: false,
       list: [
         {
-          account: {
-            type: `user`,
-            avatar: `img/avatar-1.png`,
-            name: `Евгений Петров`,
-          },
-          date: {
-            stamp: `2019-03-21T20:33`,
-            day: `21.03.2019`,
-            time: `20:33`
-          },
+          account: accountAdapter.getUserById(1),
+          date: dateAdapter.get(`2019-03-21 20:33`),
           text: `Автор, ты все выдумал, покайся`,
           articleTitle: `AirPods в один клик`,
         },
         {
-          account: {
-            type: `user`,
-            avatar: `img/avatar-5.png`,
-            name: `Александр Марков`,
-          },
-          date: {
-            stamp: `2019-03-21T20:33`,
-            day: `21.03.2019`,
-            time: `20:33`
-          },
+          account: accountAdapter.getUserById(5),
+          date: dateAdapter.get(`2019-03-21 20:33`),
           text: `Конечно, прежде чем так писать, нужно искренне приложить усилия, чтобы разобраться — не все люди умеют выражать свои мысли.`,
           articleTitle: `AirPods в один клик`,
         },
         {
-          account: {
-            type: `user`,
-            avatar: `img/avatar-4.png`,
-            name: `Евгений Петров`,
-          },
-          date: {
-            stamp: `2019-03-21T20:33`,
-            day: `21.03.2019`,
-            time: `20:33`
-          },
+          account: accountAdapter.getUserById(4),
+          date: dateAdapter.get(`2019-03-21 20:33`),
           text: `Автор, ты все выдумал, покайся`,
           articleTitle: `AirPods в один клик`,
         },
         {
-          account: {
-            type: `user`,
-            avatar: `img/avatar-3.png`,
-            name: `Александр Марков`,
-          },
-          date: {
-            stamp: `2019-03-21T20:33`,
-            day: `21.03.2019`,
-            time: `20:33`
-          },
+          account: accountAdapter.getUserById(3),
+          date: dateAdapter.get(`2019-03-21 20:33`),
           text: `Конечно, прежде чем так писать, нужно искренне приложить усилия, чтобы разобраться — не все люди умеют выражать свои мысли.`,
           articleTitle: `AirPods в один клик`,
         },

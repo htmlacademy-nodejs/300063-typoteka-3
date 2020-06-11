@@ -8,13 +8,14 @@
     "clean-webpack-plugin": "3.0.0",
     "concurrently": "5.2.0",
     "copy-webpack-plugin": "6.0.1",
-    "date-format": "3.0.0",
     "debug": "4.1.1",
     "eslint": "6.8.0",
     "eslint-config-htmlacademy": "0.5.2",
     "husky": "4.2.3",
     "jest": "26.0.1",
     "jest-webpack-resolver": "0.3.0",
+    "make-dir-webpack-plugin": "0.1.0",
+    "multer": "1.4.2",
     "nodemon": "2.0.2",
     "nodemon-webpack-plugin": "4.3.1",
     "npm-run-all": "4.1.5",
@@ -31,19 +32,16 @@
     "start::dev": "concurrently \"npm run start::backend::dev\" \"npm run start::frontend::dev\"",
     "start::debug": "concurrently \"npm run start::backend::debug\" \"npm run start::frontend::debug\"",
     "test": "npm run eslint && npm run test::backend",
-
     "build::backend": "webpack --mode=production --notest --config webpack/backend.config.js",
     "start::backend": "cross-env LOG_LEVEL=error npm run build::backend && mkdir ./dist/backend/logs && node -r pino-debug -r dotenv/config ./dist/backend/index.js --server ./dist/backend/logs/app.log 1> ./dist/backend/logs/info.log 2> ./dist/backend/logs/error.log",
     "start::backend::dev": "webpack --mode=development --watch --notest --config webpack/backend.config.js",
     "start::backend::debug": "cross-env LOG_LEVEL=debug npm run start::backend::dev",
     "test::backend": "cross-env LOG_LEVEL=error jest ./src/backend --verbose --runInBand",
     "test::backend::dev": "cross-env LOG_LEVEL=error jest ./src/backend --verbose --runInBand --watch",
-
     "build::frontend": "webpack --mode=production --config webpack/frontend.config.js",
     "start::frontend": "cross-env LOG_LEVEL=error npm run build::frontend && mkdir ./dist/frontend/logs && node -r pino-debug -r dotenv/config ./dist/frontend/index.js --server ./dist/frontend/logs/app.log 1> ./dist/frontend/logs/info.log 2> ./dist/frontend/logs/error.log",
     "start::frontend::dev": "webpack --mode=development --watch --config webpack/frontend.config.js",
     "start::frontend::debug": "cross-env LOG_LEVEL=debug npm run start::frontend::dev",
-
     "eslint": "eslint --ext .js src/",
     "start-from-server": "node ./src/frontend/index.js",
     "start-from-server.dev": "nodemon ./src/frontend/index.js"
@@ -73,6 +71,7 @@
   "dependencies": {
     "axios": "0.19.2",
     "cross-env": "7.0.2",
+    "dateformat": "3.0.3",
     "dotenv": "8.2.0",
     "express": "4.17.1",
     "express-pino-logger": "5.0.0",
