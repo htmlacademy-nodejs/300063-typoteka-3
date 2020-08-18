@@ -1,10 +1,10 @@
 -- Добавить админа и пользователей блога
 INSERT INTO accounts VALUES
-(DEFAULT,'Иван', 'Иванов', 'ivan@mail.ru', 'avatar-1.png', 'q1w2e3', 'admin'),
-(DEFAULT,'Сергей', 'Есенин', 'huligan@mail.ru', 'avatar-2.png', 'q1w2e3', 'user'),
-(DEFAULT,'Лев', 'Толстой', 'graf@mail.ru', 'avatar-3.png', 'q1w2e3', 'user'),
-(DEFAULT,'Александр', 'Пушкин', 'onegin@mail.ru', 'avatar-4.png', 'q1w2e3', 'user'),
-(DEFAULT,'Михаил', 'Лермонтов', 'borodino@mail.ru', 'avatar-5.png', 'q1w2e3', 'user');
+(DEFAULT,'Иван', 'Иванов', 'ivan@mail.ru', 'avatar-1.png', 'q1w2e3'),
+(DEFAULT,'Сергей', 'Есенин', 'huligan@mail.ru', 'avatar-2.png', 'q1w2e3'),
+(DEFAULT,'Лев', 'Толстой', 'graf@mail.ru', 'avatar-3.png', 'q1w2e3'),
+(DEFAULT,'Александр', 'Пушкин', 'onegin@mail.ru', 'avatar-4.png', 'q1w2e3'),
+(DEFAULT,'Михаил', 'Лермонтов', 'borodino@mail.ru', 'avatar-5.png', 'q1w2e3');
 
 
 -- Добавить статьи
@@ -65,3 +65,16 @@ INSERT INTO articles_categories VALUES
 (3, 4),
 (3, 5),
 (3, 2);
+
+-- Добавить возможные типы аккаунтов
+INSERT INTO account_types VALUES
+(DEFAULT, 'admin'),
+(DEFAULT, 'user');
+
+-- Добавить аккаунтам типы
+INSERT INTO accounts_account_types VALUES
+(1, 1),
+(2, 2),
+(3, 2),
+(4, 2),
+(5, 2);
