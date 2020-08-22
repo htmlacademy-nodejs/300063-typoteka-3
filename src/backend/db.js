@@ -2,15 +2,16 @@
 
 const {Sequelize} = require(`sequelize`);
 
-const {ExitCode} = require(`common/params`);
+const {DB_DRIVER, ExitCode} = require(`common/params`);
 const {logger} = require(`backend/utils`);
 
 
 const sequelize = new Sequelize({
-  dialect: process.env.DB_DIALECT,
+  dialect: process.env.DB_DRIVER || DB_DRIVER,
 });
 
 const initDb = async () => {
+  logger.info(`DB is connecting...`);
   await sequelize.sync()
     .catch((error) => {
       logger.error(`DB connection error ${error}`);
