@@ -2,14 +2,13 @@
 
 const fs = require(`fs`).promises;
 const {nanoid} = require(`nanoid`);
-const dateFormat = require(`date-format`);
+const dateFormat = require(`dateformat`);
 const chalk = require(`chalk`);
 
 const {getNumbersDayInMilliseconds, getRandomInt, shuffle} = require(`backend/utils`);
 const {
+  generate,
   ExitCode,
-  OLDEST_PUBLICATION_COUNT_DAY,
-  Count,
   FILE_TITLES_PATH,
   FILE_TEXTS_PATH,
   FILE_CATEGORIES_PATH,
@@ -19,12 +18,13 @@ const {
 
 
 const currentDate = Number(new Date());
-const maxPublishedDaysAgoInMilliseconds = getNumbersDayInMilliseconds(OLDEST_PUBLICATION_COUNT_DAY);
+const maxPublishedDaysAgoInMilliseconds = getNumbersDayInMilliseconds(generate.OLDEST_PUBLICATION_COUNT_DAY);
+
 
 const getDatePublication = () => {
   const publishedMillisecondsAgo = getRandomInt(0, maxPublishedDaysAgoInMilliseconds);
   const date = new Date(currentDate - publishedMillisecondsAgo);
-  return dateFormat(`yyyy-MM-dd hh:mm:ss`, date);
+  return dateFormat(date, `yyyy-mm-dd hh:MM:ss`);
 };
 
 const generateComments = (comments) => shuffle(comments).slice(1, getRandomInt(1, comments.length - 1)).map((comment) => ({
@@ -39,18 +39,18 @@ const generateArticles = (count, titles, texts, categories, comments) => (
     announce: texts[getRandomInt(0, texts.length - 1)],
     fullText: shuffle(texts).slice(1, getRandomInt(1, texts.length - 1)).join(` `),
     createdDate: getDatePublication(),
-    category: shuffle(categories).slice(1, getRandomInt(1, categories.length - 1)),
+    categories: shuffle(categories).slice(1, getRandomInt(1, categories.length - 1)),
     comments: generateComments(comments),
   }))
 );
 
 const showErrorIfCountIsNotCorrect = (count) => {
-  if (count < Count.MIN) {
-    console.error(chalk.red(`Generating count can't be less then '${Count.MIN}'`));
+  if (count < generate.Count.MIN) {
+    console.error(chalk.red(`Generating count can't be less then '${generate.Count.MIN}'`));
     process.exit(ExitCode.ERROR);
   }
-  if (count > Count.MAX) {
-    console.error(chalk.red(`Generating count can't be more then '${Count.MAX}'`));
+  if (count > generate.Count.MAX) {
+    console.error(chalk.red(`Generating count can't be more then '${generate.Count.MAX}'`));
     process.exit(ExitCode.ERROR);
   }
 };
@@ -69,7 +69,7 @@ module.exports = {
   name: `--generate`,
   alias: `-g`,
   async run(argv) {
-    const count = Number(argv) || Count.DEFAULT;
+    const count = Number(argv) || generate.Count.DEFAULT;
     showErrorIfCountIsNotCorrect(count);
     const TITLES = await readFile(FILE_TITLES_PATH);
     const TEXTS = await readFile(FILE_TEXTS_PATH);

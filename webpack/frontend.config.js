@@ -6,6 +6,7 @@ const nodeExternals = require(`webpack-node-externals`);
 const NodemonPlugin = require(`nodemon-webpack-plugin`);
 const CopyPlugin = require(`copy-webpack-plugin`);
 const {CleanWebpackPlugin} = require(`clean-webpack-plugin`);
+const MakeDirWebpackPlugin = require(`make-dir-webpack-plugin`);
 
 
 module.exports = {
@@ -21,7 +22,7 @@ module.exports = {
     __filename: false,
   },
   plugins: [
-    new CleanWebpackPlugin(),
+    new CleanWebpackPlugin({cleanStaleWebpackAssets: false}),
     new CopyPlugin({
       patterns: [
         {
@@ -32,6 +33,15 @@ module.exports = {
           from: `src/frontend/public`,
           to: `public`,
         },
+        {
+          from: `src/frontend/public`,
+          to: `public`,
+        },
+      ]
+    }),
+    new MakeDirWebpackPlugin({
+      dirs: [
+        {path: `./dist/frontend/temp`},
       ]
     }),
     new NodemonPlugin({

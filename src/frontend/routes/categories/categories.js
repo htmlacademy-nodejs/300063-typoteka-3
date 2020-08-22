@@ -2,17 +2,14 @@
 
 const {Router} = require(`express`);
 const {logger} = require(`frontend/utils`);
+const {accountAdapter} = require(`frontend/adapters`);
 
 
 const categoriesRoute = new Router();
 
 categoriesRoute.get(`/`, (req, res) => {
   const content = {
-    account: {
-      type: `admin`,
-      name: `Алёна Фролова`,
-      avatar: `img/avatar-2.png`,
-    },
+    account: accountAdapter.getAuth(),
     categoryList: [
       {
         id: `category-1`,

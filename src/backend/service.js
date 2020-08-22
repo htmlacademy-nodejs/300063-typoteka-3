@@ -3,7 +3,7 @@
 const chalk = require(`chalk`);
 
 const {Cli} = require(`backend/cli`);
-const {ExitCode, USER_ARGV_INDEX, DEFAULT_COMMAND} = require(`common/params`);
+const {ExitCode, USER_ARGV_INDEX, DEFAULT_COMMAND_FOR_BACKEND_CLI} = require(`common/params`);
 
 
 const userInputList = process.argv.slice(USER_ARGV_INDEX);
@@ -32,7 +32,7 @@ const formAnArrayOfCommands = () => {
       lastCommandListItem.arguments.push(userInput);
       commandList = [...commandList, lastCommandListItem];
     } else {
-      console.log(chalk.red(`Commands need start with "--" or "-"`));
+      console.error(chalk.red(`Commands need start with "--" or "-"`));
       process.exit(ExitCode.ERROR);
     }
     return commandList;
@@ -43,7 +43,7 @@ const runUserCommands = () => {
   const commandList = formAnArrayOfCommands();
   commandList.forEach((command) => Cli[command.name].run(...command.arguments));
   if (commandList.length === 0) {
-    Cli[DEFAULT_COMMAND].run();
+    Cli[DEFAULT_COMMAND_FOR_BACKEND_CLI].run();
   }
 };
 
