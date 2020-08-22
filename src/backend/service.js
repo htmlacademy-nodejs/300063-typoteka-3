@@ -3,7 +3,7 @@
 const chalk = require(`chalk`);
 
 const {Cli} = require(`backend/cli`);
-const {ExitCode, USER_ARGV_INDEX, DEFAULT_COMMAND} = require(`backend/constants`);
+const {ExitCode, USER_ARGV_INDEX, DEFAULT_COMMAND} = require(`common/params`);
 
 
 const userInputList = process.argv.slice(USER_ARGV_INDEX);
