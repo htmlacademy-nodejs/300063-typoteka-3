@@ -1,8 +1,10 @@
 'use strict';
 
 const path = require(`path`);
+
 const multer = require(`multer`);
-const {DEFAULT_TEMP_DIR} = require(`common/params`);
+
+const {DEFAULT_TEMP_DIR} = require(`../../common/params`);
 
 
 const tempDir = process.env.DEFAULT_TEMP_DIR || DEFAULT_TEMP_DIR;

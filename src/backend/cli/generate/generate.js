@@ -5,7 +5,7 @@ const {nanoid} = require(`nanoid`);
 const dateFormat = require(`dateformat`);
 const chalk = require(`chalk`);
 
-const {getNumbersDayInMilliseconds, getRandomInt, shuffle} = require(`backend/utils`);
+const {getNumbersDayInMilliseconds, getRandomInt, shuffle} = require(`../utils`);
 const {
   generate,
   ExitCode,
@@ -14,7 +14,7 @@ const {
   FILE_CATEGORIES_PATH,
   FILE_COMMENTS_PATH,
   MOCK_FILE_NAME
-} = require(`common/params`);
+} = require(`../../../common/params`);
 
 
 const currentDate = Number(new Date());

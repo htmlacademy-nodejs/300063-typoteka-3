@@ -1,7 +1,8 @@
 'use strict';
 
-const {logger, transformDate} = require(`frontend/utils`);
-const {accountAdapter, categoryAdapter, dateAdapter} = require(`frontend/adapters`);
+const {accountAdapter, categoryAdapter, dateAdapter} = require(`../../../../adapters`);
+const {logger, transformDate} = require(`../../../../utils`);
+
 
 const getArticle = (article) => {
   const date = article.createdDate ? transformDate(article.createdDate) : new Date();

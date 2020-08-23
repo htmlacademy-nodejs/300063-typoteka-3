@@ -1,7 +1,8 @@
 'use strict';
 
-const {logger} = require(`frontend/utils`);
-const {articleAdapter} = require(`frontend/adapters`);
+const {logger} = require(`../../../utils`);
+const {articleAdapter} = require(`../../../adapters`);
+
 
 module.exports = async (req, res) => {
   const articleList = await articleAdapter.getList();

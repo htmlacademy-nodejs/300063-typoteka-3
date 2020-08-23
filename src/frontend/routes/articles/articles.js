@@ -1,12 +1,13 @@
 'use strict';
 
 const {Router} = require(`express`);
-const {logger} = require(`frontend/utils`);
-const {accountAdapter, dateAdapter} = require(`frontend/adapters`);
 
+const {logger} = require(`../../utils`);
+const {accountAdapter, dateAdapter} = require(`../../adapters`);
 const addRoute = require(`./add`);
 const categoryRoute = require(`./category`);
 const editRoute = require(`./edit`);
+
 
 const articlesRoute = new Router();
 

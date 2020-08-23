@@ -1,8 +1,9 @@
 'use strict';
 
 const HttpCodes = require(`http-status-codes`);
-const {logger} = require(`frontend/utils`);
-const {accountAdapter, articleAdapter, categoryAdapter} = require(`frontend/adapters`);
+
+const {accountAdapter, articleAdapter, categoryAdapter} = require(`../../../../adapters`);
+const {logger} = require(`../../../../utils`);
 
 
 module.exports = async (req, res) => {

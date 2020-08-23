@@ -3,7 +3,8 @@
 const request = require(`supertest`);
 const HttpCodes = require(`http-status-codes`);
 
-const server = require(`backend/api`);
+const server = require(`../index`);
+
 
 describe(`Categories API end-points`, () => {
   test(`When GET categories status code should be ${HttpCodes.OK}`, async () => {

@@ -4,6 +4,7 @@ const request = require(`../request`);
 const {dateAdapter} = require(`../date`);
 const {accountAdapter} = require(`../account`);
 
+
 class CommentAdapter {
   async getList() {
     const articleList = await request.get(`articles`);

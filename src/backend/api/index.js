@@ -3,8 +3,8 @@
 const express = require(`express`);
 const HttpCodes = require(`http-status-codes`);
 
-const {logger} = require(`backend/utils`);
-const {debugMiddleware} = require(`backend/middleware`);
+const {logger} = require(`../utils`);
+const {debugMiddleware} = require(`../middleware`);
 
 const apiArticles = require(`./api-articles`);
 const apiCategories = require(`./api-categories`);

@@ -3,8 +3,8 @@
 const fs = require(`fs`);
 const {nanoid} = require(`nanoid`);
 
-const {logger} = require(`backend/utils`);
-const {MOCK_FILE_NAME} = require(`common/params`);
+const {logger} = require(`../../utils`);
+const {MOCK_FILE_NAME} = require(`../../../common/params`);
 
 
 const log = logger.getLogger();

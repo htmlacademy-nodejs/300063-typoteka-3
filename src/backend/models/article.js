@@ -1,6 +1,5 @@
 'use strict';
 
-
 module.exports = (sequelize, DataTypes) => {
   class Article extends sequelize.Sequelize.Model {}
   Article.init({

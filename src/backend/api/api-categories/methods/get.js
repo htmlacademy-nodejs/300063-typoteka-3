@@ -2,8 +2,8 @@
 
 const HttpCodes = require(`http-status-codes`);
 
-const {categoryAdapter} = require(`backend/adapters`);
-const {logger} = require(`backend/utils`);
+const {categoryAdapter} = require(`../../../adapters`);
+const {logger} = require(`../../../utils`);
 
 
 module.exports = async (req, res) => {

@@ -1,7 +1,8 @@
 'use strict';
 
 const {Router} = require(`express`);
-const {logger} = require(`frontend/utils`);
+
+const {logger} = require(`../../utils`);
 
 
 const loginRoute = new Router();

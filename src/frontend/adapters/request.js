@@ -1,7 +1,8 @@
 'use strict';
 
 const axios = require(`axios`);
-const {DEFAULT_PROTOCOL, DEFAULT_DOMAIN, DEFAULT_BACKEND_PORT} = require(`common/params`);
+
+const {DEFAULT_PROTOCOL, DEFAULT_DOMAIN, DEFAULT_BACKEND_PORT} = require(`../../common/params`);
 
 
 class Request {

@@ -2,8 +2,8 @@
 
 const {Sequelize, DataTypes} = require(`sequelize`);
 
-const {DB_DRIVER, ExitCode} = require(`common/params`);
-const {logger} = require(`backend/utils`);
+const {DB_DRIVER, ExitCode} = require(`../common/params`);
+const {logger} = require(`./utils`);
 
 const getAccount = require(`./models/account`);
 const getAccountType = require(`./models/account-type`);
@@ -21,16 +21,6 @@ const AccountType = getAccountType(sequelize, DataTypes);
 const Article = getArticle(sequelize, DataTypes);
 const Category = getCategory(sequelize, DataTypes);
 const Comment = getComment(sequelize, DataTypes);
-
-const initDb = async () => {
-  logger.info(`DB is connecting...`);
-  await sequelize.sync()
-    .catch((error) => {
-      logger.error(`DB connection error ${error}`);
-      process.exit(ExitCode.ERROR);
-    });
-  logger.info(`DB connected successfully`);
-};
 
 AccountType.hasMany(Account, {
   as: `accounts`,
@@ -74,6 +64,16 @@ Category.belongsToMany(Article, {
   paranoid: false,
 });
 
+
+const initDb = async () => {
+  logger.info(`DB is connecting...`);
+  await sequelize.sync()
+    .catch((error) => {
+      logger.error(`DB connection error ${error}`);
+      process.exit(ExitCode.ERROR);
+    });
+  logger.info(`DB connected successfully`);
+};
 
 module.exports = {
   db: {

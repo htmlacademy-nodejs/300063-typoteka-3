@@ -1,7 +1,7 @@
 'use strict';
 
-const {articleAdapter, FileAdapter} = require(`frontend/adapters`);
-const {logger, transformDate} = require(`frontend/utils`);
+const {articleAdapter, FileAdapter} = require(`../../../../adapters`);
+const {logger, transformDate} = require(`../../../../utils`);
 const getEditArticlePage = require(`./get`);
 
 
