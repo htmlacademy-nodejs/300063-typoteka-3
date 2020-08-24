@@ -1,6 +1,7 @@
 'use strict';
 
 const fs = require(`fs`).promises;
+
 const {nanoid} = require(`nanoid`);
 const dateFormat = require(`dateformat`);
 const chalk = require(`chalk`);
@@ -14,7 +15,7 @@ const {
   FILE_CATEGORIES_PATH,
   FILE_COMMENTS_PATH,
   MOCK_FILE_NAME
-} = require(`../../../common/params`);
+} = require(`../../common/params`);
 
 
 const currentDate = Number(new Date());
@@ -69,6 +70,7 @@ module.exports = {
   name: `--generate`,
   alias: `-g`,
   async run(argv) {
+    console.log(argv);
     const count = Number(argv) || generate.Count.DEFAULT;
     showErrorIfCountIsNotCorrect(count);
     const TITLES = await readFile(FILE_TITLES_PATH);

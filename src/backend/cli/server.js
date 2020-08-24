@@ -1,9 +1,9 @@
 'use strict';
 
-const server = require(`../../api`);
-const {initDb} = require(`../../db`);
-const {logger} = require(`../../utils`);
-const {DEFAULT_BACKEND_PORT} = require(`../../../common/params`);
+const server = require(`../api`);
+const {initDb} = require(`../db`);
+const {logger} = require(`../utils`);
+const {DEFAULT_BACKEND_PORT} = require(`../../common/params`);
 
 
 module.exports = {
