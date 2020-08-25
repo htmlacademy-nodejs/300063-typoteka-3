@@ -2,7 +2,7 @@
 
 const {Sequelize, DataTypes} = require(`sequelize`);
 
-const {DB_DRIVER, ExitCode} = require(`../common/params`);
+const {DB_DRIVER} = require(`../common/params`);
 const {logger} = require(`./utils`);
 
 const getAccount = require(`./models/account`);
@@ -65,14 +65,9 @@ Category.belongsToMany(Article, {
 });
 
 
-const initDb = async () => {
+const initDb = async (force = false) => {
   logger.info(`DB is connecting...`);
-  await sequelize.sync()
-    .catch((error) => {
-      logger.error(`DB connection error ${error}`);
-      process.exit(ExitCode.ERROR);
-    });
-  logger.info(`DB connected successfully`);
+  await sequelize.sync({force});
 };
 
 module.exports = {

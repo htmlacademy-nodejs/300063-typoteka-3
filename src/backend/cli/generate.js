@@ -6,7 +6,7 @@ const {nanoid} = require(`nanoid`);
 const dateFormat = require(`dateformat`);
 const chalk = require(`chalk`);
 
-const {getNumbersDayInMilliseconds, getRandomInt, shuffle} = require(`../utils`);
+const {getNumbersDayInMilliseconds, getRandomInt, readFile, shuffle} = require(`../utils`);
 const {
   generate,
   ExitCode,
@@ -56,21 +56,10 @@ const showErrorIfCountIsNotCorrect = (count) => {
   }
 };
 
-const readFile = async (filePath) => {
-  try {
-    const content = await fs.readFile(filePath, `utf8`);
-    return content.trim().split(`\n`);
-  } catch (error) {
-    console.error(chalk.red(`Can't read file ${filePath}`));
-    return [];
-  }
-};
-
 module.exports = {
   name: `--generate`,
   alias: `-g`,
   async run(argv) {
-    console.log(argv);
     const count = Number(argv) || generate.Count.DEFAULT;
     showErrorIfCountIsNotCorrect(count);
     const TITLES = await readFile(FILE_TITLES_PATH);
