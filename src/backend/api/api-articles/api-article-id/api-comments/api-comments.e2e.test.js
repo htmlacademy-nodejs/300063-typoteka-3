@@ -4,7 +4,6 @@ const HttpCodes = require(`http-status-codes`);
 const request = require(`supertest`);
 
 const apiServer = require(`../../../index`);
-const {commentParams} = require(`../../../../adapters`);
 
 
 const pathToArticles = `/api/articles`;
