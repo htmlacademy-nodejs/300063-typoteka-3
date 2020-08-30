@@ -56,14 +56,14 @@ describe(`Article comments API end-points`, () => {
     expect(res.statusCode).toBe(HttpCodes.CREATED);
   });
 
-  test.each(commentParams.requestPropertyList)(`When POST article comment without %p property should have ${HttpCodes.BAD_REQUEST}`, async (property) => {
+  test(`When POST article comment without "text" property should have ${HttpCodes.BAD_REQUEST}`, async () => {
     const comment = {...commentData};
-    delete comment[property];
+    delete comment.text;
     const putArticleResponse = await request(server).post(`${pathToArticles}/${article.id}/comments`).send(comment);
     expect(putArticleResponse.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 
-  test.each([`id`, `text`])(`When POST article comment should have %p property`, async (property) => {
+  test.each([`id`, `text`, `date`])(`When POST article comment should have %p property`, async (property) => {
     const putArticleResponse = await request(server).post(`${pathToArticles}/${article.id}/comments`).send(commentData);
     expect(putArticleResponse.body).toHaveProperty(property);
   });

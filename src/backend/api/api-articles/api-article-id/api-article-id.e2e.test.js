@@ -49,7 +49,7 @@ describe(`Article ID API end-points`, () => {
     expect(res.statusCode).toBe(HttpCodes.OK);
   });
 
-  test.each(articleParams.responsePropertyList)(`When GET exist article by ID should have %p property`, async (property) => {
+  test.each([`id`, `title`, `image`, `announce`, `text`, `date`, `categories`])(`When GET exist article by ID should have %p property`, async (property) => {
     const res = await request(server).get(`${pathToArticles}/${article.id}`);
     expect(res.body).toHaveProperty(property);
   });
@@ -76,19 +76,19 @@ describe(`Article ID API end-points`, () => {
     expect(putArticleResponse.statusCode).toBe(HttpCodes.OK);
   });
 
-  test.each(articleParams.requestPropertyList)(`When PUT article without %p property status code should be ${HttpCodes.OK}`, async () => {
+  test.each([`title`, `image`, `announce`, `text`, `categories`])(`When PUT article without %p property status code should be ${HttpCodes.OK}`, async () => {
     const articleParams = {...newArticleData};
     const putArticleResponse = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
     expect(putArticleResponse.statusCode).toBe(HttpCodes.OK);
   });
 
-  test.each(articleParams.responsePropertyList)(`When PUT article should has %p property`, async (property) => {
+  test.each( [`id`, `title`, `image`, `announce`, `text`, `date`, `categories`])(`When PUT article should has %p property`, async (property) => {
     const articleParams = {...newArticleData};
     const putArticleResponse = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
     expect(putArticleResponse.body).toHaveProperty(property);
   });
 
-  test.each(["title", "image", "announce", "text"])(`When PUT article should has transmitted value for %p property`, async (property) => {
+  test.each([`title`, `image`, `announce`, `text`])(`When PUT article should has transmitted value for %p property`, async (property) => {
     const articleParams = {...newArticleData};
     const putArticleResponse = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
     expect(putArticleResponse.body[property]).toEqual(newArticleData[property]);
