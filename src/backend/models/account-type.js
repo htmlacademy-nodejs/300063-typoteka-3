@@ -1,17 +1,29 @@
 'use strict';
 
-module.exports = (sequelize, DataTypes) => {
+const {EModelName} = require(`./name-space`);
+
+
+const EAccountTypeFieldName = {
+  TITLE: `title`,
+};
+
+const getAccountTypeModel = (sequelize, DataTypes) => {
   class AccountType extends sequelize.Sequelize.Model {}
   AccountType.init({
-    title: {
+    [EAccountTypeFieldName.TITLE]: {
       type: new DataTypes.STRING(50),
       allowNull: false,
     },
   }, {
     sequelize,
-    modelName: `accountTypes`,
+    modelName: EModelName.ACCOUNT_TYPES,
     timestamp: true,
     paranoid: true,
   });
   return AccountType;
+};
+
+module.exports = {
+  getAccountTypeModel,
+  EAccountTypeFieldName,
 };

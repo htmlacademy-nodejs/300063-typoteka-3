@@ -1,17 +1,29 @@
 'use strict';
 
-module.exports = (sequelize, DataTypes) => {
+const {EModelName} = require(`./name-space`);
+
+
+const ECategoryFieldName = {
+  TITLE: `title`,
+};
+
+const getCategoryModel = (sequelize, DataTypes) => {
   class Category extends sequelize.Sequelize.Model {}
   Category.init({
-    title: {
+    [ECategoryFieldName.TITLE]: {
       type: new DataTypes.STRING(50),
       allowNull: false,
     },
   }, {
     sequelize,
-    modelName: `categories`,
+    modelName: EModelName.CATEGORIES,
     timestamp: true,
     paranoid: true,
   });
   return Category;
+};
+
+module.exports = {
+  getCategoryModel,
+  ECategoryFieldName,
 };

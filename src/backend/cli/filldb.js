@@ -46,6 +46,7 @@ const fillAccountTable = async (firstnames, lastnames, emails, avatars, accountT
     avatar: avatars[getRandomInt(0, avatars.length - 1)],
     password: nanoid(),
     accountId: getRandomInt(0, accountTypes.length - 1),
+    accountTypeId: 2,
   }));
   await db.Account.bulkCreate(accountsForDbTable)
     .catch((error) => showAccessError(error, `accounts`));

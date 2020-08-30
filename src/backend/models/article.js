@@ -1,33 +1,46 @@
 'use strict';
 
-module.exports = (sequelize, DataTypes) => {
+const {EModelName} = require(`./name-space`);
+
+
+const EArticleFieldName = {
+  ID: `id`,
+  TITLE: `title`,
+  ANNOUNCE: `announce`,
+  TEXT: `text`,
+  IMAGE: `image`,
+  DATE: `createdAt`,
+};
+
+const getArticleModel = (sequelize, DataTypes) => {
   class Article extends sequelize.Sequelize.Model {}
   Article.init({
-    title: {
+    [EArticleFieldName.TITLE]: {
       type: new DataTypes.STRING(250),
       allowNull: false,
     },
-    announce: {
+    [EArticleFieldName.ANNOUNCE]: {
       type: new DataTypes.STRING(250),
       allowNull: false,
     },
-    text: {
+    [EArticleFieldName.TEXT]: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    date: {
-      type: DataTypes.DATE,
-      allowNull: false,
-    },
-    image: {
+    [EArticleFieldName.IMAGE]: {
       type: new DataTypes.STRING(150),
       allowNull: false,
     },
   }, {
     sequelize,
-    modelName: `articles`,
+    modelName: EModelName.ARTICLES,
     timestamp: true,
     paranoid: true,
   });
   return Article;
+};
+
+module.exports = {
+  getArticleModel,
+  EArticleFieldName,
 };

@@ -2,64 +2,65 @@
 
 const {Sequelize, DataTypes} = require(`sequelize`);
 
-const {DB_DRIVER} = require(`../common/params`);
 const {logger} = require(`./utils`);
+const config = require(`./sequelize-config`);
+const {
+  getAccountModel,
+  getAccountTypeModel,
+  getArticleModel,
+  getCategoryModel,
+  getCommentModel,
+  EForeignKey,
+  EModelName,
+} = require(`./models`);
 
-const getAccount = require(`./models/account`);
-const getAccountType = require(`./models/account-type`);
-const getArticle = require(`./models/article`);
-const getCategory = require(`./models/category`);
-const getComment = require(`./models/comment`);
 
+const sequelize = new Sequelize(config);
 
-const sequelize = new Sequelize({
-  dialect: process.env.DB_DRIVER || DB_DRIVER,
-});
-
-const Account = getAccount(sequelize, DataTypes);
-const AccountType = getAccountType(sequelize, DataTypes);
-const Article = getArticle(sequelize, DataTypes);
-const Category = getCategory(sequelize, DataTypes);
-const Comment = getComment(sequelize, DataTypes);
+const Account = getAccountModel(sequelize, DataTypes);
+const AccountType = getAccountTypeModel(sequelize, DataTypes);
+const Article = getArticleModel(sequelize, DataTypes);
+const Category = getCategoryModel(sequelize, DataTypes);
+const Comment = getCommentModel(sequelize, DataTypes);
 
 AccountType.hasMany(Account, {
-  as: `accounts`,
-  foreignKey: `accountTypeId`,
+  as: EModelName.ACCOUNTS,
+  foreignKey: EForeignKey.ACCOUNT_TYPE_ID,
 });
 Account.belongsTo(AccountType, {
-  as: `accountTypes`,
-  foreignKey: `accountTypeId`,
+  as: EModelName.ACCOUNT_TYPES,
+  foreignKey: EForeignKey.ACCOUNT_TYPE_ID,
 });
 
 Account.hasMany(Comment, {
-  as: `comments`,
-  foreignKey: `accountId`,
+  as: EModelName.COMMENTS,
+  foreignKey: EForeignKey.ACCOUNT_ID,
 });
 Comment.belongsTo(Account, {
-  as: `accounts`,
-  foreignKey: `accountId`,
+  as: EModelName.ACCOUNTS,
+  foreignKey: EForeignKey.ACCOUNT_ID,
 });
 
 Article.hasOne(Comment, {
-  as: `comments`,
-  foreignKey: `articleId`,
+  as: EModelName.COMMENTS,
+  foreignKey: EForeignKey.ARTICLE_ID,
 });
 Comment.belongsTo(Article, {
-  as: `articles`,
-  foreignKey: `articleId`,
+  as: EModelName.ARTICLES,
+  foreignKey: EForeignKey.ARTICLE_ID,
 });
 
 Article.belongsToMany(Category, {
-  through: `articleCategory`,
-  as: `categories`,
-  foreignKey: `articleId`,
+  through: EModelName.ARTICLE_CATEGORY,
+  as: EModelName.CATEGORIES,
+  foreignKey: EForeignKey.ARTICLE_ID,
   timestamps: false,
   paranoid: false,
 });
 Category.belongsToMany(Article, {
-  through: `articleCategory`,
-  as: `articles`,
-  foreignKey: `categoryId`,
+  through: EModelName.ARTICLE_CATEGORY,
+  as: EModelName.ARTICLES,
+  foreignKey: EForeignKey.CATEGORY_ID,
   timestamps: false,
   paranoid: false,
 });
@@ -68,6 +69,10 @@ Category.belongsToMany(Article, {
 const initDb = async (force = false) => {
   logger.info(`DB is connecting...`);
   await sequelize.sync({force});
+};
+
+const disconnectDb = async () => {
+  await sequelize.close();
 };
 
 module.exports = {
@@ -80,4 +85,5 @@ module.exports = {
   },
   sequelize,
   initDb,
+  disconnectDb,
 };

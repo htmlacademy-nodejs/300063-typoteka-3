@@ -1,33 +1,50 @@
 'use strict';
 
-module.exports = (sequelize, DataTypes) => {
+const {EModelName} = require(`./name-space`);
+
+
+const EAccountFieldName = {
+  ID: `id`,
+  FIRSTNAME: `firstname`,
+  LASTNAME: `lastname`,
+  EMAIL: `email`,
+  AVATAR: `avatar`,
+  PASSWORD: `password`,
+};
+
+const getAccountModel = (sequelize, DataTypes) => {
   class Account extends sequelize.Sequelize.Model {}
   Account.init({
-    firstname: {
+    [EAccountFieldName.FIRSTNAME]: {
       type: new DataTypes.STRING(50),
       allowNull: false,
     },
-    lastname: {
+    [EAccountFieldName.LASTNAME]: {
       type: new DataTypes.STRING(50),
       allowNull: false,
     },
-    email: {
+    [EAccountFieldName.EMAIL]: {
       type: new DataTypes.STRING(100),
       allowNull: false,
     },
-    avatar: {
+    [EAccountFieldName.AVATAR]: {
       type: new DataTypes.STRING(100),
       allowNull: false,
     },
-    password: {
+    [EAccountFieldName.PASSWORD]: {
       type: new DataTypes.CHAR(255),
       allowNull: false,
     },
   }, {
     sequelize,
-    modelName: `accounts`,
+    modelName: EModelName.ACCOUNTS,
     timestamp: true,
     paranoid: true,
   });
   return Account;
+};
+
+module.exports = {
+  getAccountModel,
+  EAccountFieldName,
 };

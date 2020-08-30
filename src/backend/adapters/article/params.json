@@ -3,8 +3,7 @@
     "title",
     "image",
     "announce",
-    "fullText",
-    "createdDate",
+    "text",
     "categories"
   ],
   "responsePropertyList": [
@@ -12,9 +11,8 @@
     "title",
     "image",
     "announce",
-    "fullText",
-    "createdDate",
-    "categories",
-    "comments"
+    "text",
+    "date",
+    "categories"
   ]
 }

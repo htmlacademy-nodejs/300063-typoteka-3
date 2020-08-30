@@ -2,11 +2,12 @@
 
 const HttpCodes = require(`http-status-codes`);
 
-const {categoryAdapter} = require(`../../../adapters`);
+const {db} = require(`../../../db`);
 const {logger} = require(`../../../utils`);
 
 
 module.exports = async (req, res) => {
-  res.status(HttpCodes.OK).send(categoryAdapter.getList());
+  const categories = await db.Category.findAll();
+  res.status(HttpCodes.OK).send(categories);
   logger.endRequest(req, res);
 };

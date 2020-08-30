@@ -3,7 +3,7 @@
 const HttpCodes = require(`http-status-codes`);
 const request = require(`supertest`);
 
-const server = require(`../../../index`);
+const apiServer = require(`../../../index`);
 const {commentParams} = require(`../../../../adapters`);
 
 
@@ -13,9 +13,8 @@ const articleData = {
   title: `Обзор новейшего смартфона`,
   image: `123.png`,
   announce: `Золотое сечение — соотношение двух величин, гармоническая пропорция.`,
-  fullText: `Вы можете достичь всего. Стоит только немного постараться и запастись книгами. Это один из лучших рок-музыкантов. Собрать камни бесконечности легко, если вы прирожденный герой.`,
-  createdDate: `2020-01-23 03:27:49`,
-  categories: [`Разное`],
+  text: `Вы можете достичь всего. Стоит только немного постараться и запастись книгами. Это один из лучших рок-музыкантов. Собрать камни бесконечности легко, если вы прирожденный герой.`,
+  categories: [1, 2, 3],
 };
 
 const commentData = {
@@ -25,14 +24,20 @@ const commentData = {
 
 describe(`Article comments API end-points`, () => {
   let article = null;
+  let server = null;
 
-  beforeEach(async () => {
-    const createArticleResponse = await request(server).post(pathToArticles).send(articleData);
-    article = createArticleResponse.body;
+  beforeAll(async () => {
+    server = await apiServer.getInstance();
   });
 
-  afterEach(async () => {
-    await request(server).delete(`${pathToArticles}/${article.id}`);
+  beforeEach(async () => {
+    const articleRes = await request(server).post(pathToArticles).send(articleData);
+    article = articleRes.body;
+  });
+
+  afterAll(async () => {
+    await apiServer.close();
+    server = null;
   });
 
   test(`When GET article comment list status code should be ${HttpCodes.OK}`, async () => {
@@ -58,7 +63,7 @@ describe(`Article comments API end-points`, () => {
     expect(putArticleResponse.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 
-  test.each(commentParams.responsePropertyList)(`When POST article comment should have %p property`, async (property) => {
+  test.each([`id`, `text`])(`When POST article comment should have %p property`, async (property) => {
     const putArticleResponse = await request(server).post(`${pathToArticles}/${article.id}/comments`).send(commentData);
     expect(putArticleResponse.body).toHaveProperty(property);
   });

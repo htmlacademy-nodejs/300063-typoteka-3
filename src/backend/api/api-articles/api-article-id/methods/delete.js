@@ -2,18 +2,20 @@
 
 const HttpCodes = require(`http-status-codes`);
 
-const {articleAdapter} = require(`../../../../adapters`);
+const {db} = require(`../../../../db`);
 const {logger} = require(`../../../../utils`);
 
 
 module.exports = async (req, res) => {
-  const result = articleAdapter.removeItemById(req.params.articleId);
-  if (result === null) {
-    res.status(HttpCodes.BAD_REQUEST).send({message: `Article with ${req.params.articleId} id isn't exist`});
-    logger.endRequest(req, res);
+  const articleDeletedCount = await db.Article.destroy({
+    where: {
+      id: req.params.articleId,
+    },
+  });
+  if (articleDeletedCount > 0) {
+    res.status(HttpCodes.NO_CONTENT).send();
   } else {
-    res.status(HttpCodes.NO_CONTENT).send(result);
-    logger.endRequest(req, res);
+    res.status(HttpCodes.BAD_REQUEST).send({message: `Article with ${req.params.articleId} id isn't exist`});
   }
-
+  logger.endRequest(req, res);
 };

@@ -1,21 +1,31 @@
 'use strict';
 
-module.exports = (sequelize, DataTypes) => {
+const {EModelName} = require(`./name-space`);
+
+
+const ECommentFieldName = {
+  ID: `id`,
+  TEXT: `text`,
+  DATE: `createdAt`,
+};
+
+const getCommentModel = (sequelize, DataTypes) => {
   class Comment extends sequelize.Sequelize.Model {}
   Comment.init({
-    text: {
+    [ECommentFieldName.TEXT]: {
       type: DataTypes.TEXT,
-      allowNull: false,
-    },
-    date: {
-      type: DataTypes.DATE,
       allowNull: false,
     },
   }, {
     sequelize,
-    modelName: `comments`,
+    modelName: EModelName.COMMENTS,
     timestamp: true,
     paranoid: true,
   });
   return Comment;
+};
+
+module.exports = {
+  getCommentModel,
+  ECommentFieldName,
 };

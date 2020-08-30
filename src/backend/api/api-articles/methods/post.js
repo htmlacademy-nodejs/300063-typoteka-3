@@ -2,18 +2,34 @@
 
 const HttpCodes = require(`http-status-codes`);
 
-const {articleAdapter, articleValidator} = require(`../../../adapters`);
+const {db} = require(`../../../db`);
+const {EArticleFieldName, ECategoryFieldName} = require(`../../../models`);
 const {logger} = require(`../../../utils`);
 
 
+const createArticle = async (params) => {
+  const {title, announce, text, image, categories} = params;
+  const article = await db.Article.create({
+    title,
+    announce,
+    text,
+    image,
+  });
+  await article.addCategories(categories);
+  const articleCategories = await article.getCategories({raw: true});
+  return {
+    id: article[EArticleFieldName.ID],
+    title: article[EArticleFieldName.TITLE],
+    announce: article[EArticleFieldName.ANNOUNCE],
+    text: article[EArticleFieldName.TEXT],
+    image: article[EArticleFieldName.IMAGE],
+    date: article[EArticleFieldName.DATE],
+    categories: articleCategories.map((category) => category[ECategoryFieldName.TITLE])
+  };
+};
+
 module.exports = async (req, res) => {
-  const validator = articleValidator.checkRequestField(req);
-  if (validator.extra.length !== 0 || validator.required.length !== 0) {
-    res.status(HttpCodes.BAD_REQUEST).send({error: validator});
-    logger.endRequest(req, res);
-  } else {
-    const article = await articleAdapter.addItem(req.body);
-    res.status(HttpCodes.CREATED).send(article);
-    logger.endRequest(req, res);
-  }
+  const article = await createArticle(req.body);
+  res.status(HttpCodes.CREATED).send(article);
+  logger.endRequest(req, res);
 };

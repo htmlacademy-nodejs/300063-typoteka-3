@@ -3,7 +3,7 @@
 const HttpCodes = require(`http-status-codes`);
 const request = require(`supertest`);
 
-const server = require(`../../../../index`);
+const apiServer = require(`../../../../index`);
 
 
 const pathToArticles = `/api/articles`;
@@ -12,9 +12,8 @@ const articleData = {
   title: `Обзор новейшего смартфона`,
   image: `123.png`,
   announce: `Золотое сечение — соотношение двух величин, гармоническая пропорция.`,
-  fullText: `Вы можете достичь всего. Стоит только немного постараться и запастись книгами. Это один из лучших рок-музыкантов. Собрать камни бесконечности легко, если вы прирожденный герой.`,
-  createdDate: `2020-01-23 03:27:49`,
-  categories: [`Разное`],
+  text: `Вы можете достичь всего. Стоит только немного постараться и запастись книгами. Это один из лучших рок-музыкантов. Собрать камни бесконечности легко, если вы прирожденный герой.`,
+  categories: [1, 2, 3],
 };
 
 const commentData = {
@@ -24,6 +23,11 @@ const commentData = {
 describe(`Article comments API end-points`, () => {
   let article = null;
   let comment = null;
+  let server = null;
+
+  beforeAll(async () => {
+    server = await apiServer.getInstance();
+  });
 
   beforeEach(async () => {
     const createArticleResponse = await request(server).post(pathToArticles).send(articleData);
@@ -32,8 +36,9 @@ describe(`Article comments API end-points`, () => {
     comment = createCommentResponse.body;
   });
 
-  afterEach(async () => {
-    await request(server).delete(`${pathToArticles}/${article.id}`);
+  afterAll(async () => {
+    await apiServer.close();
+    server = null;
   });
 
   test(`When DELETE article comment by ID status code should be ${HttpCodes.NO_CONTENT}`, async () => {
