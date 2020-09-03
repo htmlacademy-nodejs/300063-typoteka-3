@@ -6,11 +6,20 @@ const dateFormat = require(`dateformat`);
 const chalk = require(`chalk`);
 
 const {getNumbersDayInMilliseconds, getRandomInt, shuffle} = require(`backend/utils`);
-const {params} = require(`common`);
+const {
+  generate,
+  ExitCode,
+  FILE_TITLES_PATH,
+  FILE_TEXTS_PATH,
+  FILE_CATEGORIES_PATH,
+  FILE_COMMENTS_PATH,
+  MOCK_FILE_NAME
+} = require(`common/params`);
 
 
 const currentDate = Number(new Date());
-const maxPublishedDaysAgoInMilliseconds = getNumbersDayInMilliseconds(params.generate.OLDEST_PUBLICATION_COUNT_DAY);
+const maxPublishedDaysAgoInMilliseconds = getNumbersDayInMilliseconds(generate.OLDEST_PUBLICATION_COUNT_DAY);
+
 
 const getDatePublication = () => {
   const publishedMillisecondsAgo = getRandomInt(0, maxPublishedDaysAgoInMilliseconds);
@@ -36,13 +45,13 @@ const generateArticles = (count, titles, texts, categories, comments) => (
 );
 
 const showErrorIfCountIsNotCorrect = (count) => {
-  if (count < params.generate.Count.MIN) {
-    console.error(chalk.red(`Generating count can't be less then '${params.generate.Count.MIN}'`));
-    process.exit(params.ExitCodes.ERROR);
+  if (count < generate.Count.MIN) {
+    console.error(chalk.red(`Generating count can't be less then '${generate.Count.MIN}'`));
+    process.exit(ExitCode.ERROR);
   }
-  if (count > params.generate.Count.MAX) {
-    console.error(chalk.red(`Generating count can't be more then '${params.generate.Count.MAX}'`));
-    process.exit(params.ExitCodes.ERROR);
+  if (count > generate.Count.MAX) {
+    console.error(chalk.red(`Generating count can't be more then '${generate.Count.MAX}'`));
+    process.exit(ExitCode.ERROR);
   }
 };
 
@@ -60,15 +69,15 @@ module.exports = {
   name: `--generate`,
   alias: `-g`,
   async run(argv) {
-    const count = Number(argv) || params.generate.Count.DEFAULT;
+    const count = Number(argv) || generate.Count.DEFAULT;
     showErrorIfCountIsNotCorrect(count);
-    const TITLES = await readFile(params.DEFAULT_FILE_TITLES_PATH);
-    const TEXTS = await readFile(params.DEFAULT_FILE_TEXTS_PATH);
-    const CATEGORIES = await readFile(params.DEFAULT_FILE_CATEGORIES_PATH);
-    const COMMENTS = await readFile(params.DEFAULT_FILE_COMMENTS_PATH);
+    const TITLES = await readFile(FILE_TITLES_PATH);
+    const TEXTS = await readFile(FILE_TEXTS_PATH);
+    const CATEGORIES = await readFile(FILE_CATEGORIES_PATH);
+    const COMMENTS = await readFile(FILE_COMMENTS_PATH);
     const content = JSON.stringify(generateArticles(count, TITLES, TEXTS, CATEGORIES, COMMENTS));
     try {
-      await fs.writeFile(params.DEFAULT_MOCK_FILE_NAME, content);
+      await fs.writeFile(MOCK_FILE_NAME, content);
       console.info(chalk.green(`Operation success. File created.`));
     } catch (error) {
       console.error(chalk.red(`Can't write data to file...`));

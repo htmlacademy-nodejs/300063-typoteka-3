@@ -3,10 +3,10 @@
 const chalk = require(`chalk`);
 
 const {Cli} = require(`backend/cli`);
-const {params} = require(`common`);
+const {ExitCode, USER_ARGV_INDEX, DEFAULT_COMMAND_FOR_BACKEND_CLI} = require(`common/params`);
 
 
-const userInputList = process.argv.slice(params.DEFAULT_USER_ARGV_INDEX);
+const userInputList = process.argv.slice(USER_ARGV_INDEX);
 
 const checkToBeCommandOrAlias = (userInput) => {
   const isCommand = userInput.search(`--`) === 0;
@@ -21,7 +21,7 @@ const formAnArrayOfCommands = () => {
 
     if (!hasCliCommand && isCommandOrAlias) {
       console.error(chalk.red(`Command ${userInput} doesn't exist`));
-      process.exit(params.ExitCodes.ERROR);
+      process.exit(ExitCode.ERROR);
     } else if (hasCliCommand) {
       commandList.push({
         name: userInput,
@@ -33,7 +33,7 @@ const formAnArrayOfCommands = () => {
       commandList = [...commandList, lastCommandListItem];
     } else {
       console.error(chalk.red(`Commands need start with "--" or "-"`));
-      process.exit(params.ExitCodes.ERROR);
+      process.exit(ExitCode.ERROR);
     }
     return commandList;
   }, []);
@@ -43,7 +43,7 @@ const runUserCommands = () => {
   const commandList = formAnArrayOfCommands();
   commandList.forEach((command) => Cli[command.name].run(...command.arguments));
   if (commandList.length === 0) {
-    Cli[params.DEFAULT_COMMAND_FOR_BACKEND_CLI].run();
+    Cli[DEFAULT_COMMAND_FOR_BACKEND_CLI].run();
   }
 };
 

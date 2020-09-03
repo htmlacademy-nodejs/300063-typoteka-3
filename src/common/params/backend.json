@@ -1,9 +1,8 @@
 {
-  "DEFAULT_MOCK_FILE_NAME": "mock.json",
-  "DEFAULT_COMMAND_FOR_BACKEND_CLI": "--help",
-  "DEFAULT_USER_ARGV_INDEX": 2,
+  "MOCK_FILE_NAME": "mock.json",
+  "COMMAND_FOR_BACKEND_CLI": "--help",
+  "USER_ARGV_INDEX": 2,
   "generate": {
-
     "Count":{
       "DEFAULT": 1,
       "MIN": 1,
@@ -11,8 +10,8 @@
     },
     "OLDEST_PUBLICATION_COUNT_DAY": 256
   },
-  "DEFAULT_FILE_TITLES_PATH": "./data/titles.txt",
-  "DEFAULT_FILE_TEXTS_PATH": "./data/texts.txt",
-  "DEFAULT_FILE_CATEGORIES_PATH": "./data/categories.txt",
-  "DEFAULT_FILE_COMMENTS_PATH": "./data/comments.txt"
+  "FILE_TITLES_PATH": "./data/titles.txt",
+  "FILE_TEXTS_PATH": "./data/texts.txt",
+  "FILE_CATEGORIES_PATH": "./data/categories.txt",
+  "FILE_COMMENTS_PATH": "./data/comments.txt"
 }

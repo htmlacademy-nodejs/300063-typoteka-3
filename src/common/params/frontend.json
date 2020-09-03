@@ -1,5 +1,5 @@
 {
   "DEFAULT_PUBLIC_DIR": "public",
-  "DEFAULT_DIR_WITH_VIEW": "templates",
+  "DEFAULT_VIEW_DIR": "templates",
   "DEFAULT_TEMP_DIR": "temp"
 }
