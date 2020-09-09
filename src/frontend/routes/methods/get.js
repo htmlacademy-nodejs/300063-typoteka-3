@@ -6,6 +6,7 @@ const {accountAdapter, articleAdapter} = require(`../../adapters`);
 
 module.exports = async (req, res) => {
   const articleList = await articleAdapter.getList();
+  console.log(articleList);
   const content = {
     title: `Типотека`,
     hiddenTitle: ` Главная страница личного блога Типотека`,
@@ -16,6 +17,7 @@ module.exports = async (req, res) => {
     hasHot: true,
     hasLastComments: true,
   };
+  console.log(content);
   res.render(`pages/main`, content);
   logger.endRequest(req, res);
 };

@@ -7,7 +7,7 @@ const {logger} = require(`../../../../utils`);
 
 
 module.exports = async (req, res) => {
-  const categoryList = await categoryAdapter.getList();
+  const categories = await categoryAdapter.getList();
   let article = await articleAdapter.getItemById(req.params.id);
   if (article.statusCode >= HttpCodes.BAD_REQUEST) {
     res.status(article.statusCode).send();
@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
     type: `edit`,
     article,
     account: accountAdapter.getAuth(),
-    categoryList,
+    categories,
     scriptList: [
       `js/vendor.js`,
       `js/main.js`

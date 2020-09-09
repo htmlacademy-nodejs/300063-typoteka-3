@@ -29,7 +29,7 @@ describe(`Articles API end-points`, () => {
     server = null;
   });
 
-  test(`When GET article list status code should be ${HttpCodes.OK}`, async () => {
+  test.only(`When GET article list status code should be ${HttpCodes.OK}`, async () => {
     const res = await request(server).get(pathToArticles);
     expect(res.statusCode).toBe(HttpCodes.OK);
   });

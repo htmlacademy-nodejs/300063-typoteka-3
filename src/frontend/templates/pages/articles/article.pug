@@ -16,10 +16,9 @@ block content
 
           if article.image
             .post__picture
-              img(src= `img/${article.image.fileName}` alt= article.image.alt)
+              img(src= article.image)
           .post__text
-            h3= article.subTitle
-            each paragraph in article.text
-              p= paragraph
+            h3= article.announce
+            p= article.text
 
       include ../../common/comments

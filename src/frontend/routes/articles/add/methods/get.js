@@ -13,12 +13,12 @@ const getArticle = (article) => {
 };
 
 module.exports = async (req, res) => {
-  const categoryList = await categoryAdapter.getList();
+  const categories = await categoryAdapter.getList();
   const content = {
     type: `add`,
     article: getArticle(req.body),
     account: accountAdapter.getAuth(),
-    categoryList,
+    categories,
     scriptList: [
       `js/vendor.js`,
       `js/main.js`

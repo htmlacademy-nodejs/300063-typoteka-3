@@ -1,5 +1,6 @@
 {
   "DEFAULT_PUBLIC_DIR": "public",
   "DEFAULT_VIEW_DIR": "templates",
-  "DEFAULT_TEMP_DIR": "temp"
+  "DEFAULT_TEMP_DIR": "temp",
+  "ONE_PAGE_LIMIT": 8
 }

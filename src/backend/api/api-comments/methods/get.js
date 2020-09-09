@@ -2,17 +2,17 @@
 
 const HttpCodes = require(`http-status-codes`);
 
-const {db} = require(`../../../../../db`);
+const {db} = require(`../../../db`);
 const {
-  EModelName,
   EAccountFieldName,
-  ECommentFieldName,
   EAccountTypeFieldName,
-} = require(`../../../../../models`);
-const {deletedAccount} = require(`../../../../../placeholders`);
-const {logger} = require(`../../../../../utils`);
+  ECommentFieldName,
+  EModelName,
+} = require(`../../../models`);
+const deletedAccount = require(`../../../placeholders`);
 
-const getCommentsByArticle = async (articleId) => {
+
+const getComments = async () => {
   const comments = await db.Comment.findAll({
     attributes: [
       ECommentFieldName.ID,
@@ -35,9 +35,6 @@ const getCommentsByArticle = async (articleId) => {
         attributes: [EAccountTypeFieldName.TITLE],
       },
     }],
-    where: {
-      articleId,
-    },
   });
   return comments.map((comment) => {
     let account = deletedAccount;
@@ -61,14 +58,7 @@ const getCommentsByArticle = async (articleId) => {
   });
 };
 
-
 module.exports = async (req, res) => {
-  const article = await db.Article.findByPk(req.params.articleId);
-  if (!article) {
-    res.status(HttpCodes.BAD_REQUEST).send(`Article with ${req.params.articleId} ID isn't exist`);
-  } else {
-    const comments = await getCommentsByArticle(req.params.articleId);
-    res.status(HttpCodes.OK).send(comments);
-  }
-  logger.endRequest(req, res);
+  const comments = await getComments();
+  res.status(HttpCodes.OK).send(comments);
 };
