@@ -16,7 +16,7 @@ block content
 
           if article.image
             .post__picture
-              img(src= article.image)
+              img(src=`img/${article.image}`)
           .post__text
             h3= article.announce
             p= article.text

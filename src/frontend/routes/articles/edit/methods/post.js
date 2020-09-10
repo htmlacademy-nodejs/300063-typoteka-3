@@ -29,7 +29,7 @@ const updateArticleItemAndRedirect = async (req, res) => {
   }
   const articleParams = {
     ...req.body,
-    createdDate: transformDate(req.body.createdDate),
+    createdAt: transformDate(req.body.date),
   };
   const articleResponse = await articleAdapter.updateItemById(req.params.id, articleParams);
   if (articleResponse.error) {

@@ -27,7 +27,7 @@ const addArticleItemAndRedirectToMyArticles = async (req, res) => {
   }
   const articleParams = {
     ...req.body,
-    createdDate: transformDate(req.body.createdDate),
+    createdAt: transformDate(req.body.date),
   };
   const articleRes = await articleAdapter.addItem(articleParams);
   if (articleRes.content && articleRes.content.error) {
