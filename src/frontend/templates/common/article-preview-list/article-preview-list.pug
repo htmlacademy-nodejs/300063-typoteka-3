@@ -18,5 +18,6 @@ section.main-page__list.preview
           span.preview__cloud
           |
           b.preview__comment-count  #{article.commentCount}
-
-  include ../pagination
+  .preview__toggle-wrapper
+    if paginator.end > 1
+      include ../pagination
