@@ -9,7 +9,9 @@ const {logger} = require(`../../../../utils`);
 
 module.exports = async (req, res) => {
   const {title, announce, text, image, createdAt, categories} = req.body;
-  const article = await db.Article.findByPk(req.params.articleId, {
+  const {articleId} = req.params;
+
+  const article = await db.Article.findByPk(articleId, {
     attributes: [
       EArticleFieldName.ID,
       EArticleFieldName.TITLE,

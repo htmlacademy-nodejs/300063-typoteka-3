@@ -4,9 +4,9 @@ const HttpCodes = require(`http-status-codes`);
 
 
 module.exports = (schema) => async (req, res, next) => {
-  const {body} = req;
+  const {params} = req;
   try {
-    await schema.validateAsync(body, {abortEarly: false});
+    await schema.validateAsync(params, {abortEarly: false});
   } catch (error) {
     const {details} = error;
     res.status(HttpCodes.BAD_REQUEST).json({

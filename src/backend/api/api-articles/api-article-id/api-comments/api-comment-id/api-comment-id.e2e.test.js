@@ -58,4 +58,14 @@ describe(`Article comments API end-points`, () => {
     const res = await request(server).delete(`${pathToArticles}/${article.id}/comments/${comment.id}`);
     expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
+
+  test(`When DELETE comment when commentId is not number status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    const res = await request(server).delete(`${pathToArticles}/${article.id}/comments/not-number`);
+    expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+  });
+
+  test(`When DELETE comment when commentId is number status code should be ${HttpCodes.NO_CONTENT}`, async () => {
+    const res = await request(server).delete(`${pathToArticles}/${article.id}/comments/${comment.id}`);
+    expect(res.statusCode).toBe(HttpCodes.NO_CONTENT);
+  });
 });

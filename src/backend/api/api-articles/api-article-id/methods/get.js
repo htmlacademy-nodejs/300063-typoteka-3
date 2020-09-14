@@ -8,7 +8,8 @@ const {logger} = require(`../../../../utils`);
 
 
 module.exports = async (req, res) => {
-  const article = await db.Article.findByPk(req.params.articleId, {
+  const {articleId} = req.params;
+  const article = await db.Article.findByPk(articleId, {
     group: [
       [EModelName.ARTICLES, EArticleFieldName.ID].join(`.`),
       [EModelName.CATEGORIES, EModelName.ARTICLE_CATEGORY, EForeignKey.ARTICLE_ID].join(`.`),

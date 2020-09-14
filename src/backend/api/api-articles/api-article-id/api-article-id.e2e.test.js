@@ -199,4 +199,34 @@ describe(`Article ID API end-points`, () => {
     const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
     expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
+
+  test(`When GET article when articleId is not number status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    const res = await request(server).get(`${pathToArticles}/not-number`).send(newArticleData);
+    expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+  });
+
+  test(`When GET article when articleId is number status code should be ${HttpCodes.OK}`, async () => {
+    const res = await request(server).get(`${pathToArticles}/${article.id}`).send(newArticleData);
+    expect(res.statusCode).toBe(HttpCodes.OK);
+  });
+
+  test(`When DELETE article when articleId is not number status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    const removeArticleResponse = await request(server).delete(`${pathToArticles}/not-number`);
+    expect(removeArticleResponse.statusCode).toBe(HttpCodes.BAD_REQUEST);
+  });
+
+  test(`When DELETE article when articleId is number status code should be ${HttpCodes.NO_CONTENT}`, async () => {
+    const removeArticleResponse = await request(server).delete(`${pathToArticles}/${article.id}`);
+    expect(removeArticleResponse.statusCode).toBe(HttpCodes.NO_CONTENT);
+  });
+
+  test(`When PUT article when articleId is not number status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    const res = await request(server).put(`${pathToArticles}/not-number`).send(newArticleData);
+    expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+  });
+
+  test(`When PUT article when articleId is number status code should be ${HttpCodes.OK}`, async () => {
+    const res = await request(server).put(`${pathToArticles}/${article.id}`).send(newArticleData);
+    expect(res.statusCode).toBe(HttpCodes.OK);
+  });
 });
