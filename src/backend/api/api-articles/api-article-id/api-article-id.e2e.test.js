@@ -77,31 +77,126 @@ describe(`Article ID API end-points`, () => {
     expect(putArticleResponse.statusCode).toBe(HttpCodes.OK);
   });
 
-  test.each([`title`, `image`, `announce`, `text`, `categories`])(`When PUT article without %p property status code should be ${HttpCodes.OK}`, async () => {
-    const articleParams = {...newArticleData};
-    const putArticleResponse = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
-    expect(putArticleResponse.statusCode).toBe(HttpCodes.OK);
+  test(`When PUT article with invalid title when length is less then 30 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    const articleParams = {
+      title: new Array(29).fill(`i`).join(``),
+    };
+    const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+    expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 
-  test.each( [`id`, `title`, `image`, `announce`, `text`, `date`, `categories`])(`When PUT article should has %p property`, async (property) => {
-    const articleParams = {...newArticleData};
-    const putArticleResponse = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
-    expect(putArticleResponse.body).toHaveProperty(property);
+  test(`When PUT article with valid title when length is equal 30 status code should be ${HttpCodes.OK}`, async () => {
+    const articleParams = {
+      title: new Array(30).fill(`i`).join(``),
+    };
+    const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+    expect(res.statusCode).toBe(HttpCodes.OK);
   });
 
-  test.each([`title`, `image`, `announce`, `text`])(`When PUT article should has transmitted value for %p property`, async (property) => {
-    const articleParams = {...newArticleData};
-    const putArticleResponse = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
-    expect(putArticleResponse.body[property]).toEqual(newArticleData[property]);
+  test(`When PUT article with invalid title when length is great then 250 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    const articleParams = {
+      title: new Array(251).fill(`i`).join(``),
+    };
+    const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+    expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 
-  test(`When PUT article should has transmitted value for "categories" property`, async () => {
-    const articleParams = {...newArticleData};
-    const putArticleResponse = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
-    const categoriesRes = await request(server).get(pathToCategories).send();
-    const categories = categoriesRes.body
-      .filter((category) => putArticleResponse.body.categories.includes(category.title))
-      .map((category) => category.title);
-    expect(putArticleResponse.body.categories).toEqual(categories);
-  })
+  test(`When PUT article with valid title when length is equal 250 status code should be ${HttpCodes.OK}`, async () => {
+    const articleParams = {
+      title: new Array(250).fill(`i`).join(``),
+    };
+    const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+    expect(res.statusCode).toBe(HttpCodes.OK);
+  });
+
+  test(`When PUT article with invalid announce when length is less then 30 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    const articleParams = {
+      announce: new Array(29).fill(`i`).join(``),
+    };
+    const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+    expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+  });
+
+  test(`When PUT article with valid announce when length is equal 30 status code should be ${HttpCodes.OK}`, async () => {
+    const articleParams = {
+      announce: new Array(30).fill(`i`).join(``),
+    };
+    const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+    expect(res.statusCode).toBe(HttpCodes.OK);
+  });
+
+  test(`When PUT article with invalid announce when length is great then 250 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    const articleParams = {
+      announce: new Array(251).fill(`i`).join(``),
+    };
+    const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+    expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+  });
+
+  test(`When PUT article with valid announce when length is equal 250 status code should be ${HttpCodes.OK}`, async () => {
+    const articleParams = {
+      announce: new Array(250).fill(`i`).join(``),
+    };
+    const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+    expect(res.statusCode).toBe(HttpCodes.OK);
+  });
+
+  test(`When PUT article with invalid text when length is great then 1000 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    const articleParams = {
+      text: new Array(1001).fill(`i`).join(``),
+    };
+    const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+    expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+  });
+
+  test(`When PUT article with valid text when length is equal 1000 status code should be ${HttpCodes.OK}`, async () => {
+    const articleParams = {
+      text: new Array(1000).fill(`i`).join(``),
+    };
+    const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+    expect(res.statusCode).toBe(HttpCodes.OK);
+  });
+
+  test(`When PUT article with valid image extension status code should be ${HttpCodes.OK}`, async () => {
+    const articleParams = {
+      image: `123.png`,
+    };
+    const resWithPng = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+    expect(resWithPng.statusCode).toBe(HttpCodes.OK);
+    articleParams.image = `123.jpg`;
+    const resWithJpg = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+    expect(resWithJpg.statusCode).toBe(HttpCodes.OK);
+  });
+
+  test(`When PUT article with invalid image extension status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    const articleParams = {
+      image: `123.pmng`,
+    };
+    const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+    expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+  });
+
+  test(`When PUT article with invalid createdAt format status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    const articleParams = {
+      createdAt: `10-09-2020`,
+    };
+    const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+    expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+  });
+
+  test(`When PUT article with categories length equal 0 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    const articleParams = {
+      categories: [],
+    };
+    const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+    expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+  });
+
+  test(`When PUT article with not exist property status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    const articleParams = {
+      test: `test`,
+    };
+    const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+    expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+  });
 });
