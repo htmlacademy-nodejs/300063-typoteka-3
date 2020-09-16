@@ -9,29 +9,27 @@ const {logger} = require(`../../../../utils`);
 const saveCategory = async (req, res) => {
   const {categoryId} = req.params;
   const {title} = req.body;
-  const updatedCategoryRes = await categoryAdapter.updateItem({
-    id: categoryId,
+  const categoryParams = {
+    id: +categoryId,
     title,
-  });
+  };
+  const updatedCategoryRes = await categoryAdapter.updateItem(categoryParams);
+
+  let path = `/categories`;
   if (updatedCategoryRes.content && updatedCategoryRes.content.errorMessages) {
-    //
-    // @TODO сохранять состояние через сессии или JWT
-    //
-    // req.locals = {
-    //   errorMessages: {
-    //     [categoryId]: updatedCategoryRes.content.errorMessages
-    //   }
-    // };
-    res.redirect(`/categories`);
+    const queryParams = {
+      updatedCategory: categoryParams,
+      errorMessages: updatedCategoryRes.content.errorMessages,
+    };
+    const query = encodeURIComponent(JSON.stringify(queryParams));
+    path = `/categories?params=${query}`;
   }
+  res.redirect(path);
 };
 
 const deleteCategory = async (req, res) => {
   const {categoryId} = req.params;
   await categoryAdapter.deleteItem(categoryId);
-  //
-  // @TODO добавить обработку ошибок
-  //
   res.redirect(`/categories`);
 };
 
@@ -47,6 +45,5 @@ module.exports = async (req, res) => {
   } else {
     action(req, res);
   }
-  // res.status(HttpCodes.OK).send(categoryId);
   logger.endRequest(req, res);
 };
