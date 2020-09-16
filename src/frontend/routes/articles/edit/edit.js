@@ -8,7 +8,7 @@ const {getEditArticlePage, postEditArticlePage} = require(`./methods`);
 
 const editRoute = new Router();
 
-editRoute.get(`/:id`, getEditArticlePage);
-editRoute.post(`/:id`, upload(`picture`), postEditArticlePage);
+editRoute.get(`/:articleId`, getEditArticlePage);
+editRoute.post(`/:articleId`, upload(`picture`), postEditArticlePage);
 
 module.exports = editRoute;

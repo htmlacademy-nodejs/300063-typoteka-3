@@ -8,7 +8,7 @@ const {logger} = require(`../../../../utils`);
 
 
 module.exports = async (req, res) => {
-  const {title, announce, text, image, createdAt, categories} = req.body;
+  const {title, announce, text, image, date, categories} = req.body;
   const {articleId} = req.params;
 
   const article = await db.Article.findByPk(articleId, {
@@ -25,7 +25,7 @@ module.exports = async (req, res) => {
   article[EArticleFieldName.ANNOUNCE] = announce || article[EArticleFieldName.ANNOUNCE];
   article[EArticleFieldName.TEXT] = text || article[EArticleFieldName.TEXT];
   article[EArticleFieldName.IMAGE] = image || article[EArticleFieldName.IMAGE];
-  article[EArticleFieldName.DATE] = createdAt || article[EArticleFieldName.DATE];
+  article[EArticleFieldName.DATE] = date || article[EArticleFieldName.DATE];
   await article.save();
   await article.removeCategories(article.Categories);
   await article.addCategories(categories);
@@ -36,7 +36,7 @@ module.exports = async (req, res) => {
     [EArticleFieldName.ANNOUNCE]: article[EArticleFieldName.ANNOUNCE],
     [EArticleFieldName.TEXT]: article[EArticleFieldName.TEXT],
     [EArticleFieldName.IMAGE]: article[EArticleFieldName.IMAGE],
-    date: article[EArticleFieldName.DATE],
+    [EArticleFieldName.DATE]: article[EArticleFieldName.DATE],
     categories: categoryList.map((category) => category[ECategoryFieldName.TITLE]),
   };
   res.status(HttpCodes.OK).send(updatedArticle);

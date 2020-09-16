@@ -21,6 +21,11 @@ class CommentAdapter {
     }));
   }
 
+  addItem(params) {
+    const {articleId, text} = params;
+    return request.post(`articles/${articleId}/comments`, {text});
+  }
+
   // _adaptComment(comment, index, articleTitle) {
   //   const imageIndex = (index % 5) + 1;
   //   return {

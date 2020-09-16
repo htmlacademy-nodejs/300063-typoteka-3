@@ -8,13 +8,13 @@ const {logger} = require(`../../../utils`);
 
 
 const createArticle = async (params) => {
-  const {title, announce, text, image, categories, createdAt} = params;
+  const {title, announce, text, image, categories, date} = params;
   const article = await db.Article.create({
     title,
     announce,
     text,
     image,
-    createdAt,
+    date,
   });
   await article.addCategories(categories);
   const articleCategories = await article.getCategories({raw: true});

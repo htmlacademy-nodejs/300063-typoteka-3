@@ -10,7 +10,8 @@ module.exports = Joi.object({
     .max(1000)
     .required()
     .messages({
-      'string.max': schemaMessages.Article.MAX_TEXT_LENGTH,
-      'any.required': schemaMessages.Common.EMPTY_VALUE,
+      'string.max': schemaMessages.Comment.MAX_TEXT_LENGTH,
+      'any.required': schemaMessages.Comment.REQUIRED_FIELD,
+      'string.empty': schemaMessages.Comment.REQUIRED_FIELD,
     }),
 });

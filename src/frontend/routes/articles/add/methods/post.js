@@ -19,19 +19,21 @@ const setFileName = async (req, res) => {
 };
 
 const addArticleItemAndRedirectToMyArticles = async (req, res) => {
-  if (!req.body.categories) {
-    req.body.categories = [];
-  }
-  if (Object.keys(req.body.categories).length !== 0) {
-    req.body.categories = Object.keys(req.body.categories);
-  }
-  const articleParams = {
-    ...req.body,
-    createdAt: transformDate(req.body.date),
-  };
-  const articleRes = await articleAdapter.addItem(articleParams);
-  if (articleRes.content && articleRes.content.error) {
+  const {date, title, announce, text, categories, image} = req.body;
+  const articleRes = await articleAdapter.addItem({
+    title,
+    announce,
+    text,
+    categories,
+    image,
+    date: transformDate(date),
+  });
+  if (articleRes.content && articleRes.content.errorMessages) {
     logger.endRequest(req, articleRes);
+    req.locals = {
+      article: req.body,
+      errorMessages: articleRes.content.errorMessages,
+    };
     await getAddArticlePage(req, res);
   } else {
     res.redirect(`/my`);

@@ -7,7 +7,7 @@ const getEditArticlePage = require(`./get`);
 
 const setFileName = async (req, res) => {
   if (!req.file) {
-    const currentArticleResponse = await articleAdapter.getItemById(req.params.id);
+    const currentArticleResponse = await articleAdapter.getItemById(req.params.articleId);
     req.body.image = req.body.image || currentArticleResponse.image;
     return;
   }
@@ -21,22 +21,29 @@ const setFileName = async (req, res) => {
 };
 
 const updateArticleItemAndRedirect = async (req, res) => {
-  if (!req.body.categories) {
-    req.body.categories = [];
-  }
-  if (Object.keys(req.body.categories).length !== 0) {
-    req.body.categories = Object.keys(req.body.categories);
-  }
-  const articleParams = {
-    ...req.body,
-    createdAt: transformDate(req.body.date),
-  };
-  const articleResponse = await articleAdapter.updateItemById(req.params.id, articleParams);
-  if (articleResponse.error) {
-    logger.endRequest(req, articleResponse);
+  const {date, title, announce, text, image} = req.body;
+  const categories = req.body.categories && req.body.categories.map((category) => +category);
+  const {articleId} = req.params;
+  const articleRes = await articleAdapter.updateItemById(articleId, {
+    title,
+    announce,
+    text,
+    categories,
+    image,
+    date: transformDate(date),
+  });
+  if (articleRes.content && articleRes.content.errorMessages) {
+    logger.endRequest(req, articleRes);
+    req.locals = {
+      article: {
+        ...req.body,
+        id: articleId,
+      },
+      errorMessages: articleRes.content.errorMessages,
+    };
     await getEditArticlePage(req, res);
   } else {
-    res.redirect(`/articles/${req.params.id}`);
+    res.redirect(`/my`);
   }
 };
 

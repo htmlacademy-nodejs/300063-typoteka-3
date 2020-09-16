@@ -14,7 +14,7 @@ const articleData = {
   announce: `Золотое сечение — соотношение двух величин, гармоническая пропорция.`,
   text: `Вы можете достичь всего. Стоит только немного постараться и запастись книгами. Это один из лучших рок-музыкантов. Собрать камни бесконечности легко, если вы прирожденный герой.`,
   categories: [1, 2, 3],
-  createdAt: `2020-09-10`,
+  date: `2020-09-10`,
 };
 
 
@@ -47,7 +47,7 @@ describe(`Articles API end-points`, () => {
     await request(server).delete(`${pathToArticles}/${res.body.id}`);
   });
 
-  test.each([`title`, `announce`, `categories`, `createdAt`])(`When POST article without %p property status code should be ${HttpCodes.BAD_REQUEST}`, async (property) => {
+  test.each([`title`, `announce`, `categories`, `date`])(`When POST article without %p property status code should be ${HttpCodes.BAD_REQUEST}`, async (property) => {
     const article = {...articleData};
     delete article[property];
     const res = await request(server).post(pathToArticles).send(article);
@@ -141,9 +141,9 @@ describe(`Articles API end-points`, () => {
     expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 
-  test(`When POST article with invalid createdAt format status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+  test(`When POST article with invalid date format status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
     const article = {...articleData};
-    article.createdAt = `10-09-2020`;
+    article.date = `10-09-2020`;
     const res = await request(server).post(pathToArticles).send(article);
     expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });

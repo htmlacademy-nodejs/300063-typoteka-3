@@ -3,29 +3,33 @@
 const Joi = require(`@hapi/joi`);
 
 const {schemaMessages} = require(`../messages`);
+const {EArticleFieldName} = require(`../models`);
 
 
 module.exports = Joi.object({
-  title: Joi.string()
+  [EArticleFieldName.TITLE]: Joi.string()
     .min(30)
     .max(250)
     .required()
     .messages({
       'string.min': schemaMessages.Article.MIN_TITLE_LENGTH,
       'string.max': schemaMessages.Article.MAX_TITLE_LENGTH,
-      'any.required': schemaMessages.Common.REQUIRED_FIELD,
+      'any.required': schemaMessages.Article.TITLE_REQUIRED_FIELD,
+      'string.empty': schemaMessages.Article.TITLE_REQUIRED_FIELD,
     }),
-  announce: Joi.string()
+  [EArticleFieldName.ANNOUNCE]: Joi.string()
     .min(30)
     .max(250)
     .required()
     .messages({
       'string.min': schemaMessages.Article.MIN_ANNOUNCE_LENGTH,
       'string.max': schemaMessages.Article.MAX_ANNOUNCE_LENGTH,
-      'any.required': schemaMessages.Common.REQUIRED_FIELD,
+      'any.required': schemaMessages.Article.ANNOUNCE_REQUIRED_FIELD,
+      'string.empty': schemaMessages.Article.ANNOUNCE_REQUIRED_FIELD,
     }),
-  text: Joi.string()
+  [EArticleFieldName.TEXT]: Joi.string()
     .max(1000)
+    .allow(``)
     .messages({
       'string.max': schemaMessages.Article.MAX_TEXT_LENGTH,
     }),
@@ -35,17 +39,20 @@ module.exports = Joi.object({
     .required()
     .messages({
       'array.min': schemaMessages.Article.MIN_CATEGORY_ITEMS,
-      'any.required': schemaMessages.Common.EMPTY_VALUE,
+      'any.required': schemaMessages.Article.MIN_CATEGORY_ITEMS,
     }),
-  image: Joi.string()
+  [EArticleFieldName.IMAGE]: Joi.string()
     .pattern(/.(jpg|png)$/)
+    .allow(``)
     .messages({
       'string.pattern.name': schemaMessages.Article.IMAGE_EXTENSION,
     }),
-  createdAt: Joi.date()
+  [EArticleFieldName.DATE]: Joi.date()
     .iso()
     .required()
     .messages({
       'date.format': schemaMessages.Article.DATE_FORMAT,
+      'date.required': schemaMessages.Article.DATE_REQUIRED,
+      'date.empty': schemaMessages.Article.DATE_REQUIRED,
     }),
 });

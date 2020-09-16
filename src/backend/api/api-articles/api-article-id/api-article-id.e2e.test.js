@@ -7,7 +7,6 @@ const apiServer = require(`../../index`);
 
 
 const pathToArticles = `/api/articles`;
-const pathToCategories = `/api/categories`;
 
 const articleData = {
   title: `Обзор новейшего смартфона test`,
@@ -15,7 +14,7 @@ const articleData = {
   announce: `Золотое сечение — соотношение двух величин, гармоническая пропорция.`,
   text: `Вы можете достичь всего. Стоит только немного постараться и запастись книгами. Это один из лучших рок-музыкантов. Собрать камни бесконечности легко, если вы прирожденный герой.`,
   categories: [1, 2, 3],
-  createdAt: `2020-09-10`,
+  date: `2020-09-10`,
 };
 
 const newArticleData = {
@@ -24,7 +23,7 @@ const newArticleData = {
   announce: `Бороться с прокрастинацией несложно. Просто действуйте. Маленькими шагами.`,
   text: `Это один из лучших рок-музыкантов. Он написал больше 30 хитов. Процессор заслуживает особого внимания. Он обязательно понравится геймерам со стажем. Как начать действовать? Для начала просто соберитесь. Помните, небольшое количество ежедневных упражнений лучше, чем один раз, но много.`,
   categories: [3, 4],
-  createdAt: `2020-09-10`,
+  date: `2020-09-10`,
 };
 
 describe(`Article ID API end-points`, () => {
@@ -176,9 +175,9 @@ describe(`Article ID API end-points`, () => {
     expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 
-  test(`When PUT article with invalid createdAt format status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+  test(`When PUT article with invalid date format status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
     const articleParams = {
-      createdAt: `10-09-2020`,
+      date: `10-09-2020`,
     };
     const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
     expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);

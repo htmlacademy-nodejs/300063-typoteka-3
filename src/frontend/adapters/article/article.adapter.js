@@ -27,8 +27,8 @@ class ArticleAdapter {
     return this._adaptArticle(article);
   }
 
-  updateItemById(articleId, params) {
-    return request.put(`articles/${articleId}`, params);
+  async updateItemById(articleId, params) {
+    return await request.put(`articles/${articleId}`, params);
   }
 
   async searchByTitle(title) {

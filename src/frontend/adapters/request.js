@@ -27,14 +27,20 @@ class Request {
       .catch(this._getErrorStatus);
   }
 
-  async post(path, body) {
-    return await axios.post(`${this._url}/${path}`, body)
+  post(path, body) {
+    return axios.post(`${this._url}/${path}`, body)
       .then((res) => res.data)
       .catch(this._getErrorStatus);
   }
 
-  async put(path, body) {
-    return await axios.put(`${this._url}/${path}`, body)
+  put(path, body) {
+    return axios.put(`${this._url}/${path}`, body)
+      .then((res) => res.data)
+      .catch(this._getErrorStatus);
+  }
+
+  delete(path) {
+    return axios.delete(`${this._url}/${path}`)
       .then((res) => res.data)
       .catch(this._getErrorStatus);
   }

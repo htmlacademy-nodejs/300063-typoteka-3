@@ -8,7 +8,8 @@ module.exports = async (req, res) => {
   const categories = await categoryAdapter.getList();
   const content = {
     account: accountAdapter.getAuth(),
-    categories
+    categories,
+    errorMessages: req.locals && req.locals.errorMessages,
   };
   res.render(`pages/categories`, content);
   logger.endRequest(req, res);
