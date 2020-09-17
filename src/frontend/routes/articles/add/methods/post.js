@@ -2,42 +2,40 @@
 
 const {articleAdapter, FileAdapter} = require(`../../../../adapters`);
 const {logger, transformDate} = require(`../../../../utils`);
-const getAddArticlePage = require(`./get`);
 
 
-const setFileName = async (req, res) => {
+const setFileName = async (req) => {
   if (!req.file) {
     return;
   }
-  const fileResponse = await FileAdapter.download(req.file);
-  if (fileResponse.error) {
-    logger.endRequest(req, fileResponse);
-    await getAddArticlePage(req, res);
-  } else {
-    req.body.image = fileResponse;
-  }
+  await FileAdapter.download(req.file);
 };
 
 const addArticleItemAndRedirectToMyArticles = async (req, res) => {
-  const {date, title, announce, text, categories, image} = req.body;
-  const articleRes = await articleAdapter.addItem({
+  const {date, title, announce, categories, text, image} = req.body;
+  const articleParams = {
     title,
     announce,
     text,
-    categories,
+    categories: categories ? categories.map((category) => +category) : [],
     image,
     date: transformDate(date),
-  });
+  };
+  const articleRes = await articleAdapter.addItem(articleParams);
+  let path = `/my`;
   if (articleRes.content && articleRes.content.errorMessages) {
-    logger.endRequest(req, articleRes);
-    req.locals = {
-      article: req.body,
+    const queryParams = {
+      article: {
+        ...articleParams,
+        date,
+      },
       errorMessages: articleRes.content.errorMessages,
     };
-    await getAddArticlePage(req, res);
-  } else {
-    res.redirect(`/my`);
+    const query = encodeURIComponent(JSON.stringify(queryParams));
+    path = `/articles/add?params=${query}`;
   }
+  res.redirect(path);
+  logger.endRequest(req, res);
 };
 
 module.exports = async (req, res) => {

@@ -6,21 +6,22 @@ const {logger} = require(`../../../../utils`);
 
 module.exports = async (req, res) => {
   const categories = await categoryAdapter.getList();
+  let {article, errorMessages} = req.locals || {};
+  if (!article) {
+    article = {
+      date: dateAdapter.get(new Date().toISOString()).day,
+    };
+  }
   const content = {
     type: `add`,
-    article: req.locals ? {
-      ...req.locals.article,
-      categories: req.locals.article.categories.map((category) => +category)
-    } : {
-      date: dateAdapter.get(new Date().toISOString()).day,
-    },
+    article,
     account: accountAdapter.getAuth(),
     categories,
     scriptList: [
       `js/vendor.js`,
       `js/main.js`
     ],
-    errorMessages: req.locals && req.locals.errorMessages,
+    errorMessages,
   };
   res.render(`pages/articles/edit`, content);
   logger.endRequest(req, res);

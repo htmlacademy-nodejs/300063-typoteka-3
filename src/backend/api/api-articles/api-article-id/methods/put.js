@@ -27,7 +27,8 @@ module.exports = async (req, res) => {
   article[EArticleFieldName.IMAGE] = image || article[EArticleFieldName.IMAGE];
   article[EArticleFieldName.DATE] = date || article[EArticleFieldName.DATE];
   await article.save();
-  await article.removeCategories(article.Categories);
+  const articleCategories = await article.getCategories();
+  await article.removeCategories(articleCategories);
   await article.addCategories(categories);
   const categoryList = await article.getCategories({raw: true});
   const updatedArticle = {

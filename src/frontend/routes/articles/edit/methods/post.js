@@ -2,49 +2,43 @@
 
 const {articleAdapter, FileAdapter} = require(`../../../../adapters`);
 const {logger, transformDate} = require(`../../../../utils`);
-const getEditArticlePage = require(`./get`);
 
 
-const setFileName = async (req, res) => {
+const setFileName = async (req) => {
   if (!req.file) {
     const currentArticleResponse = await articleAdapter.getItemById(req.params.articleId);
     req.body.image = req.body.image || currentArticleResponse.image;
     return;
   }
-  const fileResponse = await FileAdapter.download(req.file);
-  if (fileResponse.error) {
-    logger.endRequest(req, fileResponse);
-    await getEditArticlePage(req, res);
-  } else {
-    req.body.image = fileResponse;
-  }
+  await FileAdapter.download(req.file);
 };
 
 const updateArticleItemAndRedirect = async (req, res) => {
-  const {date, title, announce, text, image} = req.body;
-  const categories = req.body.categories && req.body.categories.map((category) => +category);
+  const {date, title, announce, categories, text, image} = req.body;
   const {articleId} = req.params;
-  const articleRes = await articleAdapter.updateItemById(articleId, {
+  const articleParams = {
     title,
     announce,
     text,
-    categories,
+    categories: categories && categories.map((category) => +category),
     image,
     date: transformDate(date),
-  });
+  };
+  const articleRes = await articleAdapter.updateItemById(articleId, articleParams);
+  let path = `/my`;
   if (articleRes.content && articleRes.content.errorMessages) {
-    logger.endRequest(req, articleRes);
-    req.locals = {
+    const queryParams = {
       article: {
-        ...req.body,
+        ...articleParams,
         id: articleId,
+        date,
       },
       errorMessages: articleRes.content.errorMessages,
     };
-    await getEditArticlePage(req, res);
-  } else {
-    res.redirect(`/my`);
+    const query = encodeURIComponent(JSON.stringify(queryParams));
+    path = `/articles/edit/${articleId}?params=${query}`;
   }
+  res.redirect(path);
 };
 
 

@@ -45,7 +45,7 @@ module.exports = Joi.object({
     .pattern(/.(jpg|png)$/)
     .allow(``)
     .messages({
-      'string.pattern.name': schemaMessages.Article.IMAGE_EXTENSION,
+      'string.pattern.base': schemaMessages.Article.IMAGE_EXTENSION,
     }),
   [EArticleFieldName.DATE]: Joi.date()
     .iso()

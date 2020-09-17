@@ -5,7 +5,7 @@ block content
     section.modal.modal--flex
       .popup.popup--new-publication.popup--flex
         .new-publication
-          button.popup__button.button.button--popup-close(type='button' aria-label='Закрыть окно') Закрыть окно
+          a.popup__button.button.button--popup-close(aria-label='Закрыть окно' href='/my') Закрыть окно
           .new-publication__form.form
             form(action=(type === `add` ? `/articles/add` : `/articles/edit/${article.id}`) method='post' enctype='multipart/form-data')
               .new-publication__header
