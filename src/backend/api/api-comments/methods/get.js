@@ -8,17 +8,24 @@ const {
   EAccountTypeFieldName,
   ECommentFieldName,
   EModelName,
+  EForeignKey,
 } = require(`../../../models`);
 const deletedAccount = require(`../../../placeholders`);
 
 
-const getComments = async () => {
+const getComments = async (req) => {
+  const {limit} = req.query;
   const comments = await db.Comment.findAll({
     attributes: [
       ECommentFieldName.ID,
       ECommentFieldName.TEXT,
       ECommentFieldName.DATE,
+      EForeignKey.ARTICLE_ID,
     ],
+    order: [
+      [ECommentFieldName.DATE, `DESC`],
+    ],
+    limit,
     include: [{
       model: db.Account,
       as: EModelName.ACCOUNTS,
@@ -53,12 +60,13 @@ const getComments = async () => {
       id: comment[ECommentFieldName.ID],
       text: comment[ECommentFieldName.TEXT],
       date: comment[ECommentFieldName.DATE],
+      articleId: comment[EForeignKey.ARTICLE_ID],
       account,
     };
   });
 };
 
 module.exports = async (req, res) => {
-  const comments = await getComments();
+  const comments = await getComments(req);
   res.status(HttpCodes.OK).send(comments);
 };

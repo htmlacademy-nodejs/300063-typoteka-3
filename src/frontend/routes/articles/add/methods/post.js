@@ -8,7 +8,7 @@ const setFileName = async (req) => {
   if (!req.file) {
     return;
   }
-  await FileAdapter.download(req.file);
+  req.body.image = await FileAdapter.download(req.file);
 };
 
 const addArticleItemAndRedirectToMyArticles = async (req, res) => {

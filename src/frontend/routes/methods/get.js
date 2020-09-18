@@ -1,41 +1,55 @@
 'use strict';
 
-const {logger} = require(`../../utils`);
-const {accountAdapter, articleAdapter} = require(`../../adapters`);
-const {ONE_PAGE_LIMIT, MAX_DISPLAYED_PAGES} = require(`../../../common/params`);
+const {logger, getPaginatorParams} = require(`../../utils`);
+const {accountAdapter, articleAdapter, commentAdapter} = require(`../../adapters`);
+const {
+  ONE_PAGE_LIMIT,
+  LAST_COMMENT_COUNT,
+  LAST_COMMENT_LETTERS,
+  HOT_ARTICLE_COUNT,
+  HOT_ARTICLE_ANNOUNCE_LETTER,
+  FIRST_PAGE,
+} = require(`../../../common/params`);
 
 
-const FIRST_PAGE = 1;
-const PAGE_DIFFERENTIAL = Math.floor(MAX_DISPLAYED_PAGES / 2);
-const DIFFERENT_BETWEEN_FIRST_AND_LAST_PAGE = MAX_DISPLAYED_PAGES - 1;
-
-const getPaginator = (page, lastPage) => {
-  if (lastPage <= MAX_DISPLAYED_PAGES) {
-    return {
-      start: FIRST_PAGE,
-      end: lastPage,
-      page,
-    };
-  }
-  let start = page - PAGE_DIFFERENTIAL;
-  if (start < FIRST_PAGE) {
-    start = FIRST_PAGE;
-  }
-  let end = start + DIFFERENT_BETWEEN_FIRST_AND_LAST_PAGE;
-  if (lastPage < end) {
-    end = lastPage;
-    start = end - DIFFERENT_BETWEEN_FIRST_AND_LAST_PAGE;
-  }
-  return {
-    start,
-    end,
+const getArticles = async (page) => {
+  return await articleAdapter.getList({
     page,
-  };
+    limit: ONE_PAGE_LIMIT,
+  });
+};
+
+const getHotArticles = async () => {
+  const articlesRes = await articleAdapter.getList({
+    limit: HOT_ARTICLE_COUNT,
+    sort: `commentCount`,
+  });
+  return articlesRes.list.map((hotArticle) => ({
+    ...hotArticle,
+    announce: hotArticle.announce.length > LAST_COMMENT_LETTERS
+      ? `${hotArticle.announce.slice(0, HOT_ARTICLE_ANNOUNCE_LETTER)}...`
+      : hotArticle.announce,
+  }));
+};
+
+const getComments = async () => {
+  const commentsRes = await commentAdapter.getList({
+    limit: LAST_COMMENT_COUNT,
+  });
+  return commentsRes.map((comment) => ({
+    ...comment,
+    text: comment.text.length > LAST_COMMENT_LETTERS
+      ? `${comment.text.slice(0, LAST_COMMENT_LETTERS)}...`
+      : comment.text,
+  }));
 };
 
 module.exports = async (req, res) => {
   const page = +req.query.page || FIRST_PAGE;
-  const articles = await articleAdapter.getPartList(page);
+  const articles = await getArticles(page);
+  const hotArticles = await getHotArticles();
+  const comments = await getComments();
+  const paginator = getPaginatorParams(page, articles.length);
   const content = {
     title: `Типотека`,
     hiddenTitle: ` Главная страница личного блога Типотека`,
@@ -43,9 +57,9 @@ module.exports = async (req, res) => {
     account: accountAdapter.getAuth(),
     articleList: articles.list,
     hasContent: true,
-    hasHot: true,
-    hasLastComments: true,
-    paginator: getPaginator(page, Math.ceil(articles.length / ONE_PAGE_LIMIT)),
+    hotArticles,
+    comments,
+    paginator,
   };
   res.render(`pages/main`, content);
   logger.endRequest(req, res);

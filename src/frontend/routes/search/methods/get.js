@@ -6,7 +6,9 @@ const {accountAdapter, articleAdapter} = require(`../../../adapters`);
 
 module.exports = async (req, res) => {
   const search = req.query.title ? req.query.title.trim() : ``;
-  const articleList = await articleAdapter.searchByTitle(search);
+  const articleList = await articleAdapter.searchByTitle({
+    title: search,
+  });
 
   const content = {
     title: `Типотека`,

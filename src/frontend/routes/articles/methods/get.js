@@ -9,13 +9,6 @@ module.exports = async (req, res) => {
   const article = await articleAdapter.getItemById(articleId);
   const comments = await commentAdapter.getListByArticleId(articleId);
   const {errorMessages, comment: newComment} = req.locals && req.locals || {};
-  console.log(2222222222);
-  console.log(2222222222);
-  console.log(2222222222);
-  console.log(2222222222);
-  console.log(2222222222);
-  console.log(2222222222);
-  console.log(errorMessages, newComment);
   const content = {
     isPost: true,
     article,

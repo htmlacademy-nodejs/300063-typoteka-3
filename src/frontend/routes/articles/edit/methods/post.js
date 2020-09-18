@@ -10,7 +10,7 @@ const setFileName = async (req) => {
     req.body.image = req.body.image || currentArticleResponse.image;
     return;
   }
-  await FileAdapter.download(req.file);
+  req.body.image = await FileAdapter.download(req.file);
 };
 
 const updateArticleItemAndRedirect = async (req, res) => {
