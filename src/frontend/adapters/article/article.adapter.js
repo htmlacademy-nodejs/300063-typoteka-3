@@ -21,6 +21,10 @@ class ArticleAdapter {
     return this._adaptArticle(article);
   }
 
+  async deleteItem(articleId) {
+    return await request.delete(`articles/${articleId}`);
+  }
+
   async updateItemById(articleId, params) {
     return await request.put(`articles/${articleId}`, params);
   }

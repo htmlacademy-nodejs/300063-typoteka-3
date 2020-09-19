@@ -3,6 +3,7 @@
 const axios = require(`axios`);
 
 const {DEFAULT_PROTOCOL, DEFAULT_DOMAIN, DEFAULT_BACKEND_PORT} = require(`../../common/params`);
+const {getQueryString} = require(`../utils`);
 
 
 class Request {
@@ -50,24 +51,9 @@ class Request {
   }
 
   _getUrl(path, queryParams) {
-    const query = this._getQueryString(queryParams);
+    const queryString = getQueryString(queryParams);
+    const query = queryString && `?${queryString}`;
     return `${this._url}/${path}${query}`;
-  }
-
-  _getQueryString(queryParams) {
-    if (!queryParams) {
-      return ``;
-    }
-    const keys = Object.keys(queryParams);
-    if (keys.length === 0) {
-      return ``;
-    }
-    const queries = keys.reduce((acc, key) => {
-      return queryParams[key]
-        ? acc.concat(`${key}=${queryParams[key]}`)
-        : acc;
-    }, []);
-    return `?${queries.join(`&`)}`;
   }
 }
 

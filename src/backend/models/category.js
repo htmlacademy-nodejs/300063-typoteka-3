@@ -4,6 +4,7 @@ const {EModelName} = require(`./name-space`);
 
 
 const ECategoryFieldName = {
+  ID: `id`,
   TITLE: `title`,
 };
 
@@ -17,8 +18,6 @@ const getCategoryModel = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: EModelName.CATEGORIES,
-    timestamp: true,
-    paranoid: true,
   });
   return Category;
 };

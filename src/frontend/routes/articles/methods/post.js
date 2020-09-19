@@ -1,12 +1,19 @@
 'use strict';
 
 const {logger} = require(`../../../utils`);
-const {commentAdapter} = require(`../../../adapters`);
+const {commentAdapter, articleAdapter} = require(`../../../adapters`);
 
 
 module.exports = async (req, res) => {
   const {articleId} = req.params;
-  const {text} = req.body;
+  const {text, action} = req.body;
+
+  if (action === `delete`) {
+    await articleAdapter.deleteItem(articleId);
+    res.redirect(`/my`);
+    return;
+  }
+
   const commentRes = await commentAdapter.addItem({articleId, text});
 
   let path = `/articles/${articleId}#comments`;

@@ -3,7 +3,7 @@ ul.preview__pagination.pagination
     if paginator.page === paginator.start
       a.pagination__button.button.button--backwards.button--disabled(aria-label='Страница назад') Назад
     else
-      a.pagination__button.button.button--backwards(href=`?page=${paginator.page - 1}` aria-label='Страница назад') Назад
+      a.pagination__button.button.button--backwards(href=`?page=${paginator.page - 1}${query}` aria-label='Страница назад') Назад
 
   - let i = paginator.start;
     while i <= paginator.end
@@ -12,9 +12,9 @@ ul.preview__pagination.pagination
           a= i++
       else
         li(class='pagination__item')
-          a(href=`?page=${i}`)= i++
+          a(href=`?page=${i}${query}`)= i++
   li
     if paginator.page === paginator.end
       a.pagination__button.button.button--forward.button--disabled(aria-label='Страница назад') Назад
     else
-      a.pagination__button.button.button--forward(href=`?page=${paginator.page + 1}` aria-label='Страница назад') Назад
+      a.pagination__button.button.button--forward(href=`?page=${paginator.page + 1}${query}` aria-label='Страница назад') Назад

@@ -1,7 +1,7 @@
 'use strict';
 
-const {logger, getPaginatorParams} = require(`../../utils`);
-const {accountAdapter, articleAdapter, commentAdapter} = require(`../../adapters`);
+const {logger, getPaginatorParams, getQueryString} = require(`../../utils`);
+const {accountAdapter, articleAdapter, categoryAdapter, commentAdapter} = require(`../../adapters`);
 const {
   ONE_PAGE_LIMIT,
   LAST_COMMENT_COUNT,
@@ -12,24 +12,32 @@ const {
 } = require(`../../../common/params`);
 
 
-const getArticles = async (page) => {
+const getCategories = async () => {
+  return await categoryAdapter.getList({
+    minArticleCount: 1,
+  });
+};
+
+const getArticles = async (queryParams) => {
   return await articleAdapter.getList({
-    page,
+    ...queryParams,
     limit: ONE_PAGE_LIMIT,
   });
 };
 
-const getHotArticles = async () => {
+const getHotArticles = async (queryParams) => {
   const articlesRes = await articleAdapter.getList({
+    ...queryParams,
     limit: HOT_ARTICLE_COUNT,
     sort: `commentCount`,
   });
-  return articlesRes.list.map((hotArticle) => ({
+  articlesRes.list = articlesRes.list.map((hotArticle) => ({
     ...hotArticle,
     announce: hotArticle.announce.length > LAST_COMMENT_LETTERS
       ? `${hotArticle.announce.slice(0, HOT_ARTICLE_ANNOUNCE_LETTER)}...`
       : hotArticle.announce,
   }));
+  return articlesRes;
 };
 
 const getComments = async () => {
@@ -46,20 +54,31 @@ const getComments = async () => {
 
 module.exports = async (req, res) => {
   const page = +req.query.page || FIRST_PAGE;
-  const articles = await getArticles(page);
+  const category = req.query.category || null;
+
+  const categories = await getCategories();
+  const articles = await getArticles({
+    page,
+    category,
+  });
   const hotArticles = await getHotArticles();
   const comments = await getComments();
   const paginator = getPaginatorParams(page, articles.length);
+  const query = getQueryString({
+    category,
+  });
+
   const content = {
     title: `Типотека`,
     hiddenTitle: ` Главная страница личного блога Типотека`,
     description: `Это приветственный текст, который владелец блога может выбрать, чтобы описать себя 👏`,
     account: accountAdapter.getAuth(),
-    articleList: articles.list,
-    hasContent: true,
-    hotArticles,
+    categories,
+    articles: articles.list,
+    hotArticles: hotArticles.list,
     comments,
     paginator,
+    query: query && `&${query}`,
   };
   res.render(`pages/main`, content);
   logger.endRequest(req, res);
