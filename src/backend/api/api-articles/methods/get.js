@@ -38,7 +38,6 @@ const getArticleSql = (req) => {
         "${EModelName.COMMENTS}"."${EForeignKey.ARTICLE_ID}",
         COUNT("${EModelName.COMMENTS}"."${EForeignKey.ARTICLE_ID}") AS "count"
       FROM "${EModelName.COMMENTS}"
-      WHERE "${EModelName.COMMENTS}"."deletedAt" IS NULL
       GROUP BY "${EModelName.COMMENTS}"."${EForeignKey.ARTICLE_ID}"
     ) AS "comments"
       ON "comments"."${EForeignKey.ARTICLE_ID}" = "${EModelName.ARTICLES}"."${EArticleFieldName.ID}"
@@ -54,7 +53,9 @@ const getArticleSql = (req) => {
       ORDER BY "${EModelName.ARTICLE_CATEGORY}"."${EForeignKey.ARTICLE_ID}" DESC
     ) AS "filteredArticlesByCategory"
       ON "filteredArticlesByCategory"."${EForeignKey.ARTICLE_ID}" = "${EModelName.ARTICLES}"."${EArticleFieldName.ID}"
-    WHERE "${EModelName.ARTICLES}"."deletedAt" IS NULL
+    WHERE
+      (:isSearch = 'false' OR "${EModelName.ARTICLES}"."${EArticleFieldName.TITLE}" ILIKE :title)
+      AND (:minCommentCount IS NULL OR "comments"."count" >= :minCommentCount)
     GROUP BY "${EModelName.ARTICLES}"."${EArticleFieldName.ID}", "comments"."count"
     ORDER BY "${sort}" DESC
     LIMIT :limit
@@ -62,20 +63,28 @@ const getArticleSql = (req) => {
   `;
 };
 
-module.exports = async (req, res) => {
-  const {page = null, limit = null} = req.query;
+const getArticles = async (req) => {
+  const {page = null, limit = null, minCommentCount = null, isSearch = `false`} = req.query;
+  const title = `%${req.query.title}%`;
   const category = +req.query.category || null;
   const offset = page && limit && (limit * (page - 1));
-
   const articlesSql = getArticleSql(req);
-  const articles = await sequelize.query(articlesSql, {
+  return await sequelize.query(articlesSql, {
     type: sequelize.QueryTypes.SELECT,
     replacements: {
       limit,
       offset,
       category,
+      minCommentCount,
+      title,
+      isSearch
     },
   });
+};
+
+const getArticleCount = async (req) => {
+  const category = +req.query.category || null;
+
   const articleFilterParams = category && {
     include: [{
       model: db.Category,
@@ -83,7 +92,13 @@ module.exports = async (req, res) => {
       where: {id: category},
     }],
   } || {};
-  const articleCount = await db.Article.count(articleFilterParams);
+  return await db.Article.count(articleFilterParams);
+};
+
+module.exports = async (req, res) => {
+  const articles = await getArticles(req);
+  const articleCount = await getArticleCount(req);
+
   res.status(HttpCodes.OK).send({
     list: articles,
     length: articleCount

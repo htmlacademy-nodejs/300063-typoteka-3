@@ -17,8 +17,6 @@ const getAccountTypeModel = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: EModelName.ACCOUNT_TYPES,
-    timestamp: true,
-    paranoid: true,
   });
   return AccountType;
 };

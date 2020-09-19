@@ -25,11 +25,11 @@ const getArticles = async (queryParams) => {
   });
 };
 
-const getHotArticles = async (queryParams) => {
+const getHotArticles = async () => {
   const articlesRes = await articleAdapter.getList({
-    ...queryParams,
     limit: HOT_ARTICLE_COUNT,
     sort: `commentCount`,
+    minCommentCount: 1,
   });
   articlesRes.list = articlesRes.list.map((hotArticle) => ({
     ...hotArticle,

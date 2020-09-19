@@ -19,8 +19,6 @@ const getCommentModel = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: EModelName.COMMENTS,
-    timestamp: true,
-    paranoid: true,
   });
   return Comment;
 };

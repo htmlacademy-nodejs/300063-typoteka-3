@@ -3,19 +3,19 @@ extends layout
 block content
   main
     section.search-page
-      div(class=`search-page__wrapper` + (searchResult.type === `empty` ? ` search-page__wrapper--empty` : ``))
+      div(class=`search-page__wrapper${articles.length === 0 && ' search-page__wrapper--empty' || ''}`)
         h1 Поиск
         .search.search-page__form
           form(action='/search' method='get')
             label
               input(type='search' name='title' placeholder='Что ищем?' value=search)
             button.search__button.button.button--transparent(type='submit') Найти
-          if searchResult.type === 'list'
-            each result in searchResult.list
+          if articles && articles.length !== 0
+            each article in articles
               .search__result
-                time.search__date(datetime=result.date.stamp)= `${result.date.day}, ${result.date.time}`
-                a.search__link(href=`/articles/${result.id}`)= result.title
-        if searchResult.type === `empty`
+                time.search__date(datetime=article.date.stamp)= `${article.date.day}, ${article.date.time}`
+                a.search__link(href=`/articles/${article.id}`)= article.title
+        if !articles || articles.length === 0
           p.search-page__empty Ничего не нашлось
 
 

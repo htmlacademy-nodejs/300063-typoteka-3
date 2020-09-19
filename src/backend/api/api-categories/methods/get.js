@@ -19,7 +19,6 @@ module.exports = async (req, res) => {
       ON "${EModelName.ARTICLE_CATEGORY}"."${EForeignKey.CATEGORY_ID}" = "${EModelName.CATEGORIES}"."${ECategoryFieldName.ID}"
     LEFT JOIN "${EModelName.ARTICLES}"
       ON "${EModelName.ARTICLE_CATEGORY}"."${EForeignKey.ARTICLE_ID}" = "${EModelName.ARTICLES}"."${EArticleFieldName.ID}"
-    WHERE "${EModelName.ARTICLES}"."deletedAt" IS NULL
     GROUP BY "${EModelName.CATEGORIES}"."${ECategoryFieldName.ID}"
     HAVING COUNT("${EModelName.ARTICLE_CATEGORY}"."${EForeignKey.CATEGORY_ID}") >= :minArticleCount
     ORDER BY "${EModelName.CATEGORIES}"."${ECategoryFieldName.ID}";

@@ -38,8 +38,6 @@ const getAccountModel = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: EModelName.ACCOUNTS,
-    timestamp: true,
-    paranoid: true,
   });
   return Account;
 };

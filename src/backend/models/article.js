@@ -38,8 +38,6 @@ const getArticleModel = (sequelize, DataTypes) => {
   }, {
     sequelize,
     modelName: EModelName.ARTICLES,
-    timestamp: true,
-    paranoid: true,
   });
   return Article;
 };
