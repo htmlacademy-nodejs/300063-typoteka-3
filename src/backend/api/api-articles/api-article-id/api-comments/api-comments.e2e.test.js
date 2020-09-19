@@ -59,13 +59,13 @@ describe(`Article comments API end-points`, () => {
   test(`When POST article comment without "text" property should have ${HttpCodes.BAD_REQUEST}`, async () => {
     const comment = {...commentData};
     delete comment.text;
-    const putArticleResponse = await request(server).post(`${pathToArticles}/${article.id}/comments`).send(comment);
-    expect(putArticleResponse.statusCode).toBe(HttpCodes.BAD_REQUEST);
+    const postCommentResponse = await request(server).post(`${pathToArticles}/${article.id}/comments`).send(comment);
+    expect(postCommentResponse.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 
   test.each([`id`, `text`, `date`])(`When POST article comment should have %p property`, async (property) => {
-    const putArticleResponse = await request(server).post(`${pathToArticles}/${article.id}/comments`).send(commentData);
-    expect(putArticleResponse.body).toHaveProperty(property);
+    const postCommentResponse = await request(server).post(`${pathToArticles}/${article.id}/comments`).send(commentData);
+    expect(postCommentResponse.body).toHaveProperty(property);
   });
 
   test(`When POST article with invalid text when length is great then 1000 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {

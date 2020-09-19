@@ -11,6 +11,7 @@ const {
   EForeignKey,
 } = require(`../../../models`);
 const deletedAccount = require(`../../../placeholders`);
+const {logger} = require(`../../../utils`);
 
 
 const getComments = async (req) => {
@@ -69,4 +70,5 @@ const getComments = async (req) => {
 module.exports = async (req, res) => {
   const comments = await getComments(req);
   res.status(HttpCodes.OK).send(comments);
+  logger.endRequest(req, res);
 };

@@ -2,10 +2,11 @@
 
 const {Router} = require(`express`);
 
-const {getSearch} = require(`./methods`);
+const {getComments, deleteComment} = require(`./methods`);
 
 
-const apiSearch = new Router();
-apiSearch.get(`/`, getSearch);
+const apiComments = new Router();
+apiComments.get(`/`, getComments);
+apiComments.delete(`/:commentId`, deleteComment);
 
-module.exports = apiSearch;
+module.exports = apiComments;
