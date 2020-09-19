@@ -71,5 +71,10 @@ describe(`Comments API end-points`, () => {
       const res = await request(server).delete(`${pathToComments}/${commentId}`);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
+
+    test(`When DELETE invalid comment id status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+      const res = await request(server).delete(`${pathToComments}/invalid-id`);
+      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+    });
   });
 });
