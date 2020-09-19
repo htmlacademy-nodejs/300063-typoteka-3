@@ -38,6 +38,7 @@ const getArticleSql = (req) => {
         "${EModelName.COMMENTS}"."${EForeignKey.ARTICLE_ID}",
         COUNT("${EModelName.COMMENTS}"."${EForeignKey.ARTICLE_ID}") AS "count"
       FROM "${EModelName.COMMENTS}"
+      WHERE "${EModelName.COMMENTS}"."deletedAt" IS NULL
       GROUP BY "${EModelName.COMMENTS}"."${EForeignKey.ARTICLE_ID}"
     ) AS "comments"
       ON "comments"."${EForeignKey.ARTICLE_ID}" = "${EModelName.ARTICLES}"."${EArticleFieldName.ID}"
