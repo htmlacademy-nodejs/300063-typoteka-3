@@ -6,7 +6,6 @@ const {logger} = require(`./utils`);
 const config = require(`./sequelize-config`);
 const {
   getAccountModel,
-  getAccountTypeModel,
   getArticleModel,
   getCategoryModel,
   getCommentModel,
@@ -18,19 +17,9 @@ const {
 const sequelize = new Sequelize(config);
 
 const Account = getAccountModel(sequelize, DataTypes);
-const AccountType = getAccountTypeModel(sequelize, DataTypes);
 const Article = getArticleModel(sequelize, DataTypes);
 const Category = getCategoryModel(sequelize, DataTypes);
 const Comment = getCommentModel(sequelize, DataTypes);
-
-AccountType.hasMany(Account, {
-  as: EModelName.ACCOUNTS,
-  foreignKey: EForeignKey.ACCOUNT_TYPE_ID,
-});
-Account.belongsTo(AccountType, {
-  as: EModelName.ACCOUNT_TYPES,
-  foreignKey: EForeignKey.ACCOUNT_TYPE_ID,
-});
 
 Account.hasMany(Comment, {
   as: EModelName.COMMENTS,
@@ -78,7 +67,6 @@ const disconnectDb = async () => {
 module.exports = {
   db: {
     Account,
-    AccountType,
     Article,
     Category,
     Comment,

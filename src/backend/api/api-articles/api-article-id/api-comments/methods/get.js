@@ -7,7 +7,6 @@ const {
   EModelName,
   EAccountFieldName,
   ECommentFieldName,
-  EAccountTypeFieldName,
 } = require(`../../../../../models`);
 const {deletedAccount} = require(`../../../../../placeholders`);
 const {logger} = require(`../../../../../utils`);
@@ -29,11 +28,6 @@ const getCommentsByArticle = async (articleId) => {
         EAccountFieldName.EMAIL,
         EAccountFieldName.AVATAR
       ],
-      include: {
-        model: db.AccountType,
-        as: EModelName.ACCOUNT_TYPES,
-        attributes: [EAccountTypeFieldName.TITLE],
-      },
     }],
     where: {
       articleId,
@@ -48,7 +42,6 @@ const getCommentsByArticle = async (articleId) => {
         lastname: comment[EModelName.ACCOUNTS][EAccountFieldName.LASTNAME],
         email: comment[EModelName.ACCOUNTS][EAccountFieldName.EMAIL],
         avatar: comment[EModelName.ACCOUNTS][EAccountFieldName.AVATAR],
-        type: comment[EModelName.ACCOUNTS][EModelName.ACCOUNT_TYPES][EAccountTypeFieldName.TITLE],
       };
     }
 

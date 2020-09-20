@@ -3,10 +3,11 @@
 const Joi = require(`@hapi/joi`);
 
 const {schemaMessages} = require(`../messages`);
+const {ECommentFieldName} = require(`../models`);
 
 
 module.exports = Joi.object({
-  text: Joi.string()
+  [ECommentFieldName.TEXT]: Joi.string()
     .max(1000)
     .required()
     .messages({

@@ -10,6 +10,7 @@ const EAccountFieldName = {
   EMAIL: `email`,
   AVATAR: `avatar`,
   PASSWORD: `password`,
+  IS_ADMIN: `isAdmin`
 };
 
 const getAccountModel = (sequelize, DataTypes) => {
@@ -32,7 +33,11 @@ const getAccountModel = (sequelize, DataTypes) => {
       allowNull: false,
     },
     [EAccountFieldName.PASSWORD]: {
-      type: new DataTypes.CHAR(255),
+      type: new DataTypes.CHAR(72),
+      allowNull: false,
+    },
+    [EAccountFieldName.IS_ADMIN]: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
     },
   }, {
