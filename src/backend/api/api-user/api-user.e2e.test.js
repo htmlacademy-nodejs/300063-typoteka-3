@@ -3,49 +3,22 @@
 const HttpCodes = require(`http-status-codes`);
 const request = require(`supertest`);
 
+const {getRandomString, getRandomEmail} = require(`../../utils`);
 const apiServer = require(`../index`);
 
 
 const pathToUser = `/api/user`;
-
-const getRandomNumber = (length) => {
-  const randomNumber = 1 + Math.random();
-  return `${Math.ceil(randomNumber * Math.pow(10, length - 1))}`;
-};
-
-const getRandomEmail = (length = 10) => {
-  if (length <= 6) {
-    console.error(`Email должен содержать минимум 7 символов`);
-  }
-  let firstPartLength;
-  let secondPartLength = 6;
-  if (length >= 70) {
-    firstPartLength = 64;
-    secondPartLength = length - firstPartLength;
-  } else {
-    firstPartLength = length - secondPartLength;
-  }
-  let randomPart = 20;
-  if (firstPartLength <= randomPart) {
-    randomPart = firstPartLength;
-    firstPartLength = 0;
-  } else {
-    firstPartLength = firstPartLength - randomPart;
-  }
-
-  const firstPartEmail = getRandomNumber(randomPart) + new Array(firstPartLength).fill(`i`).join(``);
-  const secondPartEmail = new Array(secondPartLength - 5).fill(`i`).join(``);
-  return `${firstPartEmail}@${secondPartEmail}.com`;
-};
+const AVAILABLE_SYMBOLS = `abcdefghijklmnopqrstuvwxyz`;
 
 const getUserDate = () => {
+  const password = getRandomString(AVAILABLE_SYMBOLS, 6);
   return {
-    firstname: `testFirstname`,
-    lastname: `testLastname`,
-    email: getRandomEmail(100),
-    avatar: `avatar-1.png`,
-    password: `123456`,
-    repeatedPassword: `123456`,
+    firstname: getRandomString(AVAILABLE_SYMBOLS, 10),
+    lastname: getRandomString(AVAILABLE_SYMBOLS, 10),
+    email: getRandomEmail(100, [`ru`, `com`]),
+    avatar: `${getRandomString(AVAILABLE_SYMBOLS, 10)}.png`,
+    password,
+    repeatedPassword: password,
   };
 };
 
@@ -94,14 +67,14 @@ describe(`User API end-points`, () => {
 
   test(`When POST user with max length "firstname" field status code should be ${HttpCodes.OK}`, async () => {
     const userDate = getUserDate();
-    userDate.firstname = new Array(50).fill(`i`).join(``);
+    userDate.firstname = getRandomString(AVAILABLE_SYMBOLS, 50);
     const postUserRes = await request(server).post(pathToUser).send(userDate);
     expect(postUserRes.statusCode).toBe(HttpCodes.OK);
   });
 
   test(`When POST user with too long "firstname" field status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
     const userDate = getUserDate();
-    userDate.firstname = new Array(51).fill(`i`).join(``);
+    userDate.firstname = getRandomString(AVAILABLE_SYMBOLS, 51);
     const postUserRes = await request(server).post(pathToUser).send(userDate);
     expect(postUserRes.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
@@ -115,14 +88,14 @@ describe(`User API end-points`, () => {
 
   test(`When POST user with max length "lastname" field status code should be ${HttpCodes.OK}`, async () => {
     const userDate = getUserDate();
-    userDate.lastname = new Array(50).fill(`i`).join(``);
+    userDate.lastname = getRandomString(AVAILABLE_SYMBOLS, 50);
     const postUserRes = await request(server).post(pathToUser).send(userDate);
     expect(postUserRes.statusCode).toBe(HttpCodes.OK);
   });
 
   test(`When POST user with too long "lastname" field status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
     const userDate = getUserDate();
-    userDate.lastname = new Array(51).fill(`i`).join(``);
+    userDate.lastname = getRandomString(AVAILABLE_SYMBOLS, 51);
     const postUserRes = await request(server).post(pathToUser).send(userDate);
     expect(postUserRes.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
@@ -136,14 +109,14 @@ describe(`User API end-points`, () => {
 
   test(`When POST user with max length "email" field status code should be ${HttpCodes.OK}`, async () => {
     const userDate = getUserDate();
-    userDate.email = getRandomEmail(100);
+    userDate.email = getRandomEmail(100, [`ru`, `com`]);
     const postUserRes = await request(server).post(pathToUser).send(userDate);
     expect(postUserRes.statusCode).toBe(HttpCodes.OK);
   });
 
   test(`When POST user with too long "email" field status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
     const userDate = getUserDate();
-    userDate.email = userDate.email = getRandomEmail(101);
+    userDate.email = getRandomEmail(101, [`ru`, `com`]);
     const postUserRes = await request(server).post(pathToUser).send(userDate);
     expect(postUserRes.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
@@ -171,38 +144,38 @@ describe(`User API end-points`, () => {
 
   test(`When POST user with max length "avatar" field status code should be ${HttpCodes.OK}`, async () => {
     const userDate = getUserDate();
-    userDate.avatar = `${new Array(96).fill(`i`).join(``)}.jpg`;
+    userDate.avatar = `${getRandomString(AVAILABLE_SYMBOLS, 96)}.jpg`;
     const postUserRes = await request(server).post(pathToUser).send(userDate);
     expect(postUserRes.statusCode).toBe(HttpCodes.OK);
   });
 
   test(`When POST user with too long "avatar" field status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
     const userDate = getUserDate();
-    userDate.avatar = `${new Array(97).fill(`i`).join(``)}.jpg`;
+    userDate.avatar = `${getRandomString(AVAILABLE_SYMBOLS, 97)}.jpg`;
     const postUserRes = await request(server).post(pathToUser).send(userDate);
     expect(postUserRes.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 
   test(`When POST user with min length "password" field status code should be ${HttpCodes.OK}`, async () => {
     const userDate = getUserDate();
-    userDate.password = new Array(6).fill(`i`).join(``);
-    userDate.repeatedPassword = new Array(6).fill(`i`).join(``);
+    userDate.password = getRandomString(AVAILABLE_SYMBOLS, 6);
+    userDate.repeatedPassword = userDate.password;
     const postUserRes = await request(server).post(pathToUser).send(userDate);
     expect(postUserRes.statusCode).toBe(HttpCodes.OK);
   });
 
   test(`When POST user with too short "password" field status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
     const userDate = getUserDate();
-    userDate.password = new Array(5).fill(`i`).join(``);
-    userDate.repeatedPassword = new Array(5).fill(`i`).join(``);
+    userDate.password = getRandomString(AVAILABLE_SYMBOLS, 5);
+    userDate.repeatedPassword = userDate.password;
     const postUserRes = await request(server).post(pathToUser).send(userDate);
     expect(postUserRes.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 
   test(`When POST user with different "password" and "repeatedPassword" status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
     const userDate = getUserDate();
-    userDate.password = new Array(6).fill(`i`).join(``);
-    userDate.repeatedPassword = new Array(7).fill(`i`).join(``);
+    userDate.password = getRandomString(AVAILABLE_SYMBOLS, 6);
+    userDate.repeatedPassword = getRandomString(AVAILABLE_SYMBOLS, 7);
     const postUserRes = await request(server).post(pathToUser).send(userDate);
     expect(postUserRes.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
