@@ -11,7 +11,6 @@ const {debugMiddleware} = require(`../middleware`);
 const apiArticles = require(`./api-articles`);
 const apiCategories = require(`./api-categories`);
 const apiComments = require(`./api-comments`);
-const apiSearch = require(`./api-search`);
 const apiUser = require(`./api-user`);
 
 
@@ -60,7 +59,6 @@ class Server {
     this._server.use(`/api/articles`, apiArticles);
     this._server.use(`/api/categories`, apiCategories);
     this._server.use(`/api/comments`, apiComments);
-    this._server.use(`/api/search`, apiSearch);
     this._server.use(`/api/user`, apiUser);
   }
 
