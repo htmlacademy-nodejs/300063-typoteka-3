@@ -9,7 +9,6 @@ const setFileName = async (req) => {
     return;
   }
   req.body.avatar = await FileAdapter.download(req.file);
-  console.log(req.body.avatar);
 };
 
 module.exports = async (req, res) => {
@@ -27,7 +26,7 @@ module.exports = async (req, res) => {
     repeatedPassword,
   });
 
-  let path = `/register`;
+  let path = `/login`;
   if (createdUserRes.content && createdUserRes.content.errorMessages) {
     const queryParams = {
       user: userParams,

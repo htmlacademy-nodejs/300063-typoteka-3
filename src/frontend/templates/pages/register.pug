@@ -37,9 +37,10 @@ block content
                     li.form__error= error
             .form__image-loader
               a.form__avatar.avatar
-                img(src=`/img/${user.avatar}` || 'img/icons/smile.svg' alt='аватар пользователя')
+                img(src=`/img/${user.avatar}` alt='аватар пользователя')
               label
-                input.visually-hidden(type='file' name='avatar' value=user.avatar)
+                input.visually-hidden(type='file' name='picture' value=user.avatar)
                 | Загрузить фото профиля
+              input.visually-hidden(type='text' name='avatar' value=user.avatar)
             button.form__submit-btn.form__submit-btn--register.button.button--colored(type='submit') Зарегистрироваться
       .modal__overlay

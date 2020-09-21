@@ -10,6 +10,6 @@ const {getRegisterPage, postRegisterPage} = require(`./methods`);
 const registerRoute = new Router();
 
 registerRoute.get(`/`, queryParamsMiddleware([`errorMessages`, `user`]), getRegisterPage);
-registerRoute.post(`/`, upload(`avatar`), postRegisterPage);
+registerRoute.post(`/`, upload(`picture`), postRegisterPage);
 
 module.exports = registerRoute;
