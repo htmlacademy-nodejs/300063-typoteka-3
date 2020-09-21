@@ -10,7 +10,7 @@ const salt = 10;
 
 const getErrorsOfParamsCheck = async (req) => {
   const {email, password, repeatedPassword} = req.body;
-  const userCount = await db.Account.count({
+  const userCountWithEmail = await db.Account.count({
     where: {
       [EAccountFieldName.EMAIL]: email
     }
@@ -19,7 +19,7 @@ const getErrorsOfParamsCheck = async (req) => {
   if (password !== repeatedPassword) {
     errorMessages.push(`Пароли не совпадают`);
   }
-  if (userCount) {
+  if (userCountWithEmail) {
     errorMessages.push(`Пользователь с таким email уже существует`);
   }
   return errorMessages;
@@ -32,6 +32,7 @@ module.exports = async (req, res) => {
     res.status(httpCodes.BAD_REQUEST).send({errorMessages});
     return;
   }
+  const userCount = await db.Account.count();
   const hash = await bcrypt.hash(password, salt);
   await db.Account.create({
     [EAccountFieldName.FIRSTNAME]: firstname,
@@ -39,7 +40,7 @@ module.exports = async (req, res) => {
     [EAccountFieldName.EMAIL]: email,
     [EAccountFieldName.AVATAR]: avatar,
     [EAccountFieldName.PASSWORD]: hash,
-    isAdmin: false,
+    isAdmin: userCount === 0,
   });
   res.status(httpCodes.OK).send();
 };
