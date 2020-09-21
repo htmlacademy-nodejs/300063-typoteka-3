@@ -9,6 +9,7 @@ const {logger} = require(`../utils`);
 const {debugMiddleware} = require(`../middleware`);
 
 const apiArticles = require(`./api-articles`);
+const apiLogin = require(`./api-login`);
 const apiCategories = require(`./api-categories`);
 const apiComments = require(`./api-comments`);
 const apiUser = require(`./api-user`);
@@ -57,6 +58,7 @@ class Server {
 
   _initRoutes() {
     this._server.use(`/api/articles`, apiArticles);
+    this._server.use(`/api/login`, apiLogin);
     this._server.use(`/api/categories`, apiCategories);
     this._server.use(`/api/comments`, apiComments);
     this._server.use(`/api/user`, apiUser);

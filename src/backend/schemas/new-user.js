@@ -31,7 +31,7 @@ module.exports = Joi.object({
     .max(100)
     .required()
     .messages({
-      // 'string.email': `Email невалиден`,
+      'string.email': `Email невалиден`,
       'string.max': `Email может содержать не более 100 символов`,
       'any.required': `Email является обязательным полем для заполнения`,
       'string.empty': `Email является обязательным полем для заполнения`,
