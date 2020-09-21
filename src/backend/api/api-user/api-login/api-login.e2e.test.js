@@ -3,12 +3,12 @@
 const HttpCodes = require(`http-status-codes`);
 const request = require(`supertest`);
 
-const {getRandomString, getRandomEmail} = require(`../../utils`);
-const apiServer = require(`../index`);
+const {getRandomString, getRandomEmail} = require(`../../../utils`);
+const apiServer = require(`../../index`);
 
 
-const pathToAuth = `/api/login`;
 const pathToUser = `/api/user`;
+const pathToLogin = `/api/user/login`;
 const AVAILABLE_SYMBOLS = `abcdefghijklmnopqrstuvwxyz`;
 
 
@@ -42,7 +42,7 @@ describe(`Auth API end-points`, () => {
   });
 
   test(`When POST auth with valid data status code should be ${HttpCodes.OK}`, async () => {
-    const authRes = await request(server).post(pathToAuth).send(auth);
+    const authRes = await request(server).post(pathToLogin).send(auth);
     expect(authRes.statusCode).toBe(HttpCodes.OK);
   });
 
@@ -51,7 +51,7 @@ describe(`Auth API end-points`, () => {
       email: getRandomEmail(100, [`ru`, `com`]),
       password: getRandomString(AVAILABLE_SYMBOLS, 6),
     };
-    const authRes = await request(server).post(pathToAuth).send(authData);
+    const authRes = await request(server).post(pathToLogin).send(authData);
     expect(authRes.statusCode).toBe(HttpCodes.FORBIDDEN);
   });
 
@@ -60,7 +60,7 @@ describe(`Auth API end-points`, () => {
       ...auth,
       password: getRandomString(AVAILABLE_SYMBOLS, 6),
     };
-    const authRes = await request(server).post(pathToAuth).send(authData);
+    const authRes = await request(server).post(pathToLogin).send(authData);
     expect(authRes.statusCode).toBe(HttpCodes.FORBIDDEN);
   });
 
@@ -69,7 +69,12 @@ describe(`Auth API end-points`, () => {
   )(`When POST auth data without %p field status code should be ${HttpCodes.BAD_REQUEST}`, async (propertyName) => {
     const authData = {...auth};
     delete authData[propertyName];
-    const authRes = await request(server).post(pathToAuth).send(authData);
+    const authRes = await request(server).post(pathToLogin).send(authData);
     expect(authRes.statusCode).toBe(HttpCodes.BAD_REQUEST);
+  });
+
+  test.each([`accessToken`, `refreshToken`])(`When POST auth with valid data should return %p`, async (propertyName) => {
+    const authRes = await request(server).post(pathToLogin).send(auth);
+    expect(authRes.body).toHaveProperty(propertyName);
   });
 });

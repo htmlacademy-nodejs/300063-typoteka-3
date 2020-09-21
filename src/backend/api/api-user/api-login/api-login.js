@@ -2,8 +2,8 @@
 
 const {Router} = require(`express`);
 
-const {schemaValidator, authenticationMiddleware} = require(`../../middleware`);
-const {loginSchema} = require(`../../schemas`);
+const {schemaValidator, authenticationMiddleware} = require(`../../../middleware`);
+const {loginSchema} = require(`../../../schemas`);
 const {postLogin} = require(`./methods`);
 
 
