@@ -1,6 +1,12 @@
 'use strict';
 
+const request = require(`../request`);
+
 class AccountAdapter {
+  async addItem(UserParams) {
+    return await request.post(`user`, UserParams);
+  }
+
   getAuth() {
     return {
       type: `user`,
