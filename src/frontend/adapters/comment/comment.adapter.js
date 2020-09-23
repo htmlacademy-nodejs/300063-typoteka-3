@@ -5,8 +5,8 @@ const {dateAdapter} = require(`../date`);
 
 
 class CommentAdapter {
-  async getList(queryParams) {
-    const comments = await request.get(`comments`, queryParams);
+  async getList(params) {
+    const comments = await request.get(`comments`, params);
     return this._adaptComment(comments);
   }
 

@@ -4,8 +4,8 @@ const request = require(`../request`);
 
 
 class CategoryAdapter {
-  getList(queryParams) {
-    return request.get(`categories`, queryParams);
+  getList(params) {
+    return request.get(`categories`, params);
   }
 
   addItem(categoryParams) {

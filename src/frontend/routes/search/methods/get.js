@@ -7,8 +7,10 @@ const {accountAdapter, articleAdapter} = require(`../../../adapters`);
 module.exports = async (req, res) => {
   const search = req.query.title ? req.query.title.trim() : ``;
   const articleRes = await articleAdapter.getList({
-    title: encodeURIComponent(search),
-    isSearch: true,
+    query: {
+      title: encodeURIComponent(search),
+      isSearch: true,
+    },
   });
 
   const content = {

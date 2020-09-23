@@ -5,9 +5,9 @@ const {dateAdapter} = require(`../date`);
 
 
 class ArticleAdapter {
-  async getList(queryParams) {
+  async getList(params) {
     let path = `articles`;
-    const articles = await request.get(path, queryParams);
+    const articles = await request.get(path, params);
     articles.list = articles.list.map(this._adaptArticle);
     return articles;
   }

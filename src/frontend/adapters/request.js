@@ -14,29 +14,33 @@ class Request {
     this._url = `${protocol}://${domain}:${port}/api`;
   }
 
-  get(path, queryParams) {
-    const url = this._getUrl(path, queryParams);
+  get(path, params = {}) {
+    const {query} = params;
+    const url = this._getUrl(path, query);
     return axios.get(url)
       .then((res) => res.data)
       .catch(this._getErrorStatus);
   }
 
-  post(path, body, queryParams) {
-    const url = this._getUrl(path, queryParams);
+  post(path, body, params = {}) {
+    const {query} = params;
+    const url = this._getUrl(path, query);
     return axios.post(url, body)
       .then((res) => res.data)
       .catch(this._getErrorStatus);
   }
 
-  put(path, body, queryParams) {
-    const url = this._getUrl(path, queryParams);
+  put(path, body, params = {}) {
+    const {query} = params;
+    const url = this._getUrl(path, query);
     return axios.put(url, body)
       .then((res) => res.data)
       .catch(this._getErrorStatus);
   }
 
-  delete(path, queryParams) {
-    const url = this._getUrl(path, queryParams);
+  delete(path, params = {}) {
+    const {query} = params;
+    const url = this._getUrl(path, query);
     return axios.delete(url)
       .then((res) => res.data)
       .catch(this._getErrorStatus);
