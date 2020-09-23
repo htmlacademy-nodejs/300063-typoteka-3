@@ -1,5 +1,6 @@
 'use strict';
 
+const {parse} = require(`cookie`);
 const HttpCodes = require(`http-status-codes`);
 const request = require(`supertest`);
 
@@ -65,7 +66,7 @@ describe(`Auth API end-points`, () => {
   });
 
   test.each(
-    [`email`,`password`]
+    [`email`, `password`]
   )(`When POST auth data without %p field status code should be ${HttpCodes.BAD_REQUEST}`, async (propertyName) => {
     const authData = {...auth};
     delete authData[propertyName];
@@ -73,8 +74,10 @@ describe(`Auth API end-points`, () => {
     expect(authRes.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 
-  test.each([`accessToken`, `refreshToken`])(`When POST auth with valid data should return %p`, async (propertyName) => {
+  test.each([`accessToken`, `refreshToken`])(`When POST auth with valid data should set %p cookie`, async (propertyName) => {
     const authRes = await request(server).post(pathToLogin).send(auth);
-    expect(authRes.body).toHaveProperty(propertyName);
+    const cookies = authRes.headers[`set-cookie`].map((cookie) => parse(cookie));
+    const hasCookie = cookies.some((cookie) => Boolean(cookie[propertyName]));
+    expect(hasCookie).toBeTruthy();
   });
 });

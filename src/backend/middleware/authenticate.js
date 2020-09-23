@@ -28,6 +28,6 @@ module.exports = async (req, res, next) => {
     return;
   }
 
-  res.locals.user = user;
+  res.locals.user = {id: user.id};
   next();
 };

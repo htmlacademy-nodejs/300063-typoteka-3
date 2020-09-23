@@ -3,13 +3,16 @@
 const HttpCodes = require(`http-status-codes`);
 const {makeJwt} = require(`../../../../utils`);
 const {db} = require(`../../../../db`);
+const {ERefreshTokenFieldName} = require(`../../../../models`);
 
 
 module.exports = async (req, res) => {
-  const {user} = res.locals;
-  const {accessToken, refreshToken} = await makeJwt(user);
+  const {id} = res.locals.user;
+  const {accessToken, refreshToken} = await makeJwt({id});
   await db.RefreshToken.create({
-    title: refreshToken,
+    [ERefreshTokenFieldName.TOKEN]: refreshToken,
   });
-  res.status(HttpCodes.OK).json({accessToken, refreshToken});
+  res.cookie(`accessToken`, accessToken);
+  res.cookie(`refreshToken`, refreshToken);
+  res.status(HttpCodes.OK).send();
 };

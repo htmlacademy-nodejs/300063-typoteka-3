@@ -4,13 +4,13 @@ const {EModelName} = require(`./name-space`);
 
 
 const ERefreshTokenFieldName = {
-  TITLE: `title`,
+  TOKEN: `token`,
 };
 
 const getRefreshTokenModel = (sequelize, DataTypes) => {
   class RefreshToken extends sequelize.Sequelize.Model {}
   RefreshToken.init({
-    [ERefreshTokenFieldName.TITLE]: {
+    [ERefreshTokenFieldName.TOKEN]: {
       type: new DataTypes.STRING(1000)
     }
   }, {
