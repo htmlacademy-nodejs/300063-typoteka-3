@@ -1,14 +1,15 @@
 'use strict';
 
-const {accountAdapter, categoryAdapter} = require(`../../../adapters`);
+const {categoryAdapter} = require(`../../../adapters`);
 const {logger} = require(`../../../utils`);
 
 
 module.exports = async (req, res) => {
+  const {account} = req.locals;
   const categories = await categoryAdapter.getList();
   const {createdCategory, updatedCategory, errorMessages} = req.locals || {};
   const content = {
-    account: accountAdapter.getAuth(),
+    account,
     categories,
     createdCategory,
     updatedCategory,

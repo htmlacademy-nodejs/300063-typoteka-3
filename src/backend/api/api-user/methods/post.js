@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
   }
   const userCount = await db.Account.count();
   const hash = await bcrypt.hash(password, salt);
-  await db.Account.create({
+  const user = await db.Account.create({
     [EAccountFieldName.FIRSTNAME]: firstname,
     [EAccountFieldName.LASTNAME]: lastname,
     [EAccountFieldName.EMAIL]: email,
@@ -42,5 +42,12 @@ module.exports = async (req, res) => {
     [EAccountFieldName.PASSWORD]: hash,
     isAdmin: userCount === 0,
   });
-  res.status(httpCodes.OK).send();
+  res.status(httpCodes.OK).send({
+    [EAccountFieldName.ID]: user[EAccountFieldName.ID],
+    [EAccountFieldName.FIRSTNAME]: user[EAccountFieldName.FIRSTNAME],
+    [EAccountFieldName.LASTNAME]: user[EAccountFieldName.LASTNAME],
+    [EAccountFieldName.EMAIL]: user[EAccountFieldName.EMAIL],
+    [EAccountFieldName.AVATAR]: user[EAccountFieldName.AVATAR],
+    [EAccountFieldName.isAdmin]: user[EAccountFieldName.IS_ADMIN],
+  });
 };

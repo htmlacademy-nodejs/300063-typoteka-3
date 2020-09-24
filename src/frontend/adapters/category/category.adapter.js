@@ -4,21 +4,28 @@ const request = require(`../request`);
 
 
 class CategoryAdapter {
-  getList(params) {
-    return request.get(`categories`, params);
+  async getList(params) {
+    console.log(params);
+    const res = await request.get(`categories`, params);
+    console.log(res);
+    return res.data;
   }
 
-  addItem(categoryParams) {
-    return request.post(`categories`, categoryParams);
+  async addItem(categoryParams) {
+    const res = await request.post(`categories`, categoryParams);
+    console.log(res.data);
+    return res.data;
   }
 
-  updateItem(categoryParams) {
+  async updateItem(categoryParams) {
     const {id, title} = categoryParams;
-    return request.put(`categories/${id}`, {title});
+    const res = await request.put(`categories/${id}`, {title});
+    return res.data;
   }
 
-  deleteItem(categoryId) {
-    return request.delete(`categories/${categoryId}`);
+  async deleteItem(categoryId) {
+    const res = await request.delete(`categories/${categoryId}`);
+    return res.data;
   }
 }
 

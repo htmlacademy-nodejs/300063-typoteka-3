@@ -9,7 +9,7 @@ let JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || JWT_ACCESS_SECRET_DEFAU
 let JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || JWT_REFRESH_SECRET_DEFAULT;
 
 module.exports = (tokenData) => {
-  const accessToken = jwt.sign(tokenData, JWT_ACCESS_SECRET, {expiresIn: `50s`});
+  const accessToken = jwt.sign(tokenData, JWT_ACCESS_SECRET, {expiresIn: `15m`});
   const refreshToken = jwt.sign(tokenData, JWT_REFRESH_SECRET);
   return {accessToken, refreshToken};
 };

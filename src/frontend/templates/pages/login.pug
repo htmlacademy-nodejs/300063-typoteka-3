@@ -12,15 +12,15 @@ block content
           li.popup__tab.popup__tab--active.popup__tab--log-in
             a.popup__tab-switcher.button Войти
         .popup__form.popup__form--active.form.form--log-in
-          form(action='#' method='get')
+          form(action='/login' method='POST')
             .form__field
               label
-                input(type='email' placeholder='Электронная почта' required)
+                input(type='email' name='email' placeholder='Электронная почта' required)
             if error && error.email
               p.form__error-message Некоторая ошибка произошла, беда!
             .form__field
               label
-                input(type='password' placeholder='Пароль' required)
+                input(type='password' name='password' placeholder='Пароль' required)
             if error && error.password
               p.form__error-message Некоторая ошибка произошла, беда!
             button.form__submit-btn.form__submit-btn--log-in.button.button--colored(type='submit') Войти

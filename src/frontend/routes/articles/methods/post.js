@@ -7,6 +7,7 @@ const {commentAdapter, articleAdapter} = require(`../../../adapters`);
 module.exports = async (req, res) => {
   const {articleId} = req.params;
   const {text, action} = req.body;
+  const {account} = req.locals;
 
   if (action === `delete`) {
     await articleAdapter.deleteItem(articleId);
@@ -14,7 +15,11 @@ module.exports = async (req, res) => {
     return;
   }
 
-  const commentRes = await commentAdapter.addItem({articleId, text});
+  const commentRes = await commentAdapter.addItem({
+    text,
+    articleId,
+    accountId: account.id,
+  });
 
   let path = `/articles/${articleId}#comments`;
   if (commentRes.content && commentRes.content.errorMessages) {

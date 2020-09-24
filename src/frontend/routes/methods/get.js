@@ -1,7 +1,7 @@
 'use strict';
 
-const {logger, getPaginatorParams, getQueryString} = require(`../../utils`);
-const {accountAdapter, articleAdapter, categoryAdapter, commentAdapter} = require(`../../adapters`);
+const {logger, getPaginatorParams} = require(`../../utils`);
+const {articleAdapter, categoryAdapter, commentAdapter} = require(`../../adapters`);
 const {
   ONE_PAGE_LIMIT,
   LAST_COMMENT_COUNT,
@@ -61,6 +61,7 @@ const getComments = async () => {
 };
 
 module.exports = async (req, res) => {
+  const {account} = req.locals;
   const page = +req.query.page || FIRST_PAGE;
   const category = req.query.category || null;
 
@@ -71,22 +72,20 @@ module.exports = async (req, res) => {
   });
   const hotArticles = await getHotArticles();
   const comments = await getComments();
-  const paginator = getPaginatorParams(page, articles.length);
-  const query = getQueryString({
-    category,
+  const paginator = getPaginatorParams({
+    page,
+    itemCount: articles.length,
   });
-
   const content = {
     title: `Типотека`,
     hiddenTitle: ` Главная страница личного блога Типотека`,
     description: `Это приветственный текст, который владелец блога может выбрать, чтобы описать себя 👏`,
-    account: accountAdapter.getAuth(),
+    account,
     categories,
     articles: articles.list,
     hotArticles: hotArticles.list,
     comments,
     paginator,
-    query: query && `&${query}`,
   };
   res.render(`pages/main`, content);
   logger.endRequest(req, res);

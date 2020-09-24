@@ -1,8 +1,11 @@
 extends layout
 
 block content
-  main.main-page
-    h1.visually-hidden= hiddenTitle
+  main(class=activeCategory && 'articles-category' || 'main-page')
+    if hiddenTitle
+      h1.visually-hidden= hiddenTitle
+    if activeCategory
+      h1= activeCategory.title
     p= description
     if categories && categories.length
       section.main-page__theme-list

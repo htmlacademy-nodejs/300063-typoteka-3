@@ -2,7 +2,13 @@ ul.themes(class= isPost && 'post__themes' || '')
   if categories && categories.length
     each category in categories
       li.themes__item
-        a.themes__item-link(href=`/?category=${category.id}`)= category.title
-          |
-          sup= category.articleCount
-          button.themes__remove-btn(type='button') Удалить категорию
+        if activeCategory && activeCategory.id === category.id
+          a.themes__item-link(class='themes__item-link--active')= category.title
+            |
+            sup= category.articleCount
+            button.themes__remove-btn(type='button') Удалить категорию
+        else
+          a.themes__item-link(href=`/articles/category/${category.id}`)= category.title
+            |
+            sup= category.articleCount
+            button.themes__remove-btn(type='button') Удалить категорию

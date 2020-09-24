@@ -9,14 +9,14 @@ const {logger} = require(`../../../../../utils`);
 
 module.exports = async (req, res) => {
   const {articleId} = req.params;
-  const {text} = req.body;
+  const {accountId, text} = req.body;
   if (!text) {
     res.status(HttpCodes.BAD_REQUEST).send(`Text field can't be empty`);
   } else {
     const comment = await db.Comment.create({
       [ECommentFieldName.TEXT]: text,
       [EForeignKey.ARTICLE_ID]: articleId,
-      [EForeignKey.ACCOUNT_ID]: 1,
+      [EForeignKey.ACCOUNT_ID]: accountId,
     });
     res.status(HttpCodes.CREATED).send({
       [ECommentFieldName.ID]: comment[ECommentFieldName.ID],

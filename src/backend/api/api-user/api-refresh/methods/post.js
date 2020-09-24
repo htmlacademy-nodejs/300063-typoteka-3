@@ -23,6 +23,8 @@ module.exports = async (req, res) => {
     raw: true,
   });
   if (!existedToken) {
+    res.clearCookie(`accessToken`);
+    res.clearCookie(`refreshToken`);
     return res.sendStatus(HttpCodes.NOT_FOUND);
   }
 

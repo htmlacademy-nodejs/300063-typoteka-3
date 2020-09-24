@@ -10,13 +10,15 @@ const {
 const PAGE_DIFFERENTIAL = Math.floor(MAX_DISPLAYED_PAGES / 2);
 const DIFFERENT_BETWEEN_FIRST_AND_LAST_PAGE = MAX_DISPLAYED_PAGES - 1;
 
-module.exports = (page, itemCount) => {
+module.exports = (params) => {
+  const {page, itemCount, path = ``} = params;
   const lastPage = Math.ceil(itemCount / ONE_PAGE_LIMIT);
   if (lastPage <= MAX_DISPLAYED_PAGES) {
     return {
       start: FIRST_PAGE,
       end: lastPage,
       page,
+      path,
     };
   }
   let start = page - PAGE_DIFFERENTIAL;
@@ -32,5 +34,6 @@ module.exports = (page, itemCount) => {
     start,
     end,
     page,
+    path,
   };
 };

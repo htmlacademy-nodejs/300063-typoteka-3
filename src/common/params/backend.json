@@ -16,7 +16,6 @@
   "FILE_COMMENTS_PATH": "./data/comments.txt",
   "FILE_FIRSTNAMES_PATH": "./data/firstnames.txt",
   "FILE_LASTNAMES_PATH": "./data/lastnames.txt",
-  "FILE_EMAILS_PATH": "./data/emails.txt",
   "FILE_AVATARS_PATH": "./data/avatars.txt",
   "FILE_IMAGES_PATH": "./data/images.txt",
   "JWT_ACCESS_SECRET_DEFAULT": "access",
