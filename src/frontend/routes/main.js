@@ -2,7 +2,16 @@
 
 const {Router} = require(`express`);
 
-const {accountByIdMiddleware, checkAdminMiddleware, localsMiddleware, tokenDetailsMiddleware, unauthorizedMiddleware} = require(`../middleware`);
+const {
+  accountByIdMiddleware,
+  checkAdminMiddleware,
+  internalServerErrorMiddleware,
+  localsMiddleware,
+  notFoundMiddleware,
+  tokenDetailsMiddleware,
+  unauthorizedMiddleware
+} = require(`../middleware`);
+const notFoundRoute = require(`./404`);
 const articlesRoute = require(`./articles`);
 const categoriesRoute = require(`./categories`);
 const loginRoute = require(`./login`);
@@ -25,6 +34,9 @@ mainRoute.use(`/logout`, logoutRoute);
 mainRoute.use(`/my`, checkAdminMiddleware, myRoute);
 mainRoute.use(`/register`, unauthorizedMiddleware, registerRoute);
 mainRoute.use(`/search`, searchRoute);
+mainRoute.use(`/not-found`, notFoundRoute);
 mainRoute.get(`/`, getMainPage);
+mainRoute.use(notFoundMiddleware);
+mainRoute.use(internalServerErrorMiddleware);
 
 module.exports = mainRoute;

@@ -6,5 +6,5 @@ module.exports = (req, res, next) => {
     next();
     return;
   }
-  res.status(404).send(`NOT FOUND`);
+  res.redirect(`/not-found`);
 };
