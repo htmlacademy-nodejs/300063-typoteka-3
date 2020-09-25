@@ -42,8 +42,15 @@ module.exports = async (req, res) => {
     await db.RefreshToken.create({
       [ERefreshTokenFieldName.TOKEN]: refreshToken,
     });
-    res.cookie(`accessToken`, accessToken);
-    res.cookie(`refreshToken`, refreshToken);
+    res.cookie(`accessToken`, accessToken, {
+      maxAge: 1000 * 60 * 15,
+      sameSite: true,
+    });
+    res.cookie(`refreshToken`, refreshToken, {
+      maxAge: 24 * 60 * 60 * 1000,
+      httpOnly: true,
+      sameSite: true,
+    });
     return res.sendStatus(HttpCodes.OK);
   });
   return res.status(HttpCodes.OK).send();
