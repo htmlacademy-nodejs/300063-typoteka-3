@@ -2,7 +2,7 @@
 
 const {Router} = require(`express`);
 
-const {accountByTokenMiddleware, checkAdminMiddleware, localsMiddleware, unauthorizedMiddleware} = require(`../middleware`);
+const {accountByIdMiddleware, checkAdminMiddleware, localsMiddleware, tokenDetailsMiddleware, unauthorizedMiddleware} = require(`../middleware`);
 const articlesRoute = require(`./articles`);
 const categoriesRoute = require(`./categories`);
 const loginRoute = require(`./login`);
@@ -16,7 +16,8 @@ const {getMainPage} = require(`./methods`);
 const mainRoute = new Router();
 
 mainRoute.use(localsMiddleware);
-mainRoute.use(accountByTokenMiddleware);
+mainRoute.use(tokenDetailsMiddleware);
+mainRoute.use(accountByIdMiddleware);
 mainRoute.use(`/articles`, articlesRoute);
 mainRoute.use(`/categories`, checkAdminMiddleware, categoriesRoute);
 mainRoute.use(`/login`, unauthorizedMiddleware, loginRoute);

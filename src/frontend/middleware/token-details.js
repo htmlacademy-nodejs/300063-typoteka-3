@@ -8,15 +8,16 @@ const {accountAdapter} = require(`../adapters`);
 
 let JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || JWT_ACCESS_SECRET_DEFAULT;
 
-module.exports = (req, res, next) => {
+module.exports = async (req, res, next) => {
   const {accessToken} = req.cookies;
   if (!accessToken) {
-    res.redirect(`/login`);
+    next();
     return;
   }
 
-  jwt.verify(accessToken, JWT_ACCESS_SECRET, async (error) => {
+  await jwt.verify(accessToken, JWT_ACCESS_SECRET, async (error, accountData) => {
     if (!error) {
+      req.locals.accountData = accountData;
       next();
       return;
     }
@@ -26,10 +27,10 @@ module.exports = (req, res, next) => {
     if (refreshTokenRes.status === `failed`) {
       res.clearCookie(`accessToken`);
       res.clearCookie(`refreshToken`);
-      res.redirect(`/login`);
-    } else {
-      res.set(`set-cookie`, refreshTokenRes);
-      res.redirect(req.originalUrl);
+      next();
+      return;
     }
+    res.set(`set-cookie`, refreshTokenRes);
+    res.redirect(req.originalUrl);
   });
 };

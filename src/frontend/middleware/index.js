@@ -1,20 +1,20 @@
 'use strict';
 
-const accountByTokenMiddleware = require(`./account-by-token`);
-const authenticationJwtMiddleware = require(`./authenticate-jwt`);
+const accountByIdMiddleware = require(`./account-by-id`);
 const checkAdminMiddleware = require(`./check-admin`);
 const debugMiddleware = require(`./debug.middleware`);
 const localsMiddleware = require(`./locals`);
 const queryParamsMiddleware = require(`./query-params`);
+const tokenDetailsMiddleware = require(`./token-details`);
 const unauthorizedMiddleware = require(`./unauthorized`);
 
 
 module.exports = {
-  accountByTokenMiddleware,
-  authenticationJwtMiddleware,
+  accountByIdMiddleware,
   checkAdminMiddleware,
   debugMiddleware,
   localsMiddleware,
   queryParamsMiddleware,
+  tokenDetailsMiddleware,
   unauthorizedMiddleware,
 };
