@@ -1,7 +1,7 @@
 'use strict';
 
-const deletedAccount = require(`./account`);
+// const deletedAccount = require(`./account`);
 
 module.exports = {
-  deletedAccount,
+  // deletedAccount,
 };
