@@ -2,14 +2,17 @@
 
 const express = require(`express`);
 
+const {ExitCode} = require(`./params`);
+
 
 class ApiBuilder {
   constructor(config) {
     this._config = config;
     this._methods = [`get`, `post`, `put`, `delete`];
     this._build = this._build.bind(this);
-    this._buildRoutes = this._buildRoutes.bind(this);
+    this._setAppSettings = this._setAppSettings.bind(this);
     this._setAppMiddlewares = this._setAppMiddlewares.bind(this);
+    this._buildRoutes = this._buildRoutes.bind(this);
   }
 
   async getInstance() {
@@ -26,6 +29,31 @@ class ApiBuilder {
     this._app = null;
   }
 
+  async _build() {
+    this._prefix = this._config.prefix ? `/${this._config.prefix}` : ``;
+    await this._init();
+    this._setAppSettings(this._config.settings);
+    this._setAppMiddlewares(this._config.middlewares.before);
+    this._buildRoutes(this._config.routes);
+    this._setAppMiddlewares(this._config.middlewares.after);
+  }
+
+  async _init() {
+    if (this._config.init && this._config.init.async) {
+      this._config.init.async.forEach(async (func) => await func());
+    }
+    if (this._config.init && this._config.init.sync) {
+      this._config.init.sync.forEach((func) => func());
+    }
+  }
+
+  _setAppSettings(settings) {
+    if (!settings) {
+      return;
+    }
+    settings.forEach((setting) => this._app.set(...setting));
+  }
+
   _setAppMiddlewares(middlewares) {
     if (!middlewares) {
       return;
@@ -33,20 +61,11 @@ class ApiBuilder {
     middlewares.forEach((middleware) => this._app.use(middleware));
   }
 
-  async _build() {
-    this._prefix = this._config.prefix ? `/${this._config.prefix}` : ``;
-    await this._init();
-    this._setAppMiddlewares(this._config.middlewares.before);
-    this._buildRoutes(this._config.routes);
-    this._setAppMiddlewares(this._config.middlewares.after);
-  }
-
-  async _init() {
-    this._config.init.async.forEach(async (func) => await func());
-    this._config.init.sync.forEach((func) => func());
-  }
-
   _buildRoutes(routes, parentPath = this._prefix) {
+    if (!routes) {
+      console.error(`config.routes can't be empty`);
+      process.exit(ExitCode.ERROR);
+    }
     routes.forEach((route) => {
       route.path = `${parentPath}/${route.path}`;
       this._buildRoute(route);
@@ -58,6 +77,9 @@ class ApiBuilder {
 
   _buildRoute(route) {
     const {path, Component} = route;
+    if (!Component) {
+      return;
+    }
     const component = new Component();
     this._methods.forEach((method) => {
       if (!component[method]) {

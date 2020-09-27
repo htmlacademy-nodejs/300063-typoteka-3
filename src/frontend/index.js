@@ -12,13 +12,14 @@ const {debugMiddleware} = require(`./middleware`);
 const mainRoute = require(`./routes`);
 
 const app = express();
+
+app.set(`views`, path.resolve(__dirname, process.env.VIEW_DIR || DEFAULT_VIEW_DIR));
+app.set(`view engine`, `pug`);
+
 app.use(logger.expressPinoLogger);
 app.use(cookieParser());
 app.use(express.json());
 app.use(debugMiddleware);
-
-app.set(`views`, path.resolve(__dirname, process.env.VIEW_DIR || DEFAULT_VIEW_DIR));
-app.set(`view engine`, `pug`);
 
 app.use(express.static(path.resolve(__dirname, process.env.PUBLIC_DIR || DEFAULT_PUBLIC_DIR)));
 app.use(express.urlencoded({extended: false}));

@@ -11,15 +11,16 @@ class CommentAdapter {
   }
 
   async getListByArticleId(articleId) {
-    const res = await request.get(`articles/${articleId}/comments`);
+    const res = await request.get(`articles/${articleId}/`);
     return this._adaptComment(res.data);
   }
 
   async addItem(params) {
     const {text, articleId, accountId} = params;
-    const res = await request.post(`articles/${articleId}/comments`, {
+    const res = await request.post(`comments`, {
       text,
       accountId,
+      articleId,
     });
     return res.data;
   }
