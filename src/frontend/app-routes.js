@@ -17,7 +17,7 @@ const {
   PublicationsRoute,
   RegisterRoute,
   SearchRoute,
-} = require(`./experiment`);
+} = require(`./routes`);
 const {checkAdminMiddleware, queryParamsMiddleware, unauthorizedMiddleware} = require(`./middleware`);
 const {upload} = require(`./utils`);
 

@@ -9,7 +9,7 @@ block content
           form(action=`my/comments/${comment.id}` method='POST')
             li.publication__list-item
               .publication__header
-                img.publication__list-image(src=`img/${comment.account.avatar}` width='20' height='20' alt='Аватар пользователя')
+                img.publication__list-image(src=`img/${comment.account.avatar || `icons/smile.svg`}` width='20' height='20' alt='Аватар пользователя')
                 b.publication__list-name= comment.account.name
                 time.publication__item-time(datetime=comment.date.stamp)= `${comment.date.day}, ${comment.date.time}`
               a.publication__item-text(href='#')= comment.text
