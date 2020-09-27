@@ -3,80 +3,29 @@
 const request = require(`supertest`);
 const HttpCodes = require(`http-status-codes`);
 
-const apiServer = require(`../index`);
+const {getRandomString} = require(`../../utils`);
+const {api} = require(`../index`);
 
 
 const pathToCategories = `/api/categories`;
+const AVAILABLE_SYMBOLS = `abcdefghijklmnopqrstuvwxyz`;
 
-describe.skip(`Categories API end-points`, () => {
+describe(`Categories API end-points`, () => {
   let server = null;
 
   beforeAll(async () => {
-    server = await apiServer.getInstance();
+    server = await api.getInstance();
   });
 
   afterAll(async () => {
-    await apiServer.close();
+    await api.close();
     server = null;
   });
-
-  describe(`GET`, () => {
-    test(`When GET categories status code should be ${HttpCodes.OK}`, async () => {
-      const res = await request(server)
-        .get(pathToCategories);
-      expect(res.statusCode).toBe(HttpCodes.OK);
-    });
-  });
-
-  describe(`POST`, () => {
-    test(`When POST valid categories status code should be ${HttpCodes.CREATED}`, async () => {
-      const res = await request(server).post(pathToCategories).send({title: `test test`});
-      expect(res.statusCode).toBe(HttpCodes.CREATED);
-    });
-
-    test(`When POST empty object status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
-      const res = await request(server).post(pathToCategories).send({});
-      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
-    });
-
-    test(`When POST category with invalid title when length is less then 5 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
-      const category = {
-        title: new Array(4).fill(`i`).join(``)
-      };
-      const res = await request(server).post(pathToCategories).send(category);
-      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
-    });
-
-    test(`When POST category with valid title when length is equal 5 status code should be ${HttpCodes.CREATED}`, async () => {
-      const category = {
-        title: new Array(5).fill(`i`).join(``)
-      };
-      const res = await request(server).post(pathToCategories).send(category);
-      expect(res.statusCode).toBe(HttpCodes.CREATED);
-    });
-
-    test(`When POST category with invalid title when length is great then 30 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
-      const category = {
-        title: new Array(31).fill(`i`).join(``)
-      };
-      const res = await request(server).post(pathToCategories).send(category);
-      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
-    });
-
-    test(`When POST category with valid title when length is equal 30 status code should be ${HttpCodes.CREATED}`, async () => {
-      const category = {
-        title: new Array(30).fill(`i`).join(``)
-      };
-      const res = await request(server).post(pathToCategories).send(category);
-      expect(res.statusCode).toBe(HttpCodes.CREATED);
-    });
-  });
-
 
   describe(`PUT`, () => {
     let category = null;
     const categoryParams = {
-      title: new Array(10).fill(`i`).join(``)
+      title: getRandomString(AVAILABLE_SYMBOLS, 10),
     };
 
     beforeAll(async () => {
@@ -86,7 +35,7 @@ describe.skip(`Categories API end-points`, () => {
 
     test(`When PUT category with invalid categoryId status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
       const updatedCategoryParams = {
-        title: new Array(10).fill(`i`).join(``)
+        title: getRandomString(AVAILABLE_SYMBOLS, 10),
       };
       const res = await request(server).put(`${pathToCategories}/invalid-category-id`).send(updatedCategoryParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
@@ -94,7 +43,7 @@ describe.skip(`Categories API end-points`, () => {
 
     test(`When PUT category with invalid title when length is less then 5 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
       const updatedCategoryParams = {
-        title: new Array(4).fill(`i`).join(``)
+        title: getRandomString(AVAILABLE_SYMBOLS, 4),
       };
       const res = await request(server).put(`${pathToCategories}/${category.id}`).send(updatedCategoryParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
@@ -102,7 +51,7 @@ describe.skip(`Categories API end-points`, () => {
 
     test(`When PUT category with valid title when length is equal 5 status code should be ${HttpCodes.OK}`, async () => {
       const updatedCategoryParams = {
-        title: new Array(5).fill(`i`).join(``)
+        title: getRandomString(AVAILABLE_SYMBOLS, 5),
       };
       const res = await request(server).put(`${pathToCategories}/${category.id}`).send(updatedCategoryParams);
       expect(res.statusCode).toBe(HttpCodes.OK);
@@ -110,7 +59,7 @@ describe.skip(`Categories API end-points`, () => {
 
     test(`When PUT category with invalid title when length is great then 30 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
       const updatedCategoryParams = {
-        title: new Array(31).fill(`i`).join(``)
+        title: getRandomString(AVAILABLE_SYMBOLS, 31),
       };
       const res = await request(server).put(`${pathToCategories}/${category.id}`).send(updatedCategoryParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
@@ -118,7 +67,7 @@ describe.skip(`Categories API end-points`, () => {
 
     test(`When PUT category with valid title when length is equal 30 status code should be ${HttpCodes.OK}`, async () => {
       const updatedCategoryParams = {
-        title: new Array(30).fill(`i`).join(``)
+        title: getRandomString(AVAILABLE_SYMBOLS, 30),
       };
       const res = await request(server).put(`${pathToCategories}/${category.id}`).send(updatedCategoryParams);
       expect(res.statusCode).toBe(HttpCodes.OK);
@@ -129,7 +78,7 @@ describe.skip(`Categories API end-points`, () => {
   describe(`DELETE`, () => {
     let category = null;
     const categoryParams = {
-      title: new Array(10).fill(`i`).join(``)
+      title: getRandomString(AVAILABLE_SYMBOLS, 10),
     };
 
     beforeAll(async () => {

@@ -22,7 +22,7 @@ const getUserDate = () => {
   };
 };
 
-describe(`User API end-points`, () => {
+describe.skip(`User API end-points`, () => {
   let server = null;
 
   beforeAll(async () => {

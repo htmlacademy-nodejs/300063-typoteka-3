@@ -3,7 +3,7 @@
 const HttpCodes = require(`http-status-codes`);
 const request = require(`supertest`);
 
-const apiServer = require(`../index`);
+const {api} = require(`../index`);
 
 
 const pathToComments = `/api/comments`;
@@ -21,44 +21,28 @@ const commentData = {
   text: `Новый комментарий`,
 };
 
-
-const commentLimit = 5;
-
-describe.skip(`Comments API end-points`, () => {
+describe(`Comments API end-points`, () => {
   let server = null;
 
   beforeAll(async () => {
-    server = await apiServer.getInstance();
+    server = await api.getInstance();
   });
 
   afterAll(async () => {
-    await apiServer.close();
+    await api.close();
     server = null;
   });
 
-  describe(`GET`, () => {
-    test(`When GET comment list status code should be ${HttpCodes.OK}`, async () => {
-      const res = await request(server).get(pathToComments);
-      expect(res.statusCode).toBe(HttpCodes.OK);
-    });
-    test(`When GET comment list with limit status code should be ${HttpCodes.OK}`, async () => {
-      const res = await request(server).get(`${pathToComments}?limit=${commentLimit}`);
-      expect(res.statusCode).toBe(HttpCodes.OK);
-    });
-
-    test(`When GET comment list with limit should return correct count of comments`, async () => {
-      const res = await request(server).get(`${pathToComments}?limit=${commentLimit}`);
-      expect(res.body.length).toBe(commentLimit);
-    });
-  });
-
-  describe(`DELETE`, () => {
+  describe.only(`DELETE`, () => {
     let commentId = null;
 
     beforeEach(async () => {
-      const articleRes = await request(server).post(pathToArticles).send(articleData);
-      const article = articleRes.body;
-      const postCommentResponse = await request(server).post(`${pathToArticles}/${article.id}/comments`).send(commentData);
+      const postArticleResponse = await request(server).post(pathToArticles).send(articleData);
+      const article = postArticleResponse.body;
+      const postCommentResponse = await request(server).post(pathToComments).send({
+        ...commentData,
+        articleId: article.id,
+      });
       commentId = postCommentResponse.body.id;
     });
 

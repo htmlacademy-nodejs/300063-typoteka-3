@@ -26,7 +26,7 @@ const newArticleData = {
   date: `2020-09-10`,
 };
 
-describe(`Article ID API end-points`, () => {
+describe.skip(`Article ID API end-points`, () => {
   let server = null;
   let article = null;
 

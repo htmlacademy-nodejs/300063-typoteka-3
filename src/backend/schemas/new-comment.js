@@ -18,7 +18,11 @@ module.exports = Joi.object({
   [EForeignKey.ACCOUNT_ID]: Joi.number()
     .required()
     .messages({
-      'any.required': schemaMessages.Comment.REQUIRED_FIELD,
-      'string.empty': schemaMessages.Comment.REQUIRED_FIELD,
+      'any.required': `Поле accountId обязательно для заполнения`,
+    }),
+  [EForeignKey.ARTICLE_ID]: Joi.number()
+    .required()
+    .messages({
+      'any.required': `Поле articleId обязательно для заполнения`,
     }),
 });

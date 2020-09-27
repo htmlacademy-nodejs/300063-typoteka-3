@@ -23,7 +23,7 @@ const commentData = {
 };
 
 
-describe(`Article comments API end-points`, () => {
+describe.skip(`Article comments API end-points`, () => {
   let article = null;
   let server = null;
 

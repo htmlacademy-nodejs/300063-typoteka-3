@@ -4,8 +4,8 @@ const {parse} = require(`cookie`);
 const HttpCodes = require(`http-status-codes`);
 const request = require(`supertest`);
 
-const {getRandomString, getRandomEmail} = require(`../../../utils`);
-const apiServer = require(`../../index`);
+const {getRandomString, getRandomEmail} = require(`../../utils`);
+const {api} = require(`../index`);
 
 
 const pathToUser = `/api/user`;
@@ -30,22 +30,22 @@ const auth = {
   password: userDate.password,
 };
 
-describe.skip(`Auth API end-points`, () => {
+describe(`Auth API end-points`, () => {
   let server = null;
   let cookies = null;
 
   beforeAll(async () => {
-    server = await apiServer.getInstance();
+    server = await api.getInstance();
     await request(server).post(pathToUser).send(userDate);
   });
 
   beforeEach(async () => {
-    const authRes = await request(server).post(pathToLogin).send(auth);
-    cookies = authRes.headers[`set-cookie`];
+    const postAuthRes = await request(server).post(pathToLogin).send(auth);
+    cookies = postAuthRes.headers[`set-cookie`];
   });
 
   afterAll(async () => {
-    await apiServer.close();
+    await api.close();
     server = null;
   });
 
