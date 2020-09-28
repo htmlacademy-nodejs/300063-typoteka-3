@@ -12,17 +12,17 @@ module.exports = Joi.object({
     .required()
     .messages({
       'string.max': schemaMessages.Comment.MAX_TEXT_LENGTH,
-      'any.required': schemaMessages.Comment.REQUIRED_FIELD,
-      'string.empty': schemaMessages.Comment.REQUIRED_FIELD,
+      'any.required': schemaMessages.Comment.REQUIRED_TEXT_FIELD,
+      'string.empty': schemaMessages.Comment.REQUIRED_TEXT_FIELD,
     }),
   [EForeignKey.ACCOUNT_ID]: Joi.number()
     .required()
     .messages({
-      'any.required': `Поле accountId обязательно для заполнения`,
+      'any.required': schemaMessages.Comment.REQUIRED_ACCOUNT_ID_FIELD,
     }),
   [EForeignKey.ARTICLE_ID]: Joi.number()
     .required()
     .messages({
-      'any.required': `Поле articleId обязательно для заполнения`,
+      'any.required': schemaMessages.Comment.REQUIRED_ARTICLE_ID_FIELD,
     }),
 });

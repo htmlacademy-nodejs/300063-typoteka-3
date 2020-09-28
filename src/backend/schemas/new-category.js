@@ -12,8 +12,8 @@ module.exports = Joi.object({
     .max(30)
     .required()
     .messages({
-      'any.required': schemaMessages.Category.REQUIRED_FIELD,
-      'string.empty': schemaMessages.Category.REQUIRED_FIELD,
+      'any.required': schemaMessages.Category.REQUIRED_TITLE_FIELD,
+      'string.empty': schemaMessages.Category.REQUIRED_TITLE_FIELD,
       'string.min': schemaMessages.Category.MIN_TITLE_LENGTH,
       'string.max': schemaMessages.Category.MAX_TITLE_LENGTH,
     }),

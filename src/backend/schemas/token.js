@@ -3,12 +3,14 @@
 const Joi = require(`@hapi/joi`);
 
 const {ERefreshTokenFieldName} = require(`../models`);
+const {schemaMessages} = require(`../messages`);
+
 
 module.exports = Joi.object({
   [ERefreshTokenFieldName.TOKEN]: Joi.string()
     .required()
     .messages({
-      'string.required': `Необходимо указать token`,
-      'string.empty': `Значение token не может быть пустым`,
+      'string.required': schemaMessages.Token.REQUIRED_TOKEN_FIELD,
+      'string.empty': schemaMessages.Token.REQUIRED_TOKEN_FIELD,
     }),
 });
