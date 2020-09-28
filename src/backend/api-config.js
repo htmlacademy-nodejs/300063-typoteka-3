@@ -5,7 +5,7 @@ const express = require(`express`);
 const HttpCodes = require(`http-status-codes`);
 
 const {initDb, disconnectDb} = require(`./db`);
-const {debugMiddleware} = require(`./middleware`);
+const {debug} = require(`./middleware`);
 const {logger} = require(`./utils`);
 const apiRoutes = require(`./api-routes`);
 
@@ -25,7 +25,7 @@ module.exports = {
       cookieParser(),
       logger.expressPinoLogger,
       express.json(),
-      debugMiddleware
+      debug
     ],
     after: [
       (req, res) => {

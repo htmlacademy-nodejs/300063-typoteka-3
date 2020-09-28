@@ -13,7 +13,7 @@ const {
   ApiLogout,
   ApiRefresh,
 } = require(`./routes`);
-const {authenticationMiddleware, authenticationJwtMiddleware, schemaValidator, paramsValidator} = require(`./middleware`);
+const {authentication, authenticationJwt, schemaValidator, paramsValidator} = require(`./middleware`);
 const {newArticleSchema, newCategorySchema, newComment, newUser, loginSchema, updatedArticleSchema} = require(`./schemas`);
 const {getRouteParamsValidationSchema} = require(`./utils`);
 
@@ -99,14 +99,14 @@ module.exports = [
         path: `login`,
         Component: ApiLogin,
         middleware: {
-          post: [schemaValidator(loginSchema), authenticationMiddleware],
+          post: [schemaValidator(loginSchema), authentication],
         },
       },
       {
         path: `logout`,
         Component: ApiLogout,
         middleware: {
-          post: [authenticationJwtMiddleware],
+          post: [authenticationJwt],
         },
       },
       {

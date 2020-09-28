@@ -1,7 +1,7 @@
 'use strict';
 
 const {logger} = require(`../../utils`);
-const {accountAdapter, FileAdapter} = require(`../../adapters`);
+const {accountAdapter} = require(`../../adapters`);
 
 
 class RegisterRoute {
@@ -31,7 +31,6 @@ class RegisterRoute {
   }
 
   async post(req, res) {
-    await this._setFileName(req);
     const {firstname, lastname, email, password, repeatedPassword, avatar} = req.body;
     const userParams = {
       firstname,
@@ -56,13 +55,6 @@ class RegisterRoute {
     }
     res.redirect(path);
     logger.endRequest(req, res);
-  }
-
-  async _setFileName(req) {
-    if (!req.file) {
-      return;
-    }
-    req.body.avatar = await FileAdapter.download(req.file);
   }
 }
 

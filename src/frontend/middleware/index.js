@@ -1,24 +1,28 @@
 'use strict';
 
-const accountByIdMiddleware = require(`./account-by-id`);
-const checkAdminMiddleware = require(`./check-admin`);
-const debugMiddleware = require(`./debug.middleware`);
-const internalServerErrorMiddleware = require(`./internale-server-error`);
-const localsMiddleware = require(`./locals`);
-const notFoundMiddleware = require(`./not-found`);
-const queryParamsMiddleware = require(`./query-params`);
-const tokenDetailsMiddleware = require(`./token-details`);
-const unauthorizedMiddleware = require(`./unauthorized`);
+const getAccountById = require(`./account-by-id`);
+const checkAdmin = require(`./check-admin`);
+const debug = require(`./debug.middleware`);
+const redirectToInternalServerError = require(`./internale-server-error`);
+const initializeLocals = require(`./locals`);
+const redirectToNotFound = require(`./not-found`);
+const parseQueryParams = require(`./query-params`);
+const setUniqueFileName = require(`./set-unique-file-name`);
+const decryptTokenDetails = require(`./token-details`);
+const checkUnauthorized = require(`./unauthorized`);
+const uploadFile = require(`./upload`);
 
 
 module.exports = {
-  accountByIdMiddleware,
-  checkAdminMiddleware,
-  debugMiddleware,
-  internalServerErrorMiddleware,
-  localsMiddleware,
-  notFoundMiddleware,
-  queryParamsMiddleware,
-  tokenDetailsMiddleware,
-  unauthorizedMiddleware,
+  getAccountById,
+  checkAdmin,
+  debug,
+  redirectToInternalServerError,
+  initializeLocals,
+  redirectToNotFound,
+  parseQueryParams,
+  setUniqueFileName,
+  decryptTokenDetails,
+  checkUnauthorized,
+  uploadFile,
 };

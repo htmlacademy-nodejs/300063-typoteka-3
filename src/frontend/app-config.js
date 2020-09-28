@@ -8,12 +8,12 @@ const {json, static: staticMiddleware, urlencoded} = require(`express`);
 const {DEFAULT_VIEW_DIR, DEFAULT_PUBLIC_DIR} = require(`../common/params`);
 const appRoutes = require(`./app-routes`);
 const {
-  accountByIdMiddleware,
-  debugMiddleware,
-  internalServerErrorMiddleware,
-  localsMiddleware,
-  notFoundMiddleware,
-  tokenDetailsMiddleware,
+  getAccountById,
+  debug,
+  redirectToInternalServerError,
+  initializeLocals,
+  redirectToNotFound,
+  decryptTokenDetails,
 } = require(`./middleware`);
 const {logger} = require(`./utils`);
 
@@ -28,16 +28,16 @@ module.exports = {
       logger.expressPinoLogger,
       cookieParser(),
       json(),
-      debugMiddleware,
+      debug,
       staticMiddleware(path.resolve(__dirname, process.env.PUBLIC_DIR || DEFAULT_PUBLIC_DIR)),
       urlencoded({extended: false}),
-      localsMiddleware,
-      tokenDetailsMiddleware,
-      accountByIdMiddleware
+      initializeLocals,
+      decryptTokenDetails,
+      getAccountById
     ],
     after: [
-      notFoundMiddleware,
-      internalServerErrorMiddleware,
+      redirectToNotFound,
+      redirectToInternalServerError,
     ],
   },
   routes: appRoutes,

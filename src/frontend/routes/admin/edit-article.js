@@ -1,6 +1,6 @@
 'use strict';
 
-const {articleAdapter, FileAdapter, categoryAdapter} = require(`../../adapters`);
+const {articleAdapter, categoryAdapter} = require(`../../adapters`);
 const {logger, transformDate} = require(`../../utils`);
 
 
@@ -45,18 +45,8 @@ class EditArticleRoute {
   }
 
   async post(req, res) {
-    await this._setFileName(req, res);
     await this._updateArticleItemAndRedirect(req, res);
     logger.endRequest(req, res);
-  }
-
-  async _setFileName(req) {
-    if (!req.file) {
-      const currentArticleResponse = await articleAdapter.getItemById(req.params.articleId);
-      req.body.image = req.body.image || currentArticleResponse.image;
-      return;
-    }
-    req.body.image = await FileAdapter.download(req.file);
   }
 
   async _updateArticleItemAndRedirect(req, res) {

@@ -1,17 +1,12 @@
 'use strict';
 
 const request = require(`../request`);
-const {dateAdapter} = require(`../date`);
+const {adaptDate} = require(`../../utils`);
 
 
 class CommentAdapter {
   async getList(params) {
     const res = await request.get(`comments`, params);
-    return this._adaptComment(res.data);
-  }
-
-  async getListByArticleId(articleId) {
-    const res = await request.get(`articles/${articleId}/`);
     return this._adaptComment(res.data);
   }
 
@@ -33,7 +28,7 @@ class CommentAdapter {
   _adaptComment(comments) {
     return comments.map((comment) => ({
       ...comment,
-      date: dateAdapter.get(comment.date),
+      date: adaptDate(comment.date),
     }));
   }
 }

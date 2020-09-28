@@ -1,7 +1,7 @@
 'use strict';
 
-const {articleAdapter, FileAdapter, categoryAdapter, dateAdapter} = require(`../../adapters`);
-const {logger, transformDate} = require(`../../utils`);
+const {articleAdapter, categoryAdapter} = require(`../../adapters`);
+const {logger, transformDate, adaptDate} = require(`../../utils`);
 
 
 class AddArticleRoute {
@@ -15,7 +15,7 @@ class AddArticleRoute {
     const categories = await categoryAdapter.getList();
     if (!article) {
       article = {
-        date: dateAdapter.get(new Date().toISOString()).day,
+        date: adaptDate(new Date().toISOString()).day,
       };
     }
     const content = {
@@ -34,16 +34,8 @@ class AddArticleRoute {
   }
 
   async post(req, res) {
-    await this._setFileName(req, res);
     await this._addArticleItemAndRedirectToMyArticles(req, res);
     logger.endRequest(req, res);
-  }
-
-  async _setFileName(req) {
-    if (!req.file) {
-      return;
-    }
-    req.body.image = await FileAdapter.download(req.file);
   }
 
   async _addArticleItemAndRedirectToMyArticles(req, res) {

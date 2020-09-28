@@ -18,8 +18,13 @@ const {
   RegisterRoute,
   SearchRoute,
 } = require(`./routes`);
-const {checkAdminMiddleware, queryParamsMiddleware, unauthorizedMiddleware} = require(`./middleware`);
-const {upload} = require(`./utils`);
+const {
+  checkAdmin,
+  parseQueryParams,
+  setUniqueFileName,
+  checkUnauthorized,
+  uploadFile,
+} = require(`./middleware`);
 
 
 module.exports = [
@@ -34,18 +39,24 @@ module.exports = [
         path: `add`,
         Component: AddArticleRoute,
         middleware: {
-          all: [checkAdminMiddleware],
-          get: [queryParamsMiddleware([`errorMessages`, `article`])],
-          post: [upload(`picture`)],
+          all: [checkAdmin],
+          get: [parseQueryParams([`errorMessages`, `article`])],
+          post: [
+            uploadFile(`picture`),
+            setUniqueFileName(`image`)
+          ],
         },
       },
       {
         path: `edit/:articleId`,
         Component: EditArticleRoute,
         middleware: {
-          all: [checkAdminMiddleware],
-          get: [queryParamsMiddleware([`errorMessages`, `article`])],
-          post: [upload(`picture`)],
+          all: [checkAdmin],
+          get: [parseQueryParams([`errorMessages`, `article`])],
+          post: [
+            uploadFile(`picture`),
+            setUniqueFileName(`image`)
+          ],
         },
       },
       {
@@ -56,7 +67,7 @@ module.exports = [
         path: `:articleId`,
         Component: ArticleRoute,
         middleware: {
-          get: [queryParamsMiddleware([`errorMessages`, `comment`])]
+          get: [parseQueryParams([`errorMessages`, `comment`])]
         }
       },
     ],
@@ -65,8 +76,8 @@ module.exports = [
     path: `categories`,
     Component: CategoriesRoute,
     middleware: {
-      all: [checkAdminMiddleware],
-      get: [queryParamsMiddleware([`updatedCategory`, `createdCategory`, `errorMessages`])],
+      all: [checkAdmin],
+      get: [parseQueryParams([`updatedCategory`, `createdCategory`, `errorMessages`])],
     },
     children: [
       {
@@ -79,7 +90,7 @@ module.exports = [
     path: `login`,
     Component: LoginRoute,
     middleware: {
-      all: [unauthorizedMiddleware],
+      all: [checkUnauthorized],
     },
   },
   {
@@ -90,7 +101,7 @@ module.exports = [
     path: `my`,
     Component: PublicationsRoute,
     middleware: {
-      all: [checkAdminMiddleware],
+      all: [checkAdmin],
 
     },
     children: [
@@ -110,9 +121,12 @@ module.exports = [
     path: `register`,
     Component: RegisterRoute,
     middleware: {
-      all: [unauthorizedMiddleware],
-      get: [queryParamsMiddleware([`errorMessages`, `user`])],
-      post: [upload(`picture`)],
+      all: [checkUnauthorized],
+      get: [parseQueryParams([`errorMessages`, `user`])],
+      post: [
+        uploadFile(`picture`),
+        setUniqueFileName(`avatar`)
+      ],
     }
   },
   {
