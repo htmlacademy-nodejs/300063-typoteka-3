@@ -3,22 +3,25 @@
 const request = require(`supertest`);
 const HttpCodes = require(`http-status-codes`);
 
-const {getRandomString} = require(`../../utils`);
 const {apiContainer} = require(`../../api`);
+const {initDb} = require(`../../db`);
+const {getRandomString} = require(`../../utils`);
 
 
 const pathToCategories = `/api/categories`;
 const AVAILABLE_SYMBOLS = `abcdefghijklmnopqrstuvwxyz`;
 
+
 describe(`Categories API end-points`, () => {
   let server = null;
 
   beforeAll(async () => {
+    await initDb(true);
     server = await apiContainer.getInstance();
   });
 
   afterAll(async () => {
-    await apiContainer.close();
+    await apiContainer.destroyInstance();
     server = null;
   });
 

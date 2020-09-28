@@ -3,8 +3,9 @@
 const HttpCodes = require(`http-status-codes`);
 const request = require(`supertest`);
 
-const {getRandomString} = require(`../../utils`);
 const {apiContainer} = require(`../../api`);
+const {db, initDb} = require(`../../db`);
+const {getRandomString} = require(`../../utils`);
 
 
 const pathToArticles = `/api/articles`;
@@ -28,11 +29,20 @@ const newArticleData = {
   date: `2020-09-10`,
 };
 
+const initTest = async () => {
+  await initDb(true);
+  const categoriesForDbTable = new Array(5)
+    .fill(``)
+    .map(() => ({title: getRandomString(AVAILABLE_SYMBOLS, 10)}));
+  await db.Category.bulkCreate(categoriesForDbTable);
+};
+
 describe(`Article ID API end-points`, () => {
   let server = null;
   let article = null;
 
   beforeAll(async () => {
+    await initTest();
     server = await apiContainer.getInstance();
   });
 
@@ -42,7 +52,7 @@ describe(`Article ID API end-points`, () => {
   });
 
   afterAll(async () => {
-    await apiContainer.close();
+    await apiContainer.destroyInstance();
     server = null;
   });
 

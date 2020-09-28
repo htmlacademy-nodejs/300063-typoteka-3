@@ -1,10 +1,10 @@
 'use strict';
 
-const ApiBuilder = require(`./api-builder`);
+const AppBuilder = require(`./app-builder`);
 const LoggerCenter = require(`./logger-center`);
 
 
 module.exports = {
-  ApiBuilder,
+  AppBuilder,
   LoggerCenter,
 };

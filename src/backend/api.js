@@ -1,9 +1,9 @@
 'use strict';
 
-const {ApiBuilder} = require(`../common`);
+const {AppBuilder} = require(`../common`);
 const apiConfig = require(`./api-config`);
 
-const apiContainer = new ApiBuilder(apiConfig);
+const apiContainer = new AppBuilder(apiConfig);
 
 module.exports = {
   apiContainer,

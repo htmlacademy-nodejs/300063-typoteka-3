@@ -1,12 +1,12 @@
 'use strict';
 
-const {ApiBuilder} = require(`../common`);
+const {AppBuilder} = require(`../common`);
 const {DEFAULT_FRONTEND_PORT} = require(`../common/params`);
 const appConfig = require(`./app-config`);
 const {logger} = require(`./utils`);
 
 
-const appContainer = new ApiBuilder(appConfig);
+const appContainer = new AppBuilder(appConfig);
 (async () => {
   const app = await appContainer.getInstance();
 

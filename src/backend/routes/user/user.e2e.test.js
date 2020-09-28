@@ -3,8 +3,9 @@
 const HttpCodes = require(`http-status-codes`);
 const request = require(`supertest`);
 
-const {getRandomString, getRandomEmail} = require(`../../utils`);
 const {apiContainer} = require(`../../api`);
+const {initDb} = require(`../../db`);
+const {getRandomString, getRandomEmail} = require(`../../utils`);
 
 
 const pathToUser = `/api/user`;
@@ -26,11 +27,12 @@ describe(`User API end-points`, () => {
   let server = null;
 
   beforeAll(async () => {
+    await initDb(true);
     server = await apiContainer.getInstance();
   });
 
   afterAll(async () => {
-    await apiContainer.close();
+    await apiContainer.destroyInstance();
     server = null;
   });
 

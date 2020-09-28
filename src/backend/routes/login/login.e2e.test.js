@@ -4,8 +4,9 @@ const {parse} = require(`cookie`);
 const HttpCodes = require(`http-status-codes`);
 const request = require(`supertest`);
 
-const {getRandomString, getRandomEmail} = require(`../../utils`);
 const {apiContainer} = require(`../../api`);
+const {initDb} = require(`../../db`);
+const {getRandomString, getRandomEmail} = require(`../../utils`);
 
 
 const pathToUser = `/api/user`;
@@ -32,12 +33,13 @@ describe(`Auth API end-points`, () => {
   let server = null;
 
   beforeAll(async () => {
+    await initDb(true);
     server = await apiContainer.getInstance();
     await request(server).post(pathToUser).send(userDate);
   });
 
   afterAll(async () => {
-    await apiContainer.close();
+    await apiContainer.destroyInstance();
     server = null;
   });
 
