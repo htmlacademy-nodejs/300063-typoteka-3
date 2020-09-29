@@ -9,7 +9,6 @@ const {
   ECommentFieldName,
   EForeignKey,
 } = require(`../../models`);
-const {deletedAccount} = require(`../../placeholders`);
 const {logger} = require(`../../utils`);
 
 
@@ -98,26 +97,19 @@ class ApiComments {
   }
 
   _adaptComments(comments) {
-    return comments.map((comment) => {
-      let account = deletedAccount;
-      if (comment[EModelName.ACCOUNTS]) {
-        account = {
-          id: comment[EModelName.ACCOUNTS][EAccountFieldName.ID],
-          firstname: comment[EModelName.ACCOUNTS][EAccountFieldName.FIRSTNAME],
-          lastname: comment[EModelName.ACCOUNTS][EAccountFieldName.LASTNAME],
-          email: comment[EModelName.ACCOUNTS][EAccountFieldName.EMAIL],
-          avatar: comment[EModelName.ACCOUNTS][EAccountFieldName.AVATAR],
-        };
-      }
-
-      return {
-        id: comment[ECommentFieldName.ID],
-        text: comment[ECommentFieldName.TEXT],
-        date: comment[ECommentFieldName.DATE],
-        articleId: comment[EForeignKey.ARTICLE_ID],
-        account,
-      };
-    });
+    return comments.map((comment) => ({
+      id: comment[ECommentFieldName.ID],
+      text: comment[ECommentFieldName.TEXT],
+      date: comment[ECommentFieldName.DATE],
+      articleId: comment[EForeignKey.ARTICLE_ID],
+      account: {
+        id: comment[EModelName.ACCOUNTS][EAccountFieldName.ID],
+        firstname: comment[EModelName.ACCOUNTS][EAccountFieldName.FIRSTNAME],
+        lastname: comment[EModelName.ACCOUNTS][EAccountFieldName.LASTNAME],
+        email: comment[EModelName.ACCOUNTS][EAccountFieldName.EMAIL],
+        avatar: comment[EModelName.ACCOUNTS][EAccountFieldName.AVATAR],
+      },
+    }));
   }
 }
 
