@@ -1,7 +1,8 @@
 'use strict';
 
-const {logger} = require(`../../utils`);
 const {commentAdapter} = require(`../../adapters`);
+const routeName = require(`../../route-name`);
+const {logger} = require(`../../utils`);
 
 class CommentRoute {
   constructor() {
@@ -15,7 +16,7 @@ class CommentRoute {
     if (action === `delete`) {
       await commentAdapter.deleteItem(commentId);
     }
-    res.redirect(`/my/comments`);
+    res.redirect(`/${routeName.MY}/${routeName.COMMENTS}`);
     logger.endRequest(req, res);
   }
 }

@@ -3,6 +3,7 @@
 const HttpCodes = require(`http-status-codes`);
 
 const {categoryAdapter} = require(`../../adapters`);
+const routeName = require(`../../route-name`);
 const {logger} = require(`../../utils`);
 
 
@@ -34,14 +35,14 @@ class CategoryRoute {
     };
     const updatedCategoryRes = await categoryAdapter.updateItem(categoryParams);
 
-    let path = `/categories`;
+    let path = `/${routeName.CATEGORIES}`;
     if (updatedCategoryRes.content && updatedCategoryRes.content.errorMessages) {
       const queryParams = {
         updatedCategory: categoryParams,
         errorMessages: updatedCategoryRes.content.errorMessages,
       };
       const query = encodeURIComponent(JSON.stringify(queryParams));
-      path = `/categories?params=${query}`;
+      path = `/${routeName.CATEGORIES}?params=${query}`;
     }
     res.redirect(path);
   }
@@ -49,7 +50,7 @@ class CategoryRoute {
   async _deleteCategory(req, res) {
     const {categoryId} = req.params;
     await categoryAdapter.deleteItem(categoryId);
-    res.redirect(`/categories`);
+    res.redirect(`/${routeName.CATEGORIES}`);
   }
 }
 

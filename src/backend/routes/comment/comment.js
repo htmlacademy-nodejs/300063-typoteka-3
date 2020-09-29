@@ -21,7 +21,7 @@ class ApiComment {
     if (articleDeletedCount > 0) {
       res.status(HttpCodes.NO_CONTENT).send();
     } else {
-      res.status(HttpCodes.BAD_REQUEST).send({message: `Comment with ${commentId} ID isn't exist`});
+      res.status(HttpCodes.BAD_REQUEST).send({message: `Комментария с id не существует ${commentId}`});
     }
     logger.endRequest(req, res);
   }

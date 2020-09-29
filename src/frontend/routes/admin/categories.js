@@ -1,6 +1,7 @@
 'use strict';
 
 const {categoryAdapter} = require(`../../adapters`);
+const routeName = require(`../../route-name`);
 const {logger} = require(`../../utils`);
 
 
@@ -29,14 +30,14 @@ class CategoriesRoute {
     const {title} = req.body;
     const categoryParams = {title};
     const createdCategoryRes = await categoryAdapter.addItem(categoryParams);
-    let path = `/categories`;
+    let path = `/${routeName.CATEGORIES}`;
     if (createdCategoryRes.content && createdCategoryRes.content.errorMessages) {
       const queryParams = {
         createdCategory: categoryParams,
         errorMessages: createdCategoryRes.content.errorMessages,
       };
       const query = encodeURIComponent(JSON.stringify(queryParams));
-      path = `/categories?params=${query}`;
+      path = `/${routeName.CATEGORIES}?params=${query}`;
     }
     res.redirect(path);
     logger.endRequest(req, res);

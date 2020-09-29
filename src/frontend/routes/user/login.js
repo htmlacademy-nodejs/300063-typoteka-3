@@ -1,6 +1,7 @@
 'use strict';
 
 const {accountAdapter} = require(`../../adapters`);
+const routeName = require(`../../route-name`);
 const {logger} = require(`../../utils`);
 
 
@@ -29,10 +30,10 @@ class LoginRoute {
       password,
     });
     if (loginCookies.status === `failed`) {
-      res.redirect(`/login`);
+      res.redirect(`/${routeName.LOGIN}`);
     }
     res.set(`set-cookie`, loginCookies);
-    res.redirect(`/`);
+    res.redirect(routeName.MAIN);
     logger.endRequest(req, res);
   }
 }

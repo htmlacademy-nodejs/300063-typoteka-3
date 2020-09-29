@@ -23,31 +23,25 @@ class ApiComments {
     let status = isNotArticleError ? HttpCodes.OK : HttpCodes.BAD_REQUEST;
     let content = isNotArticleError
       ? await this._getComments(req)
-      : `Article with ${req.params.articleId} ID isn't exist`;
+      : `Публикации с id ${req.params.articleId} не существует`;
     res.status(status).send(content);
     logger.endRequest(req, res);
   }
 
   async post(req, res) {
     const {text, accountId, articleId} = req.body;
-    let status = HttpCodes.BAD_REQUEST;
-    let content = `Text field can't be empty`;
-    if (text) {
-      status = HttpCodes.CREATED;
-      const comment = await db.Comment.create({
-        [ECommentFieldName.TEXT]: text,
-        [EForeignKey.ARTICLE_ID]: articleId,
-        [EForeignKey.ACCOUNT_ID]: accountId,
-      });
-      content = {
-        [ECommentFieldName.ID]: comment[ECommentFieldName.ID],
-        [ECommentFieldName.TEXT]: comment[ECommentFieldName.TEXT],
-        date: comment[ECommentFieldName.DATE],
-        [EForeignKey.ACCOUNT_ID]: comment[EForeignKey.ACCOUNT_ID],
-        [EForeignKey.ARTICLE_ID]: comment[EForeignKey.ARTICLE_ID],
-      };
-    }
-    res.status(status).send(content);
+    const comment = await db.Comment.create({
+      [ECommentFieldName.TEXT]: text,
+      [EForeignKey.ARTICLE_ID]: articleId,
+      [EForeignKey.ACCOUNT_ID]: accountId,
+    });
+    res.status(HttpCodes.CREATED).send({
+      [ECommentFieldName.ID]: comment[ECommentFieldName.ID],
+      [ECommentFieldName.TEXT]: comment[ECommentFieldName.TEXT],
+      date: comment[ECommentFieldName.DATE],
+      [EForeignKey.ACCOUNT_ID]: comment[EForeignKey.ACCOUNT_ID],
+      [EForeignKey.ARTICLE_ID]: comment[EForeignKey.ARTICLE_ID],
+    });
     logger.endRequest(req, res);
   }
 

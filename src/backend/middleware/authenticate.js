@@ -4,7 +4,10 @@ const bcrypt = require(`bcrypt`);
 const httpCodes = require(`http-status-codes`);
 
 const {db} = require(`../db`);
+const {middlewareMessages} = require(`../messages`);
 
+
+const {USER_NOT_EXISTS, WRONG_PASSWORD} = middlewareMessages.authenticate;
 
 module.exports = async (req, res, next) => {
   const {email, password} = req.body;
@@ -15,7 +18,7 @@ module.exports = async (req, res, next) => {
   if (!user) {
     res.status(httpCodes.FORBIDDEN)
       .json({
-        errorMessages: [`LoginMessage.USER_NOT_EXISTS`],
+        errorMessages: [USER_NOT_EXISTS],
       });
     return;
   }
@@ -23,7 +26,7 @@ module.exports = async (req, res, next) => {
   if (!isPasswordCompare) {
     res.status(httpCodes.FORBIDDEN)
       .json({
-        errorMessages: [`LoginMessage.WRONG_PASSWORD`],
+        errorMessages: [WRONG_PASSWORD],
       });
     return;
   }

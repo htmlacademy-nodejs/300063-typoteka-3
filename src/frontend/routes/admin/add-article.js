@@ -1,6 +1,7 @@
 'use strict';
 
 const {articleAdapter, categoryAdapter} = require(`../../adapters`);
+const routeName = require(`../../route-name`);
 const {logger, transformDate, adaptDate} = require(`../../utils`);
 
 
@@ -49,7 +50,7 @@ class AddArticleRoute {
       date: transformDate(date),
     };
     const articleRes = await articleAdapter.addItem(articleParams);
-    let path = `/my`;
+    let path = `/${routeName.MY}`;
     if (articleRes.content && articleRes.content.errorMessages) {
       const queryParams = {
         article: {
@@ -59,7 +60,7 @@ class AddArticleRoute {
         errorMessages: articleRes.content.errorMessages,
       };
       const query = encodeURIComponent(JSON.stringify(queryParams));
-      path = `/articles/add?params=${query}`;
+      path = `/${routeName.ARTICLES}/${routeName.ADD}?params=${query}`;
     }
     res.redirect(path);
     logger.endRequest(req, res);

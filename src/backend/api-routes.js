@@ -1,5 +1,6 @@
 'use strict';
 
+const routeName = require(`./route-name`);
 const {
   ApiArticle,
   ApiArticles,
@@ -25,7 +26,7 @@ const routeCategoryIdParamsValidationMiddleware = paramsValidator(getRouteParams
 
 module.exports = [
   {
-    path: `articles`,
+    path: routeName.ARTICLES,
     Component: ApiArticles,
     middleware: {
       post: [schemaValidator(newArticleSchema)],
@@ -46,7 +47,7 @@ module.exports = [
     ],
   },
   {
-    path: `categories`,
+    path: routeName.CATEGORIES,
     Component: ApiCategories,
     middleware: {
       post: [schemaValidator(newCategorySchema)],
@@ -66,7 +67,7 @@ module.exports = [
     ],
   },
   {
-    path: `comments`,
+    path: routeName.COMMENTS,
     Component: ApiComments,
     middleware: {
       post: [schemaValidator(newComment)],
@@ -82,7 +83,7 @@ module.exports = [
     ],
   },
   {
-    path: `user`,
+    path: routeName.USER,
     Component: ApiUsers,
     middleware: {
       post: [schemaValidator(newUser)]
@@ -96,21 +97,21 @@ module.exports = [
         }
       },
       {
-        path: `login`,
+        path: routeName.LOGIN,
         Component: ApiLogin,
         middleware: {
           post: [schemaValidator(loginSchema), authentication],
         },
       },
       {
-        path: `logout`,
+        path: routeName.LOGOUT,
         Component: ApiLogout,
         middleware: {
           post: [authenticationJwt],
         },
       },
       {
-        path: `refresh`,
+        path: routeName.REFRESH,
         Component: ApiRefresh,
       },
     ],

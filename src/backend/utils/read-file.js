@@ -10,7 +10,7 @@ module.exports = async (filePath) => {
     const content = await fs.readFile(filePath, `utf8`);
     return content.trim().split(`\n`);
   } catch (error) {
-    console.error(chalk.red(`Can't read file ${filePath}`));
+    console.error(chalk.red(`Не может прочитать файл ${filePath}`));
     return [];
   }
 };

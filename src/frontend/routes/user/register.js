@@ -1,7 +1,8 @@
 'use strict';
 
-const {logger} = require(`../../utils`);
 const {accountAdapter} = require(`../../adapters`);
+const routeName = require(`../../route-name`);
+const {logger} = require(`../../utils`);
 
 
 class RegisterRoute {
@@ -44,14 +45,14 @@ class RegisterRoute {
       repeatedPassword,
     });
 
-    let path = `/login`;
+    let path = `/${routeName.LOGIN}`;
     if (createdUserRes.content && createdUserRes.content.errorMessages) {
       const queryParams = {
         user: userParams,
         errorMessages: createdUserRes.content.errorMessages,
       };
       const query = encodeURIComponent(JSON.stringify(queryParams));
-      path = `/register?params=${query}`;
+      path = `/${routeName.REGISTER}?params=${query}`;
     }
     res.redirect(path);
     logger.endRequest(req, res);

@@ -1,5 +1,7 @@
 'use strict';
 
+const routeName = require(`./route-name`);
+
 const {
   AddArticleRoute,
   ArticleRoute,
@@ -29,14 +31,14 @@ const {
 
 module.exports = [
   {
-    path: `/`,
+    path: routeName.MAIN,
     Component: MainRoute,
   },
   {
-    path: `articles`,
+    path: routeName.ARTICLES,
     children: [
       {
-        path: `add`,
+        path: routeName.ADD,
         Component: AddArticleRoute,
         middleware: {
           all: [checkAdmin],
@@ -48,7 +50,7 @@ module.exports = [
         },
       },
       {
-        path: `edit/:articleId`,
+        path: `${routeName.EDIT}/:articleId`,
         Component: EditArticleRoute,
         middleware: {
           all: [checkAdmin],
@@ -60,7 +62,7 @@ module.exports = [
         },
       },
       {
-        path: `category/:categoryId`,
+        path: `${routeName.CATEGORY}/:categoryId`,
         Component: ArticlesByCategoryRoute,
       },
       {
@@ -73,7 +75,7 @@ module.exports = [
     ],
   },
   {
-    path: `categories`,
+    path: routeName.CATEGORIES,
     Component: CategoriesRoute,
     middleware: {
       all: [checkAdmin],
@@ -87,18 +89,18 @@ module.exports = [
     ],
   },
   {
-    path: `login`,
+    path: routeName.LOGIN,
     Component: LoginRoute,
     middleware: {
       all: [checkUnauthorized],
     },
   },
   {
-    path: `logout`,
+    path: routeName.LOGOUT,
     Component: LogoutRoute,
   },
   {
-    path: `my`,
+    path: routeName.MY,
     Component: PublicationsRoute,
     middleware: {
       all: [checkAdmin],
@@ -106,7 +108,7 @@ module.exports = [
     },
     children: [
       {
-        path: `comments`,
+        path: routeName.COMMENTS,
         Component: CommentsRoute,
         children: [
           {
@@ -118,7 +120,7 @@ module.exports = [
     ]
   },
   {
-    path: `register`,
+    path: routeName.REGISTER,
     Component: RegisterRoute,
     middleware: {
       all: [checkUnauthorized],
@@ -130,15 +132,15 @@ module.exports = [
     }
   },
   {
-    path: `search`,
+    path: routeName.SEARCH,
     Component: SearchRoute,
   },
   {
-    path: `not-found`,
+    path: routeName.NOT_FOUND,
     Component: NotFoundRoute,
   },
   {
-    path: `internal-server-error`,
+    path: routeName.INTERNAL_SERVER_ERROR,
     Component: InternalServerErrorRoute,
   },
 ];

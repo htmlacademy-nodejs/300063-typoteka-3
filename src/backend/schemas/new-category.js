@@ -7,7 +7,15 @@ const {schemaMessages} = require(`../messages`);
 const {ECategoryFieldName} = require(`../models`);
 
 
-const {MIN_TITLE_SYMBOL_COUNT, MAX_TITLE_SYMBOL_COUNT} = backendParams.db.category;
+const {
+  MIN_TITLE_SYMBOL_COUNT,
+  MAX_TITLE_SYMBOL_COUNT,
+} = backendParams.db.category;
+const {
+  REQUIRED_TITLE_FIELD,
+  MIN_TITLE_LENGTH,
+  MAX_TITLE_LENGTH,
+} = schemaMessages.Category;
 
 module.exports = Joi.object({
   [ECategoryFieldName.TITLE]: Joi.string()
@@ -15,9 +23,9 @@ module.exports = Joi.object({
     .max(MAX_TITLE_SYMBOL_COUNT)
     .required()
     .messages({
-      'any.required': schemaMessages.Category.REQUIRED_TITLE_FIELD,
-      'string.empty': schemaMessages.Category.REQUIRED_TITLE_FIELD,
-      'string.min': schemaMessages.Category.MIN_TITLE_LENGTH,
-      'string.max': schemaMessages.Category.MAX_TITLE_LENGTH,
+      'any.required': REQUIRED_TITLE_FIELD,
+      'string.empty': REQUIRED_TITLE_FIELD,
+      'string.min': MIN_TITLE_LENGTH,
+      'string.max': MAX_TITLE_LENGTH,
     }),
 });

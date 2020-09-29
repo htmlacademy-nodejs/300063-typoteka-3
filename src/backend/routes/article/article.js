@@ -89,7 +89,7 @@ class ApiArticle {
     if (articleDeletedCount > 0) {
       res.status(HttpCodes.NO_CONTENT).send();
     } else {
-      res.status(HttpCodes.BAD_REQUEST).send({message: `Article with ${req.params.articleId} id isn't exist`});
+      res.status(HttpCodes.BAD_REQUEST).send({message: `Публикации с id ${req.params.articleId} не существует`});
     }
     logger.endRequest(req, res);
   }

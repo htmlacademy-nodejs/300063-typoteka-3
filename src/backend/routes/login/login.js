@@ -2,10 +2,14 @@
 
 const HttpCodes = require(`http-status-codes`);
 
+const {commonParams} = require(`../../../common/params`);
 const {makeJwt} = require(`../../utils`);
 const {db} = require(`../../db`);
 const {ERefreshTokenFieldName} = require(`../../models`);
 
+
+const MAX_AGE_ACCESS_TOKEN_COOKIE = process.env.MAX_AGE_ACCESS_TOKEN_COOKIE || commonParams.MAX_AGE_ACCESS_TOKEN_COOKIE;
+const MAX_AGE_REFRESH_TOKEN_COOKIE = process.env.MAX_AGE_REFRESH_TOKEN_COOKIE || commonParams.MAX_AGE_REFRESH_TOKEN_COOKIE;
 
 class ApiLogin {
   async post(req, res) {
@@ -15,11 +19,11 @@ class ApiLogin {
       [ERefreshTokenFieldName.TOKEN]: refreshToken,
     });
     res.cookie(`accessToken`, accessToken, {
-      maxAge: 1000 * 60 * 15,
+      maxAge: MAX_AGE_ACCESS_TOKEN_COOKIE,
       sameSite: true,
     });
     res.cookie(`refreshToken`, refreshToken, {
-      maxAge: 24 * 60 * 60 * 1000,
+      maxAge: MAX_AGE_REFRESH_TOKEN_COOKIE,
       httpOnly: true,
       sameSite: true,
     });

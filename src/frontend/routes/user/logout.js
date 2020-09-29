@@ -1,6 +1,7 @@
 'use strict';
 
 const {accountAdapter} = require(`../../adapters`);
+const routeName = require(`../../route-name`);
 
 
 class LogoutRoute {
@@ -15,7 +16,7 @@ class LogoutRoute {
     });
     res.clearCookie(`accessToken`);
     res.clearCookie(`refreshToken`);
-    res.redirect(`/login`);
+    res.redirect(`/${routeName.LOGIN}`);
   }
 }
 

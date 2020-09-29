@@ -20,8 +20,6 @@ module.exports = {
   FILE_LASTNAMES_PATH: `./data/lastnames.txt`,
   FILE_AVATARS_PATH: `./data/avatars.txt`,
   FILE_IMAGES_PATH: `./data/images.txt`,
-  JWT_ACCESS_SECRET_DEFAULT: `access`,
-  JWT_REFRESH_SECRET_DEFAULT: `refresh`,
   db: {
     account: {
       MAX_FIRSTNAME_SYMBOL_COUNT: 50,

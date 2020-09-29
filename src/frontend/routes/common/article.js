@@ -1,7 +1,9 @@
 'use strict';
 
-const {logger} = require(`../../utils`);
 const {articleAdapter, commentAdapter} = require(`../../adapters`);
+const routeName = require(`../../route-name`);
+const {logger} = require(`../../utils`);
+
 
 class ArticleRoute {
   constructor() {
@@ -36,7 +38,7 @@ class ArticleRoute {
 
     if (action === `delete`) {
       await articleAdapter.deleteItem(articleId);
-      res.redirect(`/my`);
+      res.redirect(`/${routeName.MY}`);
       return;
     }
 
@@ -46,7 +48,7 @@ class ArticleRoute {
       accountId: account.id,
     });
 
-    let path = `/articles/${articleId}#comments`;
+    let path = `/${routeName.ARTICLES}/${articleId}#comments`;
     if (commentRes.content && commentRes.content.errorMessages) {
       const queryParams = {
         comment: {
@@ -55,7 +57,7 @@ class ArticleRoute {
         errorMessages: commentRes.content.errorMessages,
       };
       const query = encodeURIComponent(JSON.stringify(queryParams));
-      path = `/articles/${articleId}?params=${query}#new-comment`;
+      path = `/${routeName.ARTICLES}/${articleId}?params=${query}#new-comment`;
     }
     res.redirect(path);
     logger.endRequest(req, res);
