@@ -22,7 +22,6 @@ const {
 } = require(`./routes`);
 const {
   checkAdmin,
-  parseQueryParams,
   setUniqueFileName,
   checkUnauthorized,
   uploadFile,
@@ -42,7 +41,6 @@ module.exports = [
         Component: AddArticleRoute,
         middleware: {
           all: [checkAdmin],
-          get: [parseQueryParams([`errorMessages`, `article`])],
           post: [
             uploadFile(`picture`),
             setUniqueFileName(`image`)
@@ -54,7 +52,6 @@ module.exports = [
         Component: EditArticleRoute,
         middleware: {
           all: [checkAdmin],
-          get: [parseQueryParams([`errorMessages`, `article`])],
           post: [
             uploadFile(`picture`),
             setUniqueFileName(`image`)
@@ -68,9 +65,6 @@ module.exports = [
       {
         path: `:articleId`,
         Component: ArticleRoute,
-        middleware: {
-          get: [parseQueryParams([`errorMessages`, `comment`])]
-        }
       },
     ],
   },
@@ -79,7 +73,6 @@ module.exports = [
     Component: CategoriesRoute,
     middleware: {
       all: [checkAdmin],
-      get: [parseQueryParams([`updatedCategory`, `createdCategory`, `errorMessages`])],
     },
     children: [
       {
@@ -124,7 +117,6 @@ module.exports = [
     Component: RegisterRoute,
     middleware: {
       all: [checkUnauthorized],
-      get: [parseQueryParams([`errorMessages`, `user`])],
       post: [
         uploadFile(`picture`),
         setUniqueFileName(`avatar`)

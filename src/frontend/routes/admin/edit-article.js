@@ -2,7 +2,7 @@
 
 const {articleAdapter, categoryAdapter} = require(`../../adapters`);
 const routeName = require(`../../route-name`);
-const {logger, transformDate} = require(`../../utils`);
+const {getQueryString, logger, transformDate} = require(`../../utils`);
 
 
 class EditArticleRoute {
@@ -12,7 +12,8 @@ class EditArticleRoute {
   }
 
   async get(req, res) {
-    let {account, article, errorMessages} = req.locals;
+    const {account} = req.locals;
+    let {article, errorMessages} = this._parseQueryParams(req);
     const articleRes = await articleAdapter.getItemById(req.params.articleId);
     if (articleRes.content && articleRes.content.errorMessages) {
       res.status(article.statusCode).send();
@@ -46,11 +47,6 @@ class EditArticleRoute {
   }
 
   async post(req, res) {
-    await this._updateArticleItemAndRedirect(req, res);
-    logger.endRequest(req, res);
-  }
-
-  async _updateArticleItemAndRedirect(req, res) {
     const {date, title, announce, categories, text, image} = req.body;
     const {articleId} = req.params;
     const articleParams = {
@@ -64,18 +60,29 @@ class EditArticleRoute {
     const articleRes = await articleAdapter.updateItemById(articleId, articleParams);
     let path = `/${routeName.MY}`;
     if (articleRes.content && articleRes.content.errorMessages) {
-      const queryParams = {
-        article: {
+      const query = getQueryString({
+        article: JSON.stringify({
           ...articleParams,
           id: articleId,
           date,
-        },
-        errorMessages: articleRes.content.errorMessages,
-      };
-      const query = encodeURIComponent(JSON.stringify(queryParams));
-      path = `/${routeName.ARTICLES}/${routeName.EDIT}/${articleId}?params=${query}`;
+        }),
+        errorMessages: JSON.stringify(articleRes.content.errorMessages),
+      });
+      path = `/${routeName.ARTICLES}/${routeName.EDIT}/${articleId}?${query}`;
     }
     res.redirect(path);
+    logger.endRequest(req, res);
+  }
+
+  _parseQueryParams(req) {
+    let {article, errorMessages} = req.query;
+    if (article) {
+      article = JSON.parse(article);
+    }
+    if (errorMessages) {
+      errorMessages = JSON.parse(errorMessages);
+    }
+    return {article, errorMessages};
   }
 }
 

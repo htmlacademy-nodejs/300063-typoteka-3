@@ -2,7 +2,7 @@
 
 const {articleAdapter, categoryAdapter} = require(`../../adapters`);
 const routeName = require(`../../route-name`);
-const {logger, transformDate, adaptDate} = require(`../../utils`);
+const {getQueryString, logger, transformDate, adaptDate} = require(`../../utils`);
 
 
 class AddArticleRoute {
@@ -12,13 +12,9 @@ class AddArticleRoute {
   }
 
   async get(req, res) {
-    let {account, errorMessages, article} = req.locals;
+    const {account} = req.locals;
+    let {article, errorMessages} = this._parseQueryParams(req);
     const categories = await categoryAdapter.getList();
-    if (!article) {
-      article = {
-        date: adaptDate(new Date().toISOString()).day,
-      };
-    }
     const content = {
       type: `add`,
       article,
@@ -35,11 +31,6 @@ class AddArticleRoute {
   }
 
   async post(req, res) {
-    await this._addArticleItemAndRedirectToMyArticles(req, res);
-    logger.endRequest(req, res);
-  }
-
-  async _addArticleItemAndRedirectToMyArticles(req, res) {
     const {date, title, announce, categories, text, image} = req.body;
     const articleParams = {
       title,
@@ -52,18 +43,32 @@ class AddArticleRoute {
     const articleRes = await articleAdapter.addItem(articleParams);
     let path = `/${routeName.MY}`;
     if (articleRes.content && articleRes.content.errorMessages) {
-      const queryParams = {
-        article: {
+      const query = getQueryString({
+        article: JSON.stringify({
           ...articleParams,
           date,
-        },
-        errorMessages: articleRes.content.errorMessages,
-      };
-      const query = encodeURIComponent(JSON.stringify(queryParams));
-      path = `/${routeName.ARTICLES}/${routeName.ADD}?params=${query}`;
+        }),
+        errorMessages: JSON.stringify(articleRes.content.errorMessages),
+      });
+      path = `/${routeName.ARTICLES}/${routeName.ADD}?${query}`;
     }
     res.redirect(path);
     logger.endRequest(req, res);
+  }
+
+  _parseQueryParams(req) {
+    let {article, errorMessages} = req.query;
+    if (article) {
+      article = JSON.parse(article);
+    } else {
+      article = {
+        date: adaptDate(new Date().toISOString()).day,
+      };
+    }
+    if (errorMessages) {
+      errorMessages = JSON.parse(errorMessages);
+    }
+    return {article, errorMessages};
   }
 }
 

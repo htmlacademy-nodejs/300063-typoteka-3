@@ -4,7 +4,7 @@ const HttpCodes = require(`http-status-codes`);
 
 const {categoryAdapter} = require(`../../adapters`);
 const routeName = require(`../../route-name`);
-const {logger} = require(`../../utils`);
+const {getQueryString, logger} = require(`../../utils`);
 
 
 class CategoryRoute {
@@ -37,19 +37,31 @@ class CategoryRoute {
 
     let path = `/${routeName.CATEGORIES}`;
     if (updatedCategoryRes.content && updatedCategoryRes.content.errorMessages) {
-      const queryParams = {
-        updatedCategory: categoryParams,
-        errorMessages: updatedCategoryRes.content.errorMessages,
-      };
-      const query = encodeURIComponent(JSON.stringify(queryParams));
-      path = `/${routeName.CATEGORIES}?params=${query}`;
+      const query = getQueryString({
+        updatedCategory: JSON.stringify(categoryParams),
+        errorMessages: JSON.stringify(updatedCategoryRes.content.errorMessages),
+      });
+      path = `/${routeName.CATEGORIES}?${query}`;
     }
     res.redirect(path);
   }
 
   async _deleteCategory(req, res) {
     const {categoryId} = req.params;
-    await categoryAdapter.deleteItem(categoryId);
+    const a = await categoryAdapter.deleteItem(categoryId);
+    console.log(22222);
+    console.log(22222);
+    console.log(22222);
+    console.log(22222);
+    console.log(22222);
+    console.log(22222);
+    console.log(22222);
+    console.log(22222);
+    console.log(22222);
+    console.log(22222);
+    console.log(22222);
+    console.log(22222);
+    console.log(a);
     res.redirect(`/${routeName.CATEGORIES}`);
   }
 }

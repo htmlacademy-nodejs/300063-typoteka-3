@@ -2,7 +2,7 @@
 
 const {articleAdapter, commentAdapter} = require(`../../adapters`);
 const routeName = require(`../../route-name`);
-const {logger} = require(`../../utils`);
+const {getQueryString, logger} = require(`../../utils`);
 
 
 class ArticleRoute {
@@ -12,7 +12,8 @@ class ArticleRoute {
   }
 
   async get(req, res) {
-    const {account, errorMessages, comment: newComment} = req.locals;
+    const {account} = req.locals;
+    const {comment: newComment, errorMessages} = this._getQueryParams(req);
     const {articleId} = req.params;
     const article = await articleAdapter.getItemById(articleId);
     const comments = await commentAdapter.getList({
@@ -50,17 +51,24 @@ class ArticleRoute {
 
     let path = `/${routeName.ARTICLES}/${articleId}#comments`;
     if (commentRes.content && commentRes.content.errorMessages) {
-      const queryParams = {
-        comment: {
+      const query = getQueryString({
+        comment: JSON.stringify({
           text,
-        },
-        errorMessages: commentRes.content.errorMessages,
-      };
-      const query = encodeURIComponent(JSON.stringify(queryParams));
-      path = `/${routeName.ARTICLES}/${articleId}?params=${query}#new-comment`;
+        }),
+        errorMessages: JSON.stringify(commentRes.content.errorMessages),
+      });
+      path = `/${routeName.ARTICLES}/${articleId}?${query}#new-comment`;
     }
     res.redirect(path);
     logger.endRequest(req, res);
+  }
+
+  _getQueryParams(req) {
+    const {comment, errorMessages} = req.query;
+    return {
+      comment: comment && JSON.parse(comment),
+      errorMessages: errorMessages && JSON.parse(errorMessages),
+    };
   }
 }
 

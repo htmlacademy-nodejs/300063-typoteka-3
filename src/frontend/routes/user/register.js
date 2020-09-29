@@ -2,7 +2,7 @@
 
 const {accountAdapter} = require(`../../adapters`);
 const routeName = require(`../../route-name`);
-const {logger} = require(`../../utils`);
+const {getQueryString, logger} = require(`../../utils`);
 
 
 class RegisterRoute {
@@ -12,13 +12,7 @@ class RegisterRoute {
   }
 
   async get(req, res) {
-    const {errorMessages} = req.locals || {};
-    const user = req.locals && req.locals.user || {
-      firstname: ``,
-      lastname: ``,
-      email: ``,
-      avatar: ``,
-    };
+    const {errorMessages, user} = this._parseQueryParams(req);
     const content = {
       title: `Типотека`,
       user,
@@ -47,15 +41,22 @@ class RegisterRoute {
 
     let path = `/${routeName.LOGIN}`;
     if (createdUserRes.content && createdUserRes.content.errorMessages) {
-      const queryParams = {
-        user: userParams,
-        errorMessages: createdUserRes.content.errorMessages,
-      };
-      const query = encodeURIComponent(JSON.stringify(queryParams));
-      path = `/${routeName.REGISTER}?params=${query}`;
+      const query = getQueryString({
+        user: JSON.stringify(userParams),
+        errorMessages: JSON.stringify(createdUserRes.content.errorMessages),
+      });
+      path = `/${routeName.REGISTER}?${query}`;
     }
     res.redirect(path);
     logger.endRequest(req, res);
+  }
+
+  _parseQueryParams(req) {
+    let {user, errorMessages} = req.query;
+    return {
+      user: user && JSON.parse(user) || {},
+      errorMessages: errorMessages && JSON.parse(errorMessages),
+    };
   }
 }
 

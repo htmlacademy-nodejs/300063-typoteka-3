@@ -2,7 +2,7 @@
 
 const {categoryAdapter} = require(`../../adapters`);
 const routeName = require(`../../route-name`);
-const {logger} = require(`../../utils`);
+const {getQueryString, logger} = require(`../../utils`);
 
 
 class CategoriesRoute {
@@ -14,7 +14,7 @@ class CategoriesRoute {
   async get(req, res) {
     const {account} = req.locals;
     const categories = await categoryAdapter.getList();
-    const {createdCategory, updatedCategory, errorMessages} = req.locals || {};
+    const {createdCategory, updatedCategory, errorMessages} = this._parseQueryParams(req);
     const content = {
       account,
       categories,
@@ -32,15 +32,23 @@ class CategoriesRoute {
     const createdCategoryRes = await categoryAdapter.addItem(categoryParams);
     let path = `/${routeName.CATEGORIES}`;
     if (createdCategoryRes.content && createdCategoryRes.content.errorMessages) {
-      const queryParams = {
-        createdCategory: categoryParams,
-        errorMessages: createdCategoryRes.content.errorMessages,
-      };
-      const query = encodeURIComponent(JSON.stringify(queryParams));
-      path = `/${routeName.CATEGORIES}?params=${query}`;
+      const query = getQueryString({
+        createdCategory: JSON.stringify(categoryParams),
+        errorMessages: JSON.stringify(createdCategoryRes.content.errorMessages),
+      });
+      path = `/${routeName.CATEGORIES}?${query}`;
     }
     res.redirect(path);
     logger.endRequest(req, res);
+  }
+
+  _parseQueryParams(req) {
+    const {createdCategory, updatedCategory, errorMessages} = req.query;
+    return {
+      createdCategory: createdCategory && JSON.parse(createdCategory),
+      updatedCategory: updatedCategory && JSON.parse(updatedCategory),
+      errorMessages: errorMessages && JSON.parse(errorMessages),
+    };
   }
 }
 
