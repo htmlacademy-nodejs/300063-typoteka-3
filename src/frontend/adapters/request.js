@@ -2,14 +2,14 @@
 
 const axios = require(`axios`);
 
-const {DEFAULT_PROTOCOL, DEFAULT_DOMAIN, DEFAULT_BACKEND_PORT} = require(`../../common/params`);
+const {commonParams} = require(`../../common/params`);
 
 
 class Request {
   constructor() {
-    const protocol = process.env.PROTOCOL || DEFAULT_PROTOCOL;
-    const domain = process.env.DOMAIN || DEFAULT_DOMAIN;
-    const port = parseInt(process.env.BACKED_PORT, 10) || DEFAULT_BACKEND_PORT;
+    const protocol = process.env.PROTOCOL || commonParams.DEFAULT_PROTOCOL;
+    const domain = process.env.DOMAIN || commonParams.DEFAULT_DOMAIN;
+    const port = parseInt(process.env.BACKED_PORT, 10) || commonParams.DEFAULT_BACKEND_PORT;
     this._url = `${protocol}://${domain}:${port}/api`;
   }
 

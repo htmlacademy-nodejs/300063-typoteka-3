@@ -3,10 +3,10 @@
 const HttpCodes = require(`http-status-codes`);
 const jwt = require(`jsonwebtoken`);
 
-const {JWT_ACCESS_SECRET_DEFAULT} = require(`../../common/params`);
+const {backendParams} = require(`../../common/params`);
 
 
-let JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || JWT_ACCESS_SECRET_DEFAULT;
+let JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || backendParams.JWT_ACCESS_SECRET_DEFAULT;
 
 module.exports = (req, res, next) => {
   const {accessToken} = req.cookies;

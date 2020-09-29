@@ -3,7 +3,7 @@
 const path = require(`path`);
 const fs = require(`fs`).promises;
 
-const {DEFAULT_PUBLIC_DIR} = require(`../../common/params`);
+const {frontendParams} = require(`../../common/params`);
 
 
 const imageTypes = [`image/jpeg`, `image/png`];
@@ -19,7 +19,7 @@ const download = async (file) => {
     return getError(`size`, `File can't be empty`);
   }
   try {
-    const publicDir = process.env.PUBLIC_DIR || DEFAULT_PUBLIC_DIR;
+    const publicDir = process.env.PUBLIC_DIR || frontendParams.DEFAULT_PUBLIC_DIR;
     const newFilePath = path.resolve(destination, `../${publicDir}/img/${filename}`);
     await fs.rename(filePath, newFilePath);
     return filename;

@@ -1,5 +1,6 @@
 'use strict';
 
+const {backendParams} = require(`../../common/params`);
 const {EModelName} = require(`./name-space`);
 
 
@@ -11,7 +12,7 @@ const getRefreshTokenModel = (sequelize, DataTypes) => {
   class RefreshToken extends sequelize.Sequelize.Model {}
   RefreshToken.init({
     [ERefreshTokenFieldName.TOKEN]: {
-      type: new DataTypes.STRING(1000)
+      type: new DataTypes.STRING(backendParams.db.token.MAX_TOKEN_SYMBOL_COUNT)
     }
   }, {
     sequelize,

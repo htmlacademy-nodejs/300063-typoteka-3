@@ -2,14 +2,7 @@
 
 const {logger, getPaginatorParams} = require(`../../utils`);
 const {articleAdapter, categoryAdapter, commentAdapter} = require(`../../adapters`);
-const {
-  ONE_PAGE_LIMIT,
-  LAST_COMMENT_COUNT,
-  LAST_COMMENT_LETTERS,
-  HOT_ARTICLE_COUNT,
-  HOT_ARTICLE_ANNOUNCE_LETTER,
-  FIRST_PAGE,
-} = require(`../../../common/params`);
+const {frontendParams} = require(`../../../common/params`);
 
 
 class MainRoute {
@@ -19,7 +12,7 @@ class MainRoute {
 
   async get(req, res) {
     const {account} = req.locals;
-    const page = +req.query.page || FIRST_PAGE;
+    const page = +req.query.page || frontendParams.FIRST_PAGE;
     const category = req.query.category || null;
 
     const categories = await this._getCategories();
@@ -61,7 +54,7 @@ class MainRoute {
     return await articleAdapter.getList({
       query: {
         ...queryParams,
-        limit: ONE_PAGE_LIMIT,
+        limit: frontendParams.ONE_PAGE_LIMIT,
       },
     });
   }
@@ -69,15 +62,15 @@ class MainRoute {
   async _getHotArticles() {
     const articlesRes = await articleAdapter.getList({
       query: {
-        limit: HOT_ARTICLE_COUNT,
+        limit: frontendParams.HOT_ARTICLE_COUNT,
         sort: `commentCount`,
         minCommentCount: 1,
       },
     });
     articlesRes.list = articlesRes.list.map((hotArticle) => ({
       ...hotArticle,
-      announce: hotArticle.announce.length > LAST_COMMENT_LETTERS
-        ? `${hotArticle.announce.slice(0, HOT_ARTICLE_ANNOUNCE_LETTER)}...`
+      announce: hotArticle.announce.length > frontendParams.LAST_COMMENT_LETTERS
+        ? `${hotArticle.announce.slice(0, frontendParams.HOT_ARTICLE_ANNOUNCE_LETTER)}...`
         : hotArticle.announce,
     }));
     return articlesRes;
@@ -86,13 +79,13 @@ class MainRoute {
   async _getComments() {
     const commentsRes = await commentAdapter.getList({
       query: {
-        limit: LAST_COMMENT_COUNT,
+        limit: frontendParams.LAST_COMMENT_COUNT,
       },
     });
     return commentsRes.map((comment) => ({
       ...comment,
-      text: comment.text.length > LAST_COMMENT_LETTERS
-        ? `${comment.text.slice(0, LAST_COMMENT_LETTERS)}...`
+      text: comment.text.length > frontendParams.LAST_COMMENT_LETTERS
+        ? `${comment.text.slice(0, frontendParams.LAST_COMMENT_LETTERS)}...`
         : comment.text,
     }));
   }

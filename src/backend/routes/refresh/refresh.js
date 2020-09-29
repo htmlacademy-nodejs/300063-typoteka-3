@@ -6,10 +6,10 @@ const jwt = require(`jsonwebtoken`);
 const {db} = require(`../../db`);
 const {ERefreshTokenFieldName} = require(`../../models`);
 const {makeJwt} = require(`../../utils`);
-const {JWT_REFRESH_SECRET_DEFAULT} = require(`../../../common/params`);
+const {backendParams} = require(`../../../common/params`);
 
 
-const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || JWT_REFRESH_SECRET_DEFAULT;
+const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || backendParams.JWT_REFRESH_SECRET_DEFAULT;
 
 class ApiRefresh {
   async post(req, res) {

@@ -2,7 +2,7 @@
 
 const {logger, getPaginatorParams} = require(`../../utils`);
 const {articleAdapter, categoryAdapter} = require(`../../adapters`);
-const {ONE_PAGE_LIMIT, FIRST_PAGE} = require(`../../../common/params`);
+const {frontendParams} = require(`../../../common/params`);
 
 
 class ArticlesByCategoryRoute {
@@ -12,7 +12,7 @@ class ArticlesByCategoryRoute {
 
   async get(req, res) {
     const {account} = req.locals;
-    const page = +req.query.page || FIRST_PAGE;
+    const page = +req.query.page || frontendParams.FIRST_PAGE;
     const {categoryId} = req.params || null;
 
     const categories = await this._getCategories();
@@ -42,7 +42,7 @@ class ArticlesByCategoryRoute {
     return await articleAdapter.getList({
       query: {
         ...queryParams,
-        limit: ONE_PAGE_LIMIT,
+        limit: frontendParams.ONE_PAGE_LIMIT,
       },
     });
   }

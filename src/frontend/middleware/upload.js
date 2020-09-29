@@ -4,10 +4,10 @@ const path = require(`path`);
 
 const multer = require(`multer`);
 
-const {DEFAULT_TEMP_DIR} = require(`../../common/params`);
+const {frontendParams} = require(`../../common/params`);
 
 
-const tempDir = process.env.DEFAULT_TEMP_DIR || DEFAULT_TEMP_DIR;
+const tempDir = process.env.DEFAULT_TEMP_DIR || frontendParams.DEFAULT_TEMP_DIR;
 const upload = (fieldName) => {
   const storage = multer.diskStorage({
     destination(req, file, cb) {

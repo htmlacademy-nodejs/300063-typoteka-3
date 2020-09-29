@@ -7,8 +7,8 @@ const ExitCode = require(`./exit-codes`);
 
 
 module.exports = {
-  ...commonParams,
-  ...backendParams,
-  ...frontendParams,
+  commonParams,
+  backendParams,
+  frontendParams,
   ExitCode,
 };

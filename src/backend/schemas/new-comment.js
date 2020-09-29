@@ -2,13 +2,14 @@
 
 const Joi = require(`@hapi/joi`);
 
+const {backendParams} = require(`../../common/params`);
 const {schemaMessages} = require(`../messages`);
 const {ECommentFieldName, EForeignKey} = require(`../models`);
 
 
 module.exports = Joi.object({
   [ECommentFieldName.TEXT]: Joi.string()
-    .max(1000)
+    .max(backendParams.db.comment.MAX_TEXT_SYMBOL_COUNT)
     .required()
     .messages({
       'string.max': schemaMessages.Comment.MAX_TEXT_LENGTH,

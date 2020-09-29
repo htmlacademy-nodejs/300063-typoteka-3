@@ -2,14 +2,17 @@
 
 const Joi = require(`@hapi/joi`);
 
+const {backendParams} = require(`../../common/params`);
 const {schemaMessages} = require(`../messages`);
 const {ECategoryFieldName} = require(`../models`);
 
 
+const {MIN_TITLE_SYMBOL_COUNT, MAX_TITLE_SYMBOL_COUNT} = backendParams.db.category;
+
 module.exports = Joi.object({
   [ECategoryFieldName.TITLE]: Joi.string()
-    .min(5)
-    .max(30)
+    .min(MIN_TITLE_SYMBOL_COUNT)
+    .max(MAX_TITLE_SYMBOL_COUNT)
     .required()
     .messages({
       'any.required': schemaMessages.Category.REQUIRED_TITLE_FIELD,
