@@ -16,7 +16,7 @@ module.exports = {
     sync: [],
     async: [initDb],
   },
-  close: {
+  destroy: {
     sync: [],
     async: [disconnectDb],
   },

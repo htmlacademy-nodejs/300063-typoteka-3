@@ -18,8 +18,8 @@ class AppBuilder {
   }
 
   async destroyInstance() {
-    this._config.close.async.forEach(async (func) => await func());
-    this._config.close.sync.forEach((func) => func());
+    this._config.destroy.async.forEach(async (func) => await func());
+    this._config.destroy.sync.forEach((func) => func());
     this._app = null;
   }
 

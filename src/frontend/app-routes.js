@@ -72,7 +72,7 @@ module.exports = [
     path: routeName.CATEGORIES,
     Component: CategoriesRoute,
     middleware: {
-      all: [checkAdmin],
+      route: [checkAdmin],
     },
     children: [
       {
@@ -96,7 +96,7 @@ module.exports = [
     path: routeName.MY,
     Component: PublicationsRoute,
     middleware: {
-      all: [checkAdmin],
+      route: [checkAdmin],
 
     },
     children: [
