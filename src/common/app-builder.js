@@ -2,24 +2,15 @@
 
 const express = require(`express`);
 
-const {ExitCode} = require(`./params`);
-
 
 class AppBuilder {
   constructor(config) {
     this._config = config;
     this._methods = [`get`, `post`, `put`, `delete`];
-    this._prefix = config.prefix ? `/${config.prefix}` : ``;
-
-    this._build = this._build.bind(this);
-    this._setAppSettings = this._setAppSettings.bind(this);
-    this._setAppMiddlewares = this._setAppMiddlewares.bind(this);
-    this._buildRoutes = this._buildRoutes.bind(this);
   }
 
   async getInstance() {
     if (!this._app) {
-      this._app = express();
       await this._init();
       await this._build();
     }
@@ -33,6 +24,7 @@ class AppBuilder {
   }
 
   async _init() {
+    this._app = express();
     const initParams = this._config.init;
     if (!initParams) {
       return;
@@ -48,7 +40,8 @@ class AppBuilder {
   async _build() {
     this._setAppSettings(this._config.settings);
     this._setAppMiddlewares(this._config.middlewares.before);
-    this._buildRoutes(this._config.routes, this._app, true);
+    this._initPrefixRouter();
+    this._buildRoutes(this._config.routes);
     this._setAppMiddlewares(this._config.middlewares.after);
   }
 
@@ -66,85 +59,70 @@ class AppBuilder {
     middlewares.forEach((middleware) => this._app.use(middleware));
   }
 
-  _buildRoutes(routes, router = this._app, hasPrefix = false) {
-    if (!routes) {
-      console.error(`config.routes can't be empty`);
-      process.exit(ExitCode.ERROR);
+  _initPrefixRouter() {
+    const prefix = this._config.prefix ? `/${this._config.prefix}` : ``;
+    let router = this._app;
+    if (prefix) {
+      router = new express.Router();
+      this._app.use(prefix, router);
     }
-    routes.forEach((route) => {
-      route.path = hasPrefix ? `${this._prefix}/${route.path}` : `/${route.path}`;
-      let newRouter = router;
-      if (route.children) {
-        newRouter = new express.Router();
-        router.use(route.path, newRouter);
-        route.path = `/`;
-      }
-      this._buildRoute(route, newRouter);
-      if (route.children) {
-        this._buildRoutes(route.children, newRouter);
-      }
-    });
+    this._prefixRouter = router;
+  }
+
+  _buildRoutes(routes, router = this._prefixRouter) {
+    if (!routes || routes.length === 0) {
+      return;
+    }
+    routes.forEach((route) => this._buildRoute(route, router));
   }
 
   _buildRoute(route, router) {
-    const {path, Component} = route;
+    const newRouter = this._createRouter(route, router);
+    this._addMethodsHandlerToRoute(route, newRouter);
+    this._buildRoutes(route.children, newRouter);
+  }
+
+  _createRouter(route, router) {
+    let path = `/${route.path}`;
+    if (!route.children || route.children.length === 0) {
+      return router;
+    }
+    const newRouter = new express.Router({mergeParams: true});
+    const middleware = this._getRouterMiddleware(route);
+    router.use(path, middleware, newRouter);
+    return newRouter;
+  }
+
+  _getRouterMiddleware(route) {
+    let middleware = [];
+    if (route.middleware && route.middleware.route) {
+      middleware = [...route.middleware.route];
+    }
+    return middleware;
+  }
+
+  _addMethodsHandlerToRoute(route, router) {
+    const {Component, middleware, children} = route;
     if (!Component) {
       return;
     }
     const component = new Component();
+    const path = children && children.length !== 0 ? `/` : `/${route.path}`;
     this._methods.forEach((method) => {
       if (!component[method]) {
         return;
       }
-      const middlewares = this._getRouteMiddlewares(route.middleware, method);
+      const middlewares = this._getRouteMiddleware(middleware, method);
       router[method](path, middlewares, component[method]);
     });
   }
 
-  // _buildRoutes(routes, router = this._app, hasPrefix = false) {
-  //   if (!routes) {
-  //     console.error(`config.routes can't be empty`);
-  //     process.exit(ExitCode.ERROR);
-  //   }
-  //   routes.forEach((route) => {
-  //     route.path = hasPrefix ? `${this._prefix}/${route.path}` : `/${route.path}`;
-  //     let newRouter = router;
-  //     if (route.children) {
-  //       newRouter = new express.Router();
-  //       router.use(route.path, newRouter);
-  //       route.path = `/`;
-  //     }
-  //     this._buildRoute(route, newRouter);
-  //     if (route.children) {
-  //       this._buildRoutes(route.children, newRouter);
-  //     }
-  //   });
-  // }
-  //
-  // _buildRoute(route, router) {
-  //   const {path, Component} = route;
-  //   if (!Component) {
-  //     return;
-  //   }
-  //   const component = new Component();
-  //   this._methods.forEach((method) => {
-  //     if (!component[method]) {
-  //       return;
-  //     }
-  //     const middlewares = this._getRouteMiddlewares(route.middleware, method);
-  //     router[method](path, middlewares, component[method]);
-  //   });
-  // }
-
-  _getRouteMiddlewares(middleware = {}, method) {
-    let result = [];
-    if (middleware.all) {
-      result = [...middleware.all];
-    }
-    if (middleware[method]) {
-      result = [...result, ...middleware[method]];
-    }
-    return result;
+  _getRouteMiddleware(middleware = {}, method) {
+    const {
+      all: allMethodsMiddleware = [],
+      [method]: methodMiddleware = []
+    } = middleware;
+    return [...allMethodsMiddleware, methodMiddleware];
   }
 }
 

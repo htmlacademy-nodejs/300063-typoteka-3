@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  MAIN: `/`,
+  MAIN: ``,
   ARTICLES: `articles`,
   ADD: `add`,
   EDIT: `edit`,
