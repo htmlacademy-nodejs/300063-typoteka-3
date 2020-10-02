@@ -82,7 +82,10 @@ describe(`Categories API end-points`, () => {
       const updatedCategoryParams = {
         title: getRandomString(AVAILABLE_SYMBOLS, 10),
       };
-      const res = await request(server).put(`${pathToCategories}/invalid-category-id`).send(updatedCategoryParams);
+      const res = await request(server)
+        .put(`${pathToCategories}/invalid-category-id`)
+        .set(`cookie`, cookie)
+        .send(updatedCategoryParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
@@ -90,7 +93,10 @@ describe(`Categories API end-points`, () => {
       const updatedCategoryParams = {
         title: getRandomString(AVAILABLE_SYMBOLS, 4),
       };
-      const res = await request(server).put(`${pathToCategories}/${category.id}`).send(updatedCategoryParams);
+      const res = await request(server)
+        .put(`${pathToCategories}/${category.id}`)
+        .set(`cookie`, cookie)
+        .send(updatedCategoryParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
@@ -98,7 +104,10 @@ describe(`Categories API end-points`, () => {
       const updatedCategoryParams = {
         title: getRandomString(AVAILABLE_SYMBOLS, 5),
       };
-      const res = await request(server).put(`${pathToCategories}/${category.id}`).send(updatedCategoryParams);
+      const res = await request(server)
+        .put(`${pathToCategories}/${category.id}`)
+        .set(`cookie`, cookie)
+        .send(updatedCategoryParams);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
@@ -106,7 +115,10 @@ describe(`Categories API end-points`, () => {
       const updatedCategoryParams = {
         title: getRandomString(AVAILABLE_SYMBOLS, 31),
       };
-      const res = await request(server).put(`${pathToCategories}/${category.id}`).send(updatedCategoryParams);
+      const res = await request(server)
+        .put(`${pathToCategories}/${category.id}`)
+        .set(`cookie`, cookie)
+        .send(updatedCategoryParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
@@ -114,7 +126,10 @@ describe(`Categories API end-points`, () => {
       const updatedCategoryParams = {
         title: getRandomString(AVAILABLE_SYMBOLS, 30),
       };
-      const res = await request(server).put(`${pathToCategories}/${category.id}`).send(updatedCategoryParams);
+      const res = await request(server)
+        .put(`${pathToCategories}/${category.id}`)
+        .set(`cookie`, cookie)
+        .send(updatedCategoryParams);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
   });
@@ -135,12 +150,16 @@ describe(`Categories API end-points`, () => {
     });
 
     test(`When DELETE category with invalid categoryId status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
-      const res = await request(server).delete(`${pathToCategories}/invalid-category-id`);
+      const res = await request(server)
+        .delete(`${pathToCategories}/invalid-category-id`)
+        .set(`cookie`, cookie);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
     test(`When DELETE category with valid categoryId status code should be ${HttpCodes.NO_CONTENT}`, async () => {
-      const res = await request(server).delete(`${pathToCategories}/${category.id}`);
+      const res = await request(server)
+        .delete(`${pathToCategories}/${category.id}`)
+        .set(`cookie`, cookie);
       expect(res.statusCode).toBe(HttpCodes.NO_CONTENT);
     });
   });

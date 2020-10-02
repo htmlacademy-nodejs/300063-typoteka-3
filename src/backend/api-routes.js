@@ -74,10 +74,14 @@ module.exports = [
         Component: ApiCategory,
         middleware: {
           put: [
+            checkAdmin,
             routeCategoryIdParamsValidationMiddleware,
             schemaValidator(newCategorySchema)
           ],
-          delete: [routeCategoryIdParamsValidationMiddleware],
+          delete: [
+            checkAdmin,
+            routeCategoryIdParamsValidationMiddleware
+          ],
         }
       }
     ],
