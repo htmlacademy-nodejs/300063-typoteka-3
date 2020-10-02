@@ -35,7 +35,10 @@ module.exports = [
     path: routeName.ARTICLES,
     Component: ApiArticles,
     middleware: {
-      post: [schemaValidator(newArticleSchema)],
+      post: [
+        checkAdmin,
+        schemaValidator(newArticleSchema)
+      ],
     },
     children: [
       {

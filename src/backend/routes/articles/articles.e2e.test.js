@@ -1,5 +1,6 @@
 'use strict';
 
+const bcrypt = require(`bcrypt`);
 const HttpCodes = require(`http-status-codes`);
 const request = require(`supertest`);
 
@@ -9,6 +10,7 @@ const {getRandomString} = require(`../../utils`);
 
 
 const pathToArticles = `/api/articles`;
+const pathToLogin = `/api/user/login`;
 const AVAILABLE_SYMBOLS = `abcdefghijklmnopqrstuvwxyz`;
 
 const articleData = {
@@ -19,21 +21,55 @@ const articleData = {
   categories: [1, 2, 3],
   date: `2020-09-10`,
 };
+const authAdminParams = {
+  email: `admin@mail.ru`,
+  password: `123456`,
+};
+const authUserParams = {
+  email: `user@mail.ru`,
+  password: `654321`,
+};
 
 const initTest = async () => {
   await initDb(true);
+  await createUsers();
   const categoriesForDbTable = new Array(5)
     .fill(``)
     .map(() => ({title: getRandomString(AVAILABLE_SYMBOLS, 10)}));
   await db.Category.bulkCreate(categoriesForDbTable);
 };
 
+const createUsers = async () => {
+  return await db.Account.bulkCreate([
+    {
+      firstname: getRandomString(AVAILABLE_SYMBOLS, 20),
+      lastname: getRandomString(AVAILABLE_SYMBOLS, 20),
+      email: authAdminParams.email,
+      avatar: `test.png`,
+      password: bcrypt.hashSync(authAdminParams.password, 10),
+      isAdmin: true,
+    },
+    {
+      firstname: getRandomString(AVAILABLE_SYMBOLS, 20),
+      lastname: getRandomString(AVAILABLE_SYMBOLS, 20),
+      email: authUserParams.email,
+      avatar: `test.png`,
+      password: bcrypt.hashSync(authUserParams.password, 10),
+      isAdmin: false,
+    },
+  ]);
+};
+
+
 describe(`Articles API end-points`, () => {
   let server = null;
+  let cookie = null;
 
   beforeAll(async () => {
     await initTest();
     server = await apiContainer.getInstance();
+    const admin = await request(server).post(pathToLogin).send(authAdminParams);
+    cookie = admin.headers[`set-cookie`];
   });
 
   afterAll(async () => {
@@ -50,13 +86,19 @@ describe(`Articles API end-points`, () => {
 
   describe(`POST`, () => {
     test(`When POST article status code should be ${HttpCodes.CREATED}`, async() => {
-      const res = await request(server).post(pathToArticles).send(articleData);
+      const res = await request(server)
+        .post(pathToArticles)
+        .set(`cookie`, cookie)
+        .send(articleData);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
       await request(server).delete(`${pathToArticles}/${res.body.id}`);
     });
 
     test.each([`id`, `title`, `image`, `announce`, `text`, `date`, `categories`])(`When POST article should have %p property`, async(property) => {
-      const res = await request(server).post(pathToArticles).send(articleData);
+      const res = await request(server)
+        .post(pathToArticles)
+        .set(`cookie`, cookie)
+        .send(articleData);
       expect(res.body).toHaveProperty(property);
       await request(server).delete(`${pathToArticles}/${res.body.id}`);
     });
@@ -64,101 +106,162 @@ describe(`Articles API end-points`, () => {
     test.each([`title`, `announce`, `categories`, `date`])(`When POST article without %p property status code should be ${HttpCodes.BAD_REQUEST}`, async (property) => {
       const article = {...articleData};
       delete article[property];
-      const res = await request(server).post(pathToArticles).send(article);
+      const res = await request(server)
+        .post(pathToArticles)
+        .set(`cookie`, cookie)
+        .send(article);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
     test(`When POST article with invalid title when length is less then 30 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
       const article = {...articleData};
       article.title = getRandomString(AVAILABLE_SYMBOLS, 29);
-      const res = await request(server).post(pathToArticles).send(article);
+      const res = await request(server)
+        .post(pathToArticles)
+        .set(`cookie`, cookie)
+        .send(article);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
     test(`When POST article with valid title when length is equal 30 status code should be ${HttpCodes.CREATED}`, async () => {
       const article = {...articleData};
       article.title = getRandomString(AVAILABLE_SYMBOLS, 30);
-      const res = await request(server).post(pathToArticles).send(article);
+      const res = await request(server)
+        .post(pathToArticles)
+        .set(`cookie`, cookie)
+        .send(article);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
 
     test(`When POST article with invalid title when length is great then 250 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
       const article = {...articleData};
       article.title = getRandomString(AVAILABLE_SYMBOLS, 251);
-      const res = await request(server).post(pathToArticles).send(article);
+      const res = await request(server)
+        .post(pathToArticles)
+        .set(`cookie`, cookie)
+        .send(article);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
     test(`When POST article with valid title when length is equal 250 status code should be ${HttpCodes.CREATED}`, async () => {
       const article = {...articleData};
       article.title = getRandomString(AVAILABLE_SYMBOLS, 250);
-      const res = await request(server).post(pathToArticles).send(article);
+      const res = await request(server)
+        .post(pathToArticles)
+        .set(`cookie`, cookie)
+        .send(article);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
 
     test(`When POST article with invalid announce when length is less then 30 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
       const article = {...articleData};
       article.announce = getRandomString(AVAILABLE_SYMBOLS, 29);
-      const res = await request(server).post(pathToArticles).send(article);
+      const res = await request(server)
+        .post(pathToArticles)
+        .set(`cookie`, cookie)
+        .send(article);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
     test(`When POST article with valid announce when length is equal 30 status code should be ${HttpCodes.CREATED}`, async () => {
       const article = {...articleData};
       article.announce = getRandomString(AVAILABLE_SYMBOLS, 30);
-      const res = await request(server).post(pathToArticles).send(article);
+      const res = await request(server)
+        .post(pathToArticles)
+        .set(`cookie`, cookie)
+        .send(article);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
 
     test(`When POST article with invalid announce when length is great then 250 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
       const article = {...articleData};
       article.announce = getRandomString(AVAILABLE_SYMBOLS, 251);
-      const res = await request(server).post(pathToArticles).send(article);
+      const res = await request(server)
+        .post(pathToArticles)
+        .set(`cookie`, cookie)
+        .send(article);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
     test(`When POST article with valid announce when length is equal 250 status code should be ${HttpCodes.CREATED}`, async () => {
       const article = {...articleData};
       article.announce = getRandomString(AVAILABLE_SYMBOLS, 250);
-      const res = await request(server).post(pathToArticles).send(article);
+      const res = await request(server)
+        .post(pathToArticles)
+        .set(`cookie`, cookie)
+        .send(article);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
 
     test(`When POST article with invalid text when length is great then 1000 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
       const article = {...articleData};
       article.text = getRandomString(AVAILABLE_SYMBOLS, 1001);
-      const res = await request(server).post(pathToArticles).send(article);
+      const res = await request(server)
+        .post(pathToArticles)
+        .set(`cookie`, cookie)
+        .send(article);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
     test(`When POST article with valid text when length is equal 1000 status code should be ${HttpCodes.CREATED}`, async () => {
       const article = {...articleData};
       article.text = getRandomString(AVAILABLE_SYMBOLS, 1000);
-      const res = await request(server).post(pathToArticles).send(article);
+      const res = await request(server)
+        .post(pathToArticles)
+        .set(`cookie`, cookie)
+        .send(article);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
 
     test(`When POST article with valid image extension status code should be ${HttpCodes.CREATED}`, async () => {
       const article = {...articleData};
       article.image = `123.png`;
-      const resWithPng = await request(server).post(pathToArticles).send(article);
+      const resWithPng = await request(server)
+        .post(pathToArticles)
+        .set(`cookie`, cookie)
+        .send(article);
       expect(resWithPng.statusCode).toBe(HttpCodes.CREATED);
       article.image = `123.jpg`;
-      const resWithJpg = await request(server).post(pathToArticles).send(article);
+      const resWithJpg = await request(server)
+        .post(pathToArticles)
+        .set(`cookie`, cookie)
+        .send(article);
       expect(resWithJpg.statusCode).toBe(HttpCodes.CREATED);
     });
 
     test(`When POST article with invalid image extension status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
       const article = {...articleData};
       article.image = `123.pmng`;
-      const res = await request(server).post(pathToArticles).send(article);
+      const res = await request(server)
+        .post(pathToArticles)
+        .set(`cookie`, cookie)
+        .send(article);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
     test(`When POST article with invalid date format status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
       const article = {...articleData};
       article.date = `10-09-2020`;
-      const res = await request(server).post(pathToArticles).send(article);
+      const res = await request(server)
+        .post(pathToArticles)
+        .set(`cookie`, cookie)
+        .send(article);
+      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+    });
+
+    test(`When POST article without access token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+      const res = await request(server)
+        .post(pathToArticles)
+        .send(articleData);
+      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+    });
+
+    test(`When POST article with not admin access token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+      const user = await request(server).post(pathToLogin).send(authUserParams);
+      const res = await request(server)
+        .post(pathToArticles)
+        .set(`cookie`, user.headers[`set-cookie`])
+        .send(articleData);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
   });

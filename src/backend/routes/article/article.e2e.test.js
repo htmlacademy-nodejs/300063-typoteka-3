@@ -81,7 +81,10 @@ describe(`Article ID API end-points`, () => {
   });
 
   beforeEach(async () => {
-    const createArticleResponse = await request(server).post(pathToArticles).send(articleData);
+    const createArticleResponse = await request(server)
+      .post(pathToArticles)
+      .set(`cookie`, cookie)
+      .send(articleData);
     article = createArticleResponse.body;
   });
 
