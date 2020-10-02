@@ -22,3 +22,4 @@ module.exports = async (req, res) => {
   res.render(`pages/search`, content);
   logger.endRequest(req, res);
 };
+

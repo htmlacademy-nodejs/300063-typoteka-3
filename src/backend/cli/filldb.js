@@ -5,7 +5,6 @@ const {nanoid} = require(`nanoid`);
 
 const {
   FILE_CATEGORIES_PATH,
-  FILE_ACCOUNT_TYPES_PATH,
   FILE_FIRSTNAMES_PATH,
   FILE_LASTNAMES_PATH,
   FILE_EMAILS_PATH,
@@ -32,21 +31,14 @@ const fillCategoryTable = async (categories) => {
     .catch((error) => showAccessError(error, `categories`));
 };
 
-const fillAccountTypesTable = async (accountTypes) => {
-  const accountTypesForDbTable = accountTypes.map((accountType) => ({title: accountType}));
-  await db.AccountType.bulkCreate(accountTypesForDbTable)
-    .catch((error) => showAccessError(error, `accountTypes`));
-};
-
-const fillAccountTable = async (firstnames, lastnames, emails, avatars, accountTypes, count) => {
-  const accountsForDbTable = Array(count).fill({}).map(() => ({
+const fillAccountTable = async (firstnames, lastnames, emails, avatars, count) => {
+  const accountsForDbTable = Array(count).fill({}).map((item, index) => ({
     firstname: firstnames[getRandomInt(0, firstnames.length - 1)],
     lastname: lastnames[getRandomInt(0, lastnames.length - 1)],
     email: emails[getRandomInt(0, emails.length - 1)],
     avatar: avatars[getRandomInt(0, avatars.length - 1)],
     password: nanoid(),
-    accountId: getRandomInt(0, accountTypes.length - 1),
-    accountTypeId: 2,
+    isAdmin: index === 0,
   }));
   await db.Account.bulkCreate(accountsForDbTable)
     .catch((error) => showAccessError(error, `accounts`));
@@ -98,7 +90,6 @@ module.exports = {
     const count = Number(argv) || generate.Count.DEFAULT;
 
     const CATEGORIES = await readFile(FILE_CATEGORIES_PATH);
-    const ACCOUNT_TYPES = await readFile(FILE_ACCOUNT_TYPES_PATH);
     const FIRSTNAMES = await readFile(FILE_FIRSTNAMES_PATH);
     const LASTNAMES = await readFile(FILE_LASTNAMES_PATH);
     const EMAILS = await readFile(FILE_EMAILS_PATH);
@@ -109,8 +100,7 @@ module.exports = {
     const COMMENTS = await readFile(FILE_COMMENTS_PATH);
 
     await fillCategoryTable(CATEGORIES);
-    await fillAccountTypesTable(ACCOUNT_TYPES);
-    await fillAccountTable(FIRSTNAMES, LASTNAMES, EMAILS, AVATARS, ACCOUNT_TYPES, count);
+    await fillAccountTable(FIRSTNAMES, LASTNAMES, EMAILS, AVATARS, count);
     await fillArticlesTable(TITLES, TEXTS, IMAGES, count);
     await fillCommentTable(COMMENTS, count);
     await fillArticleCategoryTable();

@@ -13,32 +13,34 @@ block content
           li.popup__tab
             a.popup__tab-switcher(href='/login') Войти
         .popup__form.form.form--register
-          form(action='#' method='get')
+          form(action='/register' method='POST' enctype='multipart/form-data')
             .form__field
               label
-                input(type='email' placeholder='Электронная почта' required)
+                input(type='email' name='email' placeholder='Электронная почта' value=user.email required)
             .form__field
               label
-                input(type='text' placeholder='Имя' required)
+                input(type='text' name='firstname' placeholder='Имя' value=user.firstname required)
             .form__field
               label
-                input(type='text' placeholder='Фамилия')
+                input(type='text' name='lastname' placeholder='Фамилия' value=user.lastname required)
             .form__field
               label
-                input(type='password' placeholder='Пароль' required)
+                input(type='password' name='password' placeholder='Пароль' required)
             .form__field
               label
-                input(type='password' placeholder='Повтор пароля' required)
-            .form__validation-error
-              p.form__error-message При регистрации произошли ошибки:
-              ul.form__errors
-                li.form__error Пароль не может состоять из двух букв
-                li.form__error Фамилия не должна быть смешной
+                input(type='password' name='repeatedPassword' placeholder='Повтор пароля' required)
+            if errorMessages
+              .form__validation-error
+                p.form__error-message При регистрации произошли ошибки:
+                ul.form__errors
+                  each error in errorMessages
+                    li.form__error= error
             .form__image-loader
               a.form__avatar.avatar
-                img(src='img/icons/smile.svg' alt='аватар пользователя')
+                img(src=`/img/${user.avatar}` alt='аватар пользователя')
               label
-                input.visually-hidden(type='file')
+                input.visually-hidden(type='file' name='picture' value=user.avatar)
                 | Загрузить фото профиля
+              input.visually-hidden(type='text' name='avatar' value=user.avatar)
             button.form__submit-btn.form__submit-btn--register.button.button--colored(type='submit') Зарегистрироваться
       .modal__overlay

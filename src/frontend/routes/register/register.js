@@ -2,11 +2,14 @@
 
 const {Router} = require(`express`);
 
-const {getRegisterPage} = require(`./methods`);
+const {queryParamsMiddleware} = require(`../../middleware`);
+const {upload} = require(`../../utils`);
+const {getRegisterPage, postRegisterPage} = require(`./methods`);
 
 
 const registerRoute = new Router();
 
-registerRoute.get(`/`, getRegisterPage);
+registerRoute.get(`/`, queryParamsMiddleware([`errorMessages`, `user`]), getRegisterPage);
+registerRoute.post(`/`, upload(`picture`), postRegisterPage);
 
 module.exports = registerRoute;

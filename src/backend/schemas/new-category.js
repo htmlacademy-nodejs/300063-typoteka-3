@@ -3,10 +3,11 @@
 const Joi = require(`@hapi/joi`);
 
 const {schemaMessages} = require(`../messages`);
+const {ECategoryFieldName} = require(`../models`);
 
 
 module.exports = Joi.object({
-  title: Joi.string()
+  [ECategoryFieldName.TITLE]: Joi.string()
     .min(5)
     .max(30)
     .required()
