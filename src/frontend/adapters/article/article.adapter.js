@@ -1,13 +1,21 @@
 'use strict';
 
+const {ONE_PAGE_LIMIT} = require(`../../../common/params`);
 const request = require(`../request`);
 const {dateAdapter} = require(`../date`);
 
 
 class ArticleAdapter {
   async getList() {
-    const articleList = await request.get(`articles`);
-    return articleList.map(this._adaptArticle);
+    const articles = await request.get(`articles`);
+    articles.list = articles.list.map(this._adaptArticle);
+    return articles;
+  }
+
+  async getPartList(page) {
+    const articles = await request.get(`articles?limit=${ONE_PAGE_LIMIT}&page=${page}`);
+    articles.list = articles.list.map(this._adaptArticle);
+    return articles;
   }
 
   addItem(params) {

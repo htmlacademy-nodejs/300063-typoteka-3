@@ -2,5 +2,6 @@
   "DEFAULT_PUBLIC_DIR": "public",
   "DEFAULT_VIEW_DIR": "templates",
   "DEFAULT_TEMP_DIR": "temp",
-  "ONE_PAGE_LIMIT": 8
+  "ONE_PAGE_LIMIT": 8,
+  "MAX_DISPLAYED_PAGES": 5
 }

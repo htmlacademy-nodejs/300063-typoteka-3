@@ -5,9 +5,9 @@ const {articleAdapter} = require(`../../../adapters`);
 
 
 module.exports = async (req, res) => {
-  const articleList = await articleAdapter.getList();
+  const articles = await articleAdapter.getList();
   const content = {
-    articleList
+    articleList: articles.list,
   };
   res.render(`pages/my/my`, content);
   logger.endRequest(req, res);

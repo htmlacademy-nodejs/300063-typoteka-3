@@ -2,8 +2,7 @@
 
 const HttpCodes = require(`http-status-codes`);
 
-const {ONE_PAGE_LIMIT} = require(`../../../../common/params`);
-const {sequelize} = require(`../../../db`);
+const {db, sequelize} = require(`../../../db`);
 const {
   EArticleFieldName,
   ECategoryFieldName,
@@ -37,19 +36,29 @@ const articlesSql = `
   ) AS "comments"
     ON "comments"."${EForeignKey.ARTICLE_ID}" = "${EModelName.ARTICLES}"."${EArticleFieldName.ID}"
   GROUP BY "${EModelName.ARTICLES}"."${EArticleFieldName.ID}", "comments"."count"
-  ORDER BY "${EModelName.ARTICLES}"."${EArticleFieldName.ID}";
+  ORDER BY "${EModelName.ARTICLES}"."${EArticleFieldName.DATE}"
+  LIMIT :limit
+  OFFSET :offset
 `;
 
 module.exports = async (req, res) => {
-  const currentPage = +req.query.page || 1;
-
+  let offset = 0;
+  let limit = null;
+  if (req.query.page) {
+    limit = req.query.limit;
+    offset = req.query.limit * (req.query.page - 1);
+  }
   const articles = await sequelize.query(articlesSql, {
     type: sequelize.QueryTypes.SELECT,
     replacements: {
-      limit: ONE_PAGE_LIMIT,
-      offset: currentPage,
+      limit,
+      offset,
     }
   });
-  res.status(HttpCodes.OK).send(articles);
+  const articleCount = await db.Article.count();
+  res.status(HttpCodes.OK).send({
+    list: articles,
+    length: articleCount
+  });
   logger.endRequest(req, res);
 };
