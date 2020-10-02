@@ -1,5 +1,6 @@
 'use strict';
 
+const bcrypt = require(`bcrypt`);
 const HttpCodes = require(`http-status-codes`);
 const request = require(`supertest`);
 
@@ -9,6 +10,7 @@ const {getRandomString} = require(`../../utils`);
 
 
 const pathToArticles = `/api/articles`;
+const pathToLogin = `/api/user/login`;
 const AVAILABLE_SYMBOLS = `abcdefghijklmnopqrstuvwxyz`;
 
 const articleData = {
@@ -19,7 +21,6 @@ const articleData = {
   categories: [1, 2, 3],
   date: `2020-09-10`,
 };
-
 const newArticleData = {
   title: `Как перестать беспокоиться и начать жить`,
   image: `123.png`,
@@ -28,22 +29,55 @@ const newArticleData = {
   categories: [3, 4],
   date: `2020-09-10`,
 };
+const authAdminParams = {
+  email: `admin@mail.ru`,
+  password: `123456`,
+};
+const authUserParams = {
+  email: `user@mail.ru`,
+  password: `654321`,
+};
 
 const initTest = async () => {
   await initDb(true);
+  await createUsers();
   const categoriesForDbTable = new Array(5)
     .fill(``)
     .map(() => ({title: getRandomString(AVAILABLE_SYMBOLS, 10)}));
   await db.Category.bulkCreate(categoriesForDbTable);
 };
 
+const createUsers = async () => {
+  return await db.Account.bulkCreate([
+    {
+      firstname: getRandomString(AVAILABLE_SYMBOLS, 20),
+      lastname: getRandomString(AVAILABLE_SYMBOLS, 20),
+      email: authAdminParams.email,
+      avatar: `test.png`,
+      password: bcrypt.hashSync(authAdminParams.password, 10),
+      isAdmin: true,
+    },
+    {
+      firstname: getRandomString(AVAILABLE_SYMBOLS, 20),
+      lastname: getRandomString(AVAILABLE_SYMBOLS, 20),
+      email: authUserParams.email,
+      avatar: `test.png`,
+      password: bcrypt.hashSync(authUserParams.password, 10),
+      isAdmin: false,
+    },
+  ]);
+};
+
 describe(`Article ID API end-points`, () => {
   let server = null;
   let article = null;
+  let cookie = null;
 
   beforeAll(async () => {
     await initTest();
     server = await apiContainer.getInstance();
+    const admin = await request(server).post(pathToLogin).send(authAdminParams);
+    cookie = admin.headers[`set-cookie`];
   });
 
   beforeEach(async () => {
@@ -80,44 +114,88 @@ describe(`Article ID API end-points`, () => {
 
   describe(`DELETE`, () => {
     test(`When DELETE article status code should be ${HttpCodes.NO_CONTENT}`, async () => {
-      const removeArticleResponse = await request(server).delete(`${pathToArticles}/${article.id}`);
-      expect(removeArticleResponse.statusCode).toBe(HttpCodes.NO_CONTENT);
+      const res = await request(server)
+        .delete(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send();
+      expect(res.statusCode).toBe(HttpCodes.NO_CONTENT);
     });
 
     test(`When DELETE not exist article status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
-      await request(server).delete(`${pathToArticles}/${article.id}`);
-      const removeArticleResponse = await request(server).delete(`${pathToArticles}/${article.id}`);
-      expect(removeArticleResponse.statusCode).toBe(HttpCodes.BAD_REQUEST);
+      await request(server)
+        .delete(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send();
+      const res = await request(server)
+        .delete(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send();
+      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
     test(`When DELETE not exist article response should has "empty" property`, async () => {
       await request(server).delete(`${pathToArticles}/${article.id}`);
-      const removeArticleResponse = await request(server).delete(`${pathToArticles}/${article.id}`);
-      expect(removeArticleResponse.body).toHaveProperty(`message`);
+      await request(server)
+        .delete(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send();
+      const res = await request(server)
+        .delete(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send();
+      expect(res.body).toHaveProperty(`message`);
     });
 
     test(`When DELETE article when articleId is not number status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
-      const removeArticleResponse = await request(server).delete(`${pathToArticles}/not-number`);
-      expect(removeArticleResponse.statusCode).toBe(HttpCodes.BAD_REQUEST);
+      const res = await request(server)
+        .delete(`${pathToArticles}/not-number`)
+        .set(`cookie`, cookie)
+        .send();
+      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
     test(`When DELETE article when articleId is number status code should be ${HttpCodes.NO_CONTENT}`, async () => {
-      const removeArticleResponse = await request(server).delete(`${pathToArticles}/${article.id}`);
-      expect(removeArticleResponse.statusCode).toBe(HttpCodes.NO_CONTENT);
+      const res = await request(server)
+        .delete(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send();
+      expect(res.statusCode).toBe(HttpCodes.NO_CONTENT);
+    });
+
+    test(`When DELETE article without access token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+      const res = await request(server)
+        .delete(`${pathToArticles}/${article.id}`)
+        .send();
+      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+    });
+
+    test(`When DELETE article with not admin access token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+      const user = await request(server).post(pathToLogin).send(authUserParams);
+      const res = await request(server)
+        .delete(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, user.headers[`set-cookie`])
+        .send();
+      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
   });
 
   describe(`PUT`, () => {
     test(`When PUT article params status code should be ${HttpCodes.OK}`, async () => {
-      const putArticleResponse = await request(server).put(`${pathToArticles}/${article.id}`).send(newArticleData);
-      expect(putArticleResponse.statusCode).toBe(HttpCodes.OK);
+      const res = await request(server)
+        .put(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send(newArticleData);
+      expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
     test(`When PUT article with invalid title when length is less then 30 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
       const articleParams = {
         title: getRandomString(AVAILABLE_SYMBOLS, 29),
       };
-      const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+      const res = await request(server)
+        .put(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
@@ -125,7 +203,10 @@ describe(`Article ID API end-points`, () => {
       const articleParams = {
         title: getRandomString(AVAILABLE_SYMBOLS, 30),
       };
-      const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+      const res = await request(server)
+        .put(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
@@ -133,7 +214,10 @@ describe(`Article ID API end-points`, () => {
       const articleParams = {
         title: getRandomString(AVAILABLE_SYMBOLS, 251),
       };
-      const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+      const res = await request(server)
+        .put(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
@@ -141,7 +225,10 @@ describe(`Article ID API end-points`, () => {
       const articleParams = {
         title: getRandomString(AVAILABLE_SYMBOLS, 250),
       };
-      const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+      const res = await request(server)
+        .put(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
@@ -149,7 +236,10 @@ describe(`Article ID API end-points`, () => {
       const articleParams = {
         announce: getRandomString(AVAILABLE_SYMBOLS, 29),
       };
-      const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+      const res = await request(server)
+        .put(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
@@ -157,7 +247,10 @@ describe(`Article ID API end-points`, () => {
       const articleParams = {
         announce: getRandomString(AVAILABLE_SYMBOLS, 30),
       };
-      const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+      const res = await request(server)
+        .put(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
@@ -165,7 +258,10 @@ describe(`Article ID API end-points`, () => {
       const articleParams = {
         announce: getRandomString(AVAILABLE_SYMBOLS, 251),
       };
-      const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+      const res = await request(server)
+        .put(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
@@ -173,7 +269,10 @@ describe(`Article ID API end-points`, () => {
       const articleParams = {
         announce: getRandomString(AVAILABLE_SYMBOLS, 250),
       };
-      const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+      const res = await request(server)
+        .put(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
@@ -181,7 +280,10 @@ describe(`Article ID API end-points`, () => {
       const articleParams = {
         text: getRandomString(AVAILABLE_SYMBOLS, 1001),
       };
-      const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+      const res = await request(server)
+        .put(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
@@ -189,7 +291,10 @@ describe(`Article ID API end-points`, () => {
       const articleParams = {
         text: getRandomString(AVAILABLE_SYMBOLS, 1000),
       };
-      const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+      const res = await request(server)
+        .put(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
@@ -197,10 +302,16 @@ describe(`Article ID API end-points`, () => {
       const articleParams = {
         image: `123.png`,
       };
-      const resWithPng = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+      const resWithPng = await request(server)
+        .put(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send(articleParams);
       expect(resWithPng.statusCode).toBe(HttpCodes.OK);
       articleParams.image = `123.jpg`;
-      const resWithJpg = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+      const resWithJpg = await request(server)
+        .put(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send(articleParams);
       expect(resWithJpg.statusCode).toBe(HttpCodes.OK);
     });
 
@@ -208,7 +319,10 @@ describe(`Article ID API end-points`, () => {
       const articleParams = {
         image: `123.pmng`,
       };
-      const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+      const res = await request(server)
+        .put(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
@@ -216,7 +330,10 @@ describe(`Article ID API end-points`, () => {
       const articleParams = {
         date: `10-09-2020`,
       };
-      const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+      const res = await request(server)
+        .put(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
@@ -224,7 +341,10 @@ describe(`Article ID API end-points`, () => {
       const articleParams = {
         categories: [],
       };
-      const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+      const res = await request(server)
+        .put(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
@@ -232,18 +352,43 @@ describe(`Article ID API end-points`, () => {
       const articleParams = {
         test: `test`,
       };
-      const res = await request(server).put(`${pathToArticles}/${article.id}`).send(articleParams);
+      const res = await request(server)
+        .put(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
     test(`When PUT article when articleId is not number status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
-      const res = await request(server).put(`${pathToArticles}/not-number`).send(newArticleData);
+      const res = await request(server)
+        .put(`${pathToArticles}/not-number`)
+        .set(`cookie`, cookie)
+        .send(newArticleData);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
     test(`When PUT article when articleId is number status code should be ${HttpCodes.OK}`, async () => {
-      const res = await request(server).put(`${pathToArticles}/${article.id}`).send(newArticleData);
+      const res = await request(server)
+        .put(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, cookie)
+        .send(newArticleData);
       expect(res.statusCode).toBe(HttpCodes.OK);
+    });
+
+    test(`When PUT article without access token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+      const res = await request(server)
+        .put(`${pathToArticles}/${article.id}`)
+        .send(newArticleData);
+      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+    });
+
+    test(`When DELETE article with not admin access token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+      const user = await request(server).post(pathToLogin).send(authUserParams);
+      const res = await request(server)
+        .put(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, user.headers[`set-cookie`])
+        .send(newArticleData);
+      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
   });
 });
