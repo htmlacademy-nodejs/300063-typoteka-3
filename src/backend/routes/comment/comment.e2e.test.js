@@ -125,15 +125,15 @@ describe(`Comment API end-points`, () => {
     expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 
-  test(`When DELETE comment without access token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+  test(`When DELETE comment without access token status code should be ${HttpCodes.UNAUTHORIZED}`, async () => {
     const res = await request(server).delete(`${pathToComments}/${commentId}`);
-    expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+    expect(res.statusCode).toBe(HttpCodes.UNAUTHORIZED);
   });
 
-  test(`When DELETE comment with not admin access token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+  test(`When DELETE comment with not admin access token status code should be ${HttpCodes.FORBIDDEN}`, async () => {
     const res = await request(server)
       .delete(`${pathToComments}/${commentId}`)
       .set(`cookie`, userCookie);
-    expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+    expect(res.statusCode).toBe(HttpCodes.FORBIDDEN);
   });
 });

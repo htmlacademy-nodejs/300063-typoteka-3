@@ -36,6 +36,7 @@ module.exports = [
     Component: ApiArticles,
     middleware: {
       post: [
+        authenticationJwt,
         checkAdmin,
         schemaValidator(newArticleSchema)
       ],
@@ -47,11 +48,13 @@ module.exports = [
         middleware: {
           get: [routeArticleIdParamsValidationMiddleware],
           put: [
+            authenticationJwt,
             checkAdmin,
             routeArticleIdParamsValidationMiddleware,
             schemaValidator(updatedArticleSchema)
           ],
           delete: [
+            authenticationJwt,
             checkAdmin,
             routeArticleIdParamsValidationMiddleware
           ],
@@ -64,6 +67,7 @@ module.exports = [
     Component: ApiCategories,
     middleware: {
       post: [
+        authenticationJwt,
         checkAdmin,
         schemaValidator(newCategorySchema)
       ],
@@ -74,11 +78,13 @@ module.exports = [
         Component: ApiCategory,
         middleware: {
           put: [
+            authenticationJwt,
             checkAdmin,
             routeCategoryIdParamsValidationMiddleware,
             schemaValidator(newCategorySchema)
           ],
           delete: [
+            authenticationJwt,
             checkAdmin,
             routeCategoryIdParamsValidationMiddleware
           ],
@@ -101,6 +107,7 @@ module.exports = [
         Component: ApiComment,
         middleware: {
           delete: [
+            authenticationJwt,
             checkAdmin,
             routeCommentIdParamsValidationMiddleware
           ],

@@ -132,17 +132,17 @@ describe(`Categories API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
 
-    test(`When POST valid categories without access token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When POST valid categories without access token status code should be ${HttpCodes.UNAUTHORIZED}`, async () => {
       const category = {
         title: getRandomString(AVAILABLE_SYMBOLS, 10),
       };
       const res = await request(server)
         .post(pathToCategories)
         .send(category);
-      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+      expect(res.statusCode).toBe(HttpCodes.UNAUTHORIZED);
     });
 
-    test(`When POST valid categories with not admin token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When POST valid categories with not admin token status code should be ${HttpCodes.FORBIDDEN}`, async () => {
       const user = await request(server).post(pathToLogin).send(authUserParams);
       const category = {
         title: getRandomString(AVAILABLE_SYMBOLS, 10),
@@ -151,7 +151,7 @@ describe(`Categories API end-points`, () => {
         .post(pathToCategories)
         .set(`cookie`, user.headers[`set-cookie`])
         .send(category);
-      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+      expect(res.statusCode).toBe(HttpCodes.FORBIDDEN);
     });
   });
 });

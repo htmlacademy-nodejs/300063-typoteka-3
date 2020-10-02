@@ -165,20 +165,20 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.NO_CONTENT);
     });
 
-    test(`When DELETE article without access token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When DELETE article without access token status code should be ${HttpCodes.UNAUTHORIZED}`, async () => {
       const res = await request(server)
         .delete(`${pathToArticles}/${article.id}`)
         .send();
-      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+      expect(res.statusCode).toBe(HttpCodes.UNAUTHORIZED);
     });
 
-    test(`When DELETE article with not admin access token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When DELETE article with not admin access token status code should be ${HttpCodes.FORBIDDEN}`, async () => {
       const user = await request(server).post(pathToLogin).send(authUserParams);
       const res = await request(server)
         .delete(`${pathToArticles}/${article.id}`)
         .set(`cookie`, user.headers[`set-cookie`])
         .send();
-      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+      expect(res.statusCode).toBe(HttpCodes.FORBIDDEN);
     });
   });
 
@@ -378,20 +378,20 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
-    test(`When PUT article without access token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When PUT article without access token status code should be ${HttpCodes.UNAUTHORIZED}`, async () => {
       const res = await request(server)
         .put(`${pathToArticles}/${article.id}`)
         .send(newArticleData);
-      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+      expect(res.statusCode).toBe(HttpCodes.UNAUTHORIZED);
     });
 
-    test(`When DELETE article with not admin access token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When DELETE article with not admin access token status code should be ${HttpCodes.FORBIDDEN}`, async () => {
       const user = await request(server).post(pathToLogin).send(authUserParams);
       const res = await request(server)
         .put(`${pathToArticles}/${article.id}`)
         .set(`cookie`, user.headers[`set-cookie`])
         .send(newArticleData);
-      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+      expect(res.statusCode).toBe(HttpCodes.FORBIDDEN);
     });
   });
 });

@@ -11,16 +11,7 @@ let JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || commonParams.JWT_ACCESS
 
 module.exports = async (req, res, next) => {
   const {accessToken} = req.cookies;
-  if (!accessToken) {
-    res.status(httpCodes.BAD_REQUEST).send({message: `Токен доступа отсутствует`});
-    return;
-  }
-
   await jwt.verify(accessToken, JWT_ACCESS_SECRET, async (error, accountData) => {
-    if (error) {
-      res.status(httpCodes.BAD_REQUEST).send({message: `Токен доступа невалиден`});
-      return;
-    }
     const {id} = accountData;
     const account = await db.Account.findByPk(id);
     if (!account) {
@@ -28,7 +19,7 @@ module.exports = async (req, res, next) => {
       return;
     }
     if (!account.isAdmin) {
-      res.status(httpCodes.BAD_REQUEST).send({message: `Недостаточно прав`});
+      res.status(httpCodes.FORBIDDEN).send({message: `Недостаточно прав`});
       return;
     }
     next();

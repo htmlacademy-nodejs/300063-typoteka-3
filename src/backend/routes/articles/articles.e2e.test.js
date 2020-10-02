@@ -249,20 +249,20 @@ describe(`Articles API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When POST article without access token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When POST article without access token status code should be ${HttpCodes.UNAUTHORIZED}`, async () => {
       const res = await request(server)
         .post(pathToArticles)
         .send(articleData);
-      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+      expect(res.statusCode).toBe(HttpCodes.UNAUTHORIZED);
     });
 
-    test(`When POST article with not admin access token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When POST article with not admin access token status code should be ${HttpCodes.FORBIDDEN}`, async () => {
       const user = await request(server).post(pathToLogin).send(authUserParams);
       const res = await request(server)
         .post(pathToArticles)
         .set(`cookie`, user.headers[`set-cookie`])
         .send(articleData);
-      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+      expect(res.statusCode).toBe(HttpCodes.FORBIDDEN);
     });
   });
 });

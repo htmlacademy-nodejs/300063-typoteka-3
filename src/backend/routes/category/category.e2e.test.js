@@ -50,13 +50,16 @@ const createUsers = async () => {
 
 describe(`Categories API end-points`, () => {
   let server = null;
-  let cookie = null;
+  let adminCookie = null;
+  let userCookie = null;
 
   beforeAll(async () => {
     await initTest();
     server = await apiContainer.getInstance();
     const admin = await request(server).post(pathToLogin).send(authAdminParams);
-    cookie = admin.headers[`set-cookie`];
+    adminCookie = admin.headers[`set-cookie`];
+    const user = await request(server).post(pathToLogin).send(authUserParams);
+    userCookie = user.headers[`set-cookie`];
   });
 
   afterAll(async () => {
@@ -73,7 +76,7 @@ describe(`Categories API end-points`, () => {
     beforeAll(async () => {
       const categoryRes = await request(server)
         .post(pathToCategories)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(categoryParams);
       category = categoryRes.body;
     });
@@ -84,7 +87,7 @@ describe(`Categories API end-points`, () => {
       };
       const res = await request(server)
         .put(`${pathToCategories}/invalid-category-id`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(updatedCategoryParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -95,7 +98,7 @@ describe(`Categories API end-points`, () => {
       };
       const res = await request(server)
         .put(`${pathToCategories}/${category.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(updatedCategoryParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -106,7 +109,7 @@ describe(`Categories API end-points`, () => {
       };
       const res = await request(server)
         .put(`${pathToCategories}/${category.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(updatedCategoryParams);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
@@ -117,7 +120,7 @@ describe(`Categories API end-points`, () => {
       };
       const res = await request(server)
         .put(`${pathToCategories}/${category.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(updatedCategoryParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -128,7 +131,7 @@ describe(`Categories API end-points`, () => {
       };
       const res = await request(server)
         .put(`${pathToCategories}/${category.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(updatedCategoryParams);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
@@ -144,7 +147,7 @@ describe(`Categories API end-points`, () => {
     beforeAll(async () => {
       const categoryRes = await request(server)
         .post(pathToCategories)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(categoryParams);
       category = categoryRes.body;
     });
@@ -152,15 +155,27 @@ describe(`Categories API end-points`, () => {
     test(`When DELETE category with invalid categoryId status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
       const res = await request(server)
         .delete(`${pathToCategories}/invalid-category-id`)
-        .set(`cookie`, cookie);
+        .set(`cookie`, adminCookie);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
     test(`When DELETE category with valid categoryId status code should be ${HttpCodes.NO_CONTENT}`, async () => {
       const res = await request(server)
         .delete(`${pathToCategories}/${category.id}`)
-        .set(`cookie`, cookie);
+        .set(`cookie`, adminCookie);
       expect(res.statusCode).toBe(HttpCodes.NO_CONTENT);
+    });
+
+    test(`When DELETE category without access token status code should be ${HttpCodes.UNAUTHORIZED}`, async () => {
+      const res = await request(server).delete(`${pathToCategories}/${category.id}`);
+      expect(res.statusCode).toBe(HttpCodes.UNAUTHORIZED);
+    });
+
+    test(`When DELETE category with not admin access token status code should be ${HttpCodes.FORBIDDEN}`, async () => {
+      const res = await request(server)
+        .delete(`${pathToCategories}/${category.id}`)
+        .set(`cookie`, userCookie);
+      expect(res.statusCode).toBe(HttpCodes.FORBIDDEN);
     });
   });
 });
