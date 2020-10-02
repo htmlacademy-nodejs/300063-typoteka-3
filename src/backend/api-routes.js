@@ -90,7 +90,10 @@ module.exports = [
     path: routeName.COMMENTS,
     Component: ApiComments,
     middleware: {
-      post: [schemaValidator(newComment)],
+      post: [
+        authenticationJwt,
+        schemaValidator(newComment)
+      ],
     },
     children: [
       {

@@ -68,23 +68,27 @@ const createUsers = async () => {
 describe(`Comment API end-points`, () => {
   let server = null;
   let commentId = null;
-  let cookie = null;
+  let adminCookie = null;
+  let userCookie = null;
 
   beforeAll(async () => {
     await initTest();
     server = await apiContainer.getInstance();
     const admin = await request(server).post(pathToLogin).send(authAdminParams);
-    cookie = admin.headers[`set-cookie`];
+    adminCookie = admin.headers[`set-cookie`];
+    const user = await request(server).post(pathToLogin).send(authUserParams);
+    userCookie = user.headers[`set-cookie`];
   });
 
   beforeEach(async () => {
     const postArticleResponse = await request(server)
       .post(pathToArticles)
-      .set(`cookie`, cookie)
+      .set(`cookie`, adminCookie)
       .send(articleData);
     const article = postArticleResponse.body;
     const postCommentResponse = await request(server)
       .post(pathToComments)
+      .set(`cookie`, userCookie)
       .send({
         ...commentData,
         articleId: article.id,
@@ -100,24 +104,24 @@ describe(`Comment API end-points`, () => {
   test(`When DELETE existed comment status code should be ${HttpCodes.NO_CONTENT}`, async () => {
     const res = await request(server)
       .delete(`${pathToComments}/${commentId}`)
-      .set(`cookie`, cookie);
+      .set(`cookie`, adminCookie);
     expect(res.statusCode).toBe(HttpCodes.NO_CONTENT);
   });
 
   test(`When DELETE not existed comment status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
     await request(server)
       .delete(`${pathToComments}/${commentId}`)
-      .set(`cookie`, cookie);
+      .set(`cookie`, adminCookie);
     const res = await request(server)
       .delete(`${pathToComments}/${commentId}`)
-      .set(`cookie`, cookie);
+      .set(`cookie`, adminCookie);
     expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 
   test(`When DELETE invalid comment id status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
     const res = await request(server)
       .delete(`${pathToComments}/invalid-id`)
-      .set(`cookie`, cookie);
+      .set(`cookie`, adminCookie);
     expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 
@@ -127,10 +131,9 @@ describe(`Comment API end-points`, () => {
   });
 
   test(`When DELETE comment with not admin access token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
-    const user = await request(server).post(pathToLogin).send(authUserParams);
     const res = await request(server)
       .delete(`${pathToComments}/${commentId}`)
-      .set(`cookie`, user.headers[`set-cookie`]);
+      .set(`cookie`, userCookie);
     expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 });

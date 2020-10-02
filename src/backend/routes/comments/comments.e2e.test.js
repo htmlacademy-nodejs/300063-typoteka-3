@@ -81,19 +81,22 @@ const fillCommentsTable = async (count) => {
 describe(`Comments API end-points`, () => {
   let server = null;
   let article = null;
-  let cookie = null;
+  let adminCookie = null;
+  let userCookie = null;
 
   beforeAll(async () => {
     await initTest();
     server = await apiContainer.getInstance();
     const admin = await request(server).post(pathToLogin).send(authAdminParams);
-    cookie = admin.headers[`set-cookie`];
+    adminCookie = admin.headers[`set-cookie`];
+    const user = await request(server).post(pathToLogin).send(authUserParams);
+    userCookie = user.headers[`set-cookie`];
   });
 
   beforeEach(async () => {
     const postArticleResponse = await request(server)
       .post(pathToArticles)
-      .set(`cookie`, cookie)
+      .set(`cookie`, adminCookie)
       .send(articleData);
     article = postArticleResponse.body;
   });
@@ -112,7 +115,7 @@ describe(`Comments API end-points`, () => {
     test(`When GET comment list by article id with not exist article status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
       await request(server)
         .delete(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send();
       const res = await request(server).get(`${pathToComments}?articleId=${article.id}`);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
@@ -136,7 +139,10 @@ describe(`Comments API end-points`, () => {
         ...commentData,
         articleId: article.id,
       };
-      const res = await request(server).post(pathToComments).send(comment);
+      const res = await request(server)
+        .post(pathToComments)
+        .set(`cookie`, userCookie)
+        .send(comment);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
 
@@ -146,7 +152,10 @@ describe(`Comments API end-points`, () => {
         articleId: article.id,
       };
       delete comment.text;
-      const postCommentResponse = await request(server).post(pathToComments).send(comment);
+      const postCommentResponse = await request(server)
+        .post(pathToComments)
+        .set(`cookie`, userCookie)
+        .send(comment);
       expect(postCommentResponse.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
@@ -155,28 +164,75 @@ describe(`Comments API end-points`, () => {
         ...commentData,
         articleId: article.id,
       };
-      const postCommentResponse = await request(server).post(pathToComments).send(comment);
+      const postCommentResponse = await request(server)
+        .post(pathToComments)
+        .set(`cookie`, userCookie)
+        .send(comment);
       expect(postCommentResponse.body).toHaveProperty(property);
     });
 
-    test(`When POST article with invalid text when length is great then 1000 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When POST article comment with invalid text when length is great then 1000 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
       const comment = {
         ...commentData,
         articleId: article.id,
 
         text: getRandomString(AVAILABLE_SYMBOLS, 1001),
       };
-      const res = await request(server).post(pathToComments).send(comment);
+      const res = await request(server)
+        .post(pathToComments)
+        .set(`cookie`, userCookie)
+        .send(comment);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When POST article with valid text when length is equal 1000 status code should be ${HttpCodes.CREATED}`, async () => {
+    test(`When POST article comment with valid text when length is equal 1000 status code should be ${HttpCodes.CREATED}`, async () => {
       const comment = {
         ...commentData,
         articleId: article.id,
         text: getRandomString(AVAILABLE_SYMBOLS, 1000),
       };
-      const res = await request(server).post(pathToComments).send(comment);
+      const res = await request(server)
+        .post(pathToComments)
+        .set(`cookie`, userCookie)
+        .send(comment);
+      expect(res.statusCode).toBe(HttpCodes.CREATED);
+    });
+
+    test(`When POST article comment without access token status code should be ${HttpCodes.UNAUTHORIZED}`, async () => {
+      const comment = {
+        ...commentData,
+        articleId: article.id,
+        text: getRandomString(AVAILABLE_SYMBOLS, 500),
+      };
+      const res = await request(server)
+        .post(pathToComments)
+        .send(comment);
+      expect(res.statusCode).toBe(HttpCodes.UNAUTHORIZED);
+    });
+
+    test(`When POST article comment with not admin access token status code should be ${HttpCodes.CREATED}`, async () => {
+      const comment = {
+        ...commentData,
+        articleId: article.id,
+        text: getRandomString(AVAILABLE_SYMBOLS, 500),
+      };
+      const res = await request(server)
+        .post(pathToComments)
+        .set(`cookie`, userCookie)
+        .send(comment);
+      expect(res.statusCode).toBe(HttpCodes.CREATED);
+    });
+
+    test(`When POST article comment with admin access token status code should be ${HttpCodes.CREATED}`, async () => {
+      const comment = {
+        ...commentData,
+        articleId: article.id,
+        text: getRandomString(AVAILABLE_SYMBOLS, 500),
+      };
+      const res = await request(server)
+        .post(pathToComments)
+        .set(`cookie`, adminCookie)
+        .send(comment);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
   });
