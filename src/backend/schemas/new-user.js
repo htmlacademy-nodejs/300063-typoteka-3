@@ -2,62 +2,90 @@
 
 const Joi = require(`@hapi/joi`);
 
+const {backendParams} = require(`../../common/params`);
 const {EAccountFieldName} = require(`../models`);
+const {schemaMessages} = require(`../messages`);
 
+
+const {
+  MAX_FIRSTNAME_SYMBOL_COUNT,
+  MAX_LASTNAME_SYMBOL_COUNT,
+  MAX_EMAIL_SYMBOL_COUNT,
+  MAX_AVATAR_SYMBOL_COUNT,
+  MIN_PASSWORD_SYMBOL_COUNT,
+} = backendParams.db.account;
+
+const {
+  PATTERN_FIRSTNAME_FIELD,
+  MAX_FIRSTNAME_LENGTH,
+  REQUIRED_FIRSTNAME_FIELD,
+  PATTERN_LASTNAME_FIELD,
+  MAX_LASTNAME_LENGTH,
+  REQUIRED_LASTNAME_FIELD,
+  INVALID_EMAIL,
+  MAX_EMAIL_LENGTH,
+  REQUIRED_EMAIL_FIELD,
+  PATTERN_AVATAR_FIELD,
+  MAX_AVATAR_LENGTH,
+  MIN_PASSWORD_LENGTH,
+  REQUIRED_PASSWORD_FIELD,
+  MIN_REPEAT_PASSWORD_LENGTH,
+  REQUIRED_REPEAT_PASSWORD_FIELD,
+} = schemaMessages.User;
 
 module.exports = Joi.object({
   [EAccountFieldName.FIRSTNAME]: Joi.string()
     .pattern(/^[A-zА-яЁё]+$/)
-    .max(50)
+    .max(MAX_FIRSTNAME_SYMBOL_COUNT)
     .required()
     .messages({
-      'string.pattern.base': `Имя может содержать только кириллические символы`,
-      'string.max': `Имя может содержать не более 50 символов`,
-      'any.required': `Имя является обязательным полем для заполнения`,
-      'string.empty': `Имя является обязательным полем для заполнения`,
+      'string.pattern.base': PATTERN_FIRSTNAME_FIELD,
+      'string.max': MAX_FIRSTNAME_LENGTH,
+      'any.required': REQUIRED_FIRSTNAME_FIELD,
+      'string.empty': REQUIRED_FIRSTNAME_FIELD,
     }),
   [EAccountFieldName.LASTNAME]: Joi.string()
     .pattern(/^[A-zА-яЁё]+$/)
-    .max(50)
+    .max(MAX_LASTNAME_SYMBOL_COUNT)
     .required()
     .messages({
-      'string.pattern.base': `Фамилия может содержать только кириллические символы`,
-      'string.max': `Фамилия может содержать не более 50 символов`,
-      'any.required': `Фамилия является обязательным полем для заполнения`,
-      'string.empty': `Фамилия является обязательным полем для заполнения`,
+      'string.pattern.base': PATTERN_LASTNAME_FIELD,
+      'string.max': MAX_LASTNAME_LENGTH,
+      'any.required': REQUIRED_LASTNAME_FIELD,
+      'string.empty': REQUIRED_LASTNAME_FIELD,
     }),
   [EAccountFieldName.EMAIL]: Joi.string()
     .email()
-    .max(100)
+    .max(MAX_EMAIL_SYMBOL_COUNT)
     .required()
     .messages({
-      'string.email': `Email невалиден`,
-      'string.max': `Email может содержать не более 100 символов`,
-      'any.required': `Email является обязательным полем для заполнения`,
-      'string.empty': `Email является обязательным полем для заполнения`,
+      'string.email': INVALID_EMAIL,
+      'string.max': MAX_EMAIL_LENGTH,
+      'any.required': REQUIRED_EMAIL_FIELD,
+      'string.empty': REQUIRED_EMAIL_FIELD,
     }),
   [EAccountFieldName.AVATAR]: Joi.string()
-    .max(100)
+    .max(MAX_AVATAR_SYMBOL_COUNT)
     .allow(``)
     .pattern(/.(jpg|png)$/)
     .messages({
-      'string.pattern.base': `Допускаются только изображения с расширениемя jpg и png`,
-      'string.max': `Имя файла с аватаром может содержать не более 100 символов`,
+      'string.pattern.base': PATTERN_AVATAR_FIELD,
+      'string.max': MAX_AVATAR_LENGTH,
     }),
   [EAccountFieldName.PASSWORD]: Joi.string()
-    .min(6)
+    .min(MIN_PASSWORD_SYMBOL_COUNT)
     .required()
     .messages({
-      'string.min': `Пароль должен содержать не менее 6 символов`,
-      'any.required': `Пароль является обязательным полем для заполнения`,
-      'string.empty': `Пароль является обязательным полем для заполнения`,
+      'string.min': MIN_PASSWORD_LENGTH,
+      'any.required': REQUIRED_PASSWORD_FIELD,
+      'string.empty': REQUIRED_PASSWORD_FIELD,
     }),
   repeatedPassword: Joi.string()
-    .min(6)
+    .min(MIN_PASSWORD_SYMBOL_COUNT)
     .required()
     .messages({
-      'string.min': `Поле повторение пароля должено содержать не менее 6 символов и совпадать с паролем`,
-      'any.required': `Поле повторение пароля является обязательным для заполнения`,
-      'string.empty': `Поле повторение пароля является обязательным для заполнения`,
+      'string.min': MIN_REPEAT_PASSWORD_LENGTH,
+      'any.required': REQUIRED_REPEAT_PASSWORD_FIELD,
+      'string.empty': REQUIRED_REPEAT_PASSWORD_FIELD,
     }),
 });

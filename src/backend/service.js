@@ -3,10 +3,10 @@
 const chalk = require(`chalk`);
 
 const {Cli} = require(`./cli`);
-const {ExitCode, USER_ARGV_INDEX, DEFAULT_COMMAND_FOR_BACKEND_CLI} = require(`../common/params`);
+const {ExitCode, backendParams} = require(`../common/params`);
 
 
-const userInputList = process.argv.slice(USER_ARGV_INDEX);
+const userInputList = process.argv.slice(backendParams.USER_ARGV_INDEX);
 
 const checkToBeCommandOrAlias = (userInput) => {
   const isCommand = userInput.search(`--`) === 0;
@@ -43,7 +43,7 @@ const runUserCommands = () => {
   const commandList = formAnArrayOfCommands();
   commandList.forEach((command) => Cli[command.name].run(...command.arguments));
   if (commandList.length === 0) {
-    Cli[DEFAULT_COMMAND_FOR_BACKEND_CLI].run();
+    Cli[backendParams.DEFAULT_COMMAND_FOR_BACKEND_CLI].run();
   }
 };
 

@@ -5,15 +5,12 @@ const request = require(`../request`);
 
 class CategoryAdapter {
   async getList(params) {
-    console.log(params);
     const res = await request.get(`categories`, params);
-    console.log(res);
     return res.data;
   }
 
   async addItem(categoryParams) {
     const res = await request.post(`categories`, categoryParams);
-    console.log(res.data);
     return res.data;
   }
 

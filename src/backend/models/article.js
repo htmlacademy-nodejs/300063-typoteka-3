@@ -1,7 +1,14 @@
 'use strict';
 
+const {backendParams} = require(`../../common/params`);
 const {EModelName} = require(`./name-space`);
 
+
+const {
+  MAX_TITLE_SYMBOL_COUNT,
+  MAX_ANNOUNCE_SYMBOL_COUNT,
+  MAX_IMAGE_NAME_SYMBOL_COUNT,
+} = backendParams.db.article;
 
 const EArticleFieldName = {
   ID: `id`,
@@ -16,11 +23,11 @@ const getArticleModel = (sequelize, DataTypes) => {
   class Article extends sequelize.Sequelize.Model {}
   Article.init({
     [EArticleFieldName.TITLE]: {
-      type: new DataTypes.STRING(250),
+      type: new DataTypes.STRING(MAX_TITLE_SYMBOL_COUNT),
       allowNull: false,
     },
     [EArticleFieldName.ANNOUNCE]: {
-      type: new DataTypes.STRING(250),
+      type: new DataTypes.STRING(MAX_ANNOUNCE_SYMBOL_COUNT),
       allowNull: false,
     },
     [EArticleFieldName.TEXT]: {
@@ -28,7 +35,7 @@ const getArticleModel = (sequelize, DataTypes) => {
       allowNull: false,
     },
     [EArticleFieldName.IMAGE]: {
-      type: new DataTypes.STRING(150),
+      type: new DataTypes.STRING(MAX_IMAGE_NAME_SYMBOL_COUNT),
       allowNull: false,
     },
     [EArticleFieldName.DATE]: {

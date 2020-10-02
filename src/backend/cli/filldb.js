@@ -4,18 +4,7 @@ const bcrypt = require(`bcrypt`);
 const chalk = require(`chalk`);
 const {nanoid} = require(`nanoid`);
 
-const {
-  FILE_CATEGORIES_PATH,
-  FILE_FIRSTNAMES_PATH,
-  FILE_LASTNAMES_PATH,
-  FILE_AVATARS_PATH,
-  FILE_IMAGES_PATH,
-  FILE_COMMENTS_PATH,
-  FILE_TITLES_PATH,
-  FILE_TEXTS_PATH,
-  generate,
-  ExitCode,
-} = require(`../../common/params`);
+const {backendParams, ExitCode} = require(`../../common/params`);
 const {db, sequelize} = require(`../db`);
 const {getRandomInt, readFile, shuffle, getRandomEmail} = require(`../utils`);
 
@@ -91,16 +80,16 @@ module.exports = {
   name: `--filldb`,
   alias: `-fdb`,
   async run(argv) {
-    const count = Number(argv) || generate.Count.DEFAULT;
+    const count = Number(argv) || backendParams.generate.Count.DEFAULT;
 
-    const CATEGORIES = await readFile(FILE_CATEGORIES_PATH);
-    const FIRSTNAMES = await readFile(FILE_FIRSTNAMES_PATH);
-    const LASTNAMES = await readFile(FILE_LASTNAMES_PATH);
-    const AVATARS = await readFile(FILE_AVATARS_PATH);
-    const TITLES = await readFile(FILE_TITLES_PATH);
-    const TEXTS = await readFile(FILE_TEXTS_PATH);
-    const IMAGES = await readFile(FILE_IMAGES_PATH);
-    const COMMENTS = await readFile(FILE_COMMENTS_PATH);
+    const CATEGORIES = await readFile(backendParams.FILE_CATEGORIES_PATH);
+    const FIRSTNAMES = await readFile(backendParams.FILE_FIRSTNAMES_PATH);
+    const LASTNAMES = await readFile(backendParams.FILE_LASTNAMES_PATH);
+    const AVATARS = await readFile(backendParams.FILE_AVATARS_PATH);
+    const TITLES = await readFile(backendParams.FILE_TITLES_PATH);
+    const TEXTS = await readFile(backendParams.FILE_TEXTS_PATH);
+    const IMAGES = await readFile(backendParams.FILE_IMAGES_PATH);
+    const COMMENTS = await readFile(backendParams.FILE_COMMENTS_PATH);
 
     await fillCategoryTable(CATEGORIES);
     await fillAccountTable(FIRSTNAMES, LASTNAMES, AVATARS, count);

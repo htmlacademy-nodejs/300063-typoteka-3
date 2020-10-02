@@ -1,7 +1,7 @@
 'use strict';
 
 const request = require(`../request`);
-const {dateAdapter} = require(`../date`);
+const {adaptDate} = require(`../../utils`);
 
 
 class ArticleAdapter {
@@ -36,7 +36,7 @@ class ArticleAdapter {
   _adaptArticle(article) {
     return {
       ...article,
-      date: dateAdapter.get(article.date),
+      date: adaptDate(article.date),
     };
   }
 }

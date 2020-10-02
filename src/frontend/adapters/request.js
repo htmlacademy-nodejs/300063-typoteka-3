@@ -2,14 +2,15 @@
 
 const axios = require(`axios`);
 
-const {DEFAULT_PROTOCOL, DEFAULT_DOMAIN, DEFAULT_BACKEND_PORT} = require(`../../common/params`);
+const {commonParams} = require(`../../common/params`);
+const {getQueryString} = require(`../utils`);
 
 
 class Request {
   constructor() {
-    const protocol = process.env.PROTOCOL || DEFAULT_PROTOCOL;
-    const domain = process.env.DOMAIN || DEFAULT_DOMAIN;
-    const port = parseInt(process.env.BACKED_PORT, 10) || DEFAULT_BACKEND_PORT;
+    const protocol = process.env.PROTOCOL || commonParams.DEFAULT_PROTOCOL;
+    const domain = process.env.DOMAIN || commonParams.DEFAULT_DOMAIN;
+    const port = parseInt(process.env.BACKED_PORT, 10) || commonParams.DEFAULT_BACKEND_PORT;
     this._url = `${protocol}://${domain}:${port}/api`;
   }
 
@@ -57,25 +58,9 @@ class Request {
   }
 
   _getUrl(path, queryParams) {
-    const queryString = this._getQueryString(queryParams);
+    const queryString = getQueryString(queryParams);
     const query = queryString && `?${queryString}`;
     return `${this._url}/${path}${query}`;
-  }
-
-  _getQueryString(queryParams) {
-    if (!queryParams) {
-      return ``;
-    }
-    const keys = Object.keys(queryParams);
-    if (keys.length === 0) {
-      return ``;
-    }
-    const queries = keys.reduce((acc, key) => {
-      return queryParams[key]
-        ? acc.concat(`${key}=${queryParams[key]}`)
-        : acc;
-    }, []);
-    return `${queries.join(`&`)}`;
   }
 }
 
