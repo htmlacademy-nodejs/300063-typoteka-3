@@ -97,7 +97,10 @@ module.exports = [
         path: `:commentId`,
         Component: ApiComment,
         middleware: {
-          delete: [routeCommentIdParamsValidationMiddleware]
+          delete: [
+            checkAdmin,
+            routeCommentIdParamsValidationMiddleware
+          ],
         }
       }
     ],

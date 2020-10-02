@@ -98,18 +98,39 @@ describe(`Comment API end-points`, () => {
   });
 
   test(`When DELETE existed comment status code should be ${HttpCodes.NO_CONTENT}`, async () => {
-    const res = await request(server).delete(`${pathToComments}/${commentId}`);
+    const res = await request(server)
+      .delete(`${pathToComments}/${commentId}`)
+      .set(`cookie`, cookie);
     expect(res.statusCode).toBe(HttpCodes.NO_CONTENT);
   });
 
   test(`When DELETE not existed comment status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
-    await request(server).delete(`${pathToComments}/${commentId}`);
-    const res = await request(server).delete(`${pathToComments}/${commentId}`);
+    await request(server)
+      .delete(`${pathToComments}/${commentId}`)
+      .set(`cookie`, cookie);
+    const res = await request(server)
+      .delete(`${pathToComments}/${commentId}`)
+      .set(`cookie`, cookie);
     expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 
   test(`When DELETE invalid comment id status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
-    const res = await request(server).delete(`${pathToComments}/invalid-id`);
+    const res = await request(server)
+      .delete(`${pathToComments}/invalid-id`)
+      .set(`cookie`, cookie);
+    expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+  });
+
+  test(`When DELETE comment without access token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    const res = await request(server).delete(`${pathToComments}/${commentId}`);
+    expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+  });
+
+  test(`When DELETE comment with not admin access token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    const user = await request(server).post(pathToLogin).send(authUserParams);
+    const res = await request(server)
+      .delete(`${pathToComments}/${commentId}`)
+      .set(`cookie`, user.headers[`set-cookie`]);
     expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 });
