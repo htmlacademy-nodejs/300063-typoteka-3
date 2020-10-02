@@ -33,7 +33,7 @@ const auth = {
 
 describe(`Auth API end-points`, () => {
   let server = null;
-  let cookies = null;
+  let cookie = null;
 
   beforeAll(async () => {
     await initDb(true);
@@ -43,7 +43,7 @@ describe(`Auth API end-points`, () => {
 
   beforeEach(async () => {
     const postAuthRes = await request(server).post(pathToLogin).send(auth);
-    cookies = postAuthRes.headers[`set-cookie`];
+    cookie = postAuthRes.headers[`set-cookie`];
   });
 
   afterAll(async () => {
@@ -54,7 +54,7 @@ describe(`Auth API end-points`, () => {
   test(`When POST auth with valid data status code should be ${HttpCodes.OK}`, async () => {
     const refreshTokenRes = await request(server)
       .post(pathToRefresh)
-      .set('cookie', cookies)
+      .set('cookie', cookie)
       .send();
     expect(refreshTokenRes.statusCode).toBe(HttpCodes.OK);
   });

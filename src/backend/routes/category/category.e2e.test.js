@@ -135,6 +135,27 @@ describe(`Categories API end-points`, () => {
         .send(updatedCategoryParams);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
+
+    test(`When PUT category without admin access token status code should be ${HttpCodes.UNAUTHORIZED}`, async () => {
+      const updatedCategoryParams = {
+        title: getRandomString(AVAILABLE_SYMBOLS, 30),
+      };
+      const res = await request(server)
+        .put(`${pathToCategories}/${category.id}`)
+        .send(updatedCategoryParams);
+      expect(res.statusCode).toBe(HttpCodes.UNAUTHORIZED);
+    });
+
+    test(`When PUT category with not admin access token status code should be ${HttpCodes.FORBIDDEN}`, async () => {
+      const updatedCategoryParams = {
+        title: getRandomString(AVAILABLE_SYMBOLS, 30),
+      };
+      const res = await request(server)
+        .put(`${pathToCategories}/${category.id}`)
+        .set(`cookie`, userCookie)
+        .send(updatedCategoryParams);
+      expect(res.statusCode).toBe(HttpCodes.FORBIDDEN);
+    });
   });
 
 

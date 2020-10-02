@@ -63,13 +63,16 @@ const createUsers = async () => {
 
 describe(`Articles API end-points`, () => {
   let server = null;
-  let cookie = null;
+  let adminCookie = null;
+  let userCookie = null;
 
   beforeAll(async () => {
     await initTest();
     server = await apiContainer.getInstance();
     const admin = await request(server).post(pathToLogin).send(authAdminParams);
-    cookie = admin.headers[`set-cookie`];
+    adminCookie = admin.headers[`set-cookie`];
+    const user = await request(server).post(pathToLogin).send(authUserParams);
+    userCookie = user.headers[`set-cookie`];
   });
 
   afterAll(async () => {
@@ -88,7 +91,7 @@ describe(`Articles API end-points`, () => {
     test(`When POST article status code should be ${HttpCodes.CREATED}`, async() => {
       const res = await request(server)
         .post(pathToArticles)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(articleData);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
       await request(server).delete(`${pathToArticles}/${res.body.id}`);
@@ -97,7 +100,7 @@ describe(`Articles API end-points`, () => {
     test.each([`id`, `title`, `image`, `announce`, `text`, `date`, `categories`])(`When POST article should have %p property`, async(property) => {
       const res = await request(server)
         .post(pathToArticles)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(articleData);
       expect(res.body).toHaveProperty(property);
       await request(server).delete(`${pathToArticles}/${res.body.id}`);
@@ -108,7 +111,7 @@ describe(`Articles API end-points`, () => {
       delete article[property];
       const res = await request(server)
         .post(pathToArticles)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -118,7 +121,7 @@ describe(`Articles API end-points`, () => {
       article.title = getRandomString(AVAILABLE_SYMBOLS, 29);
       const res = await request(server)
         .post(pathToArticles)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -128,7 +131,7 @@ describe(`Articles API end-points`, () => {
       article.title = getRandomString(AVAILABLE_SYMBOLS, 30);
       const res = await request(server)
         .post(pathToArticles)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
@@ -138,7 +141,7 @@ describe(`Articles API end-points`, () => {
       article.title = getRandomString(AVAILABLE_SYMBOLS, 251);
       const res = await request(server)
         .post(pathToArticles)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -148,7 +151,7 @@ describe(`Articles API end-points`, () => {
       article.title = getRandomString(AVAILABLE_SYMBOLS, 250);
       const res = await request(server)
         .post(pathToArticles)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
@@ -158,7 +161,7 @@ describe(`Articles API end-points`, () => {
       article.announce = getRandomString(AVAILABLE_SYMBOLS, 29);
       const res = await request(server)
         .post(pathToArticles)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -168,7 +171,7 @@ describe(`Articles API end-points`, () => {
       article.announce = getRandomString(AVAILABLE_SYMBOLS, 30);
       const res = await request(server)
         .post(pathToArticles)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
@@ -178,7 +181,7 @@ describe(`Articles API end-points`, () => {
       article.announce = getRandomString(AVAILABLE_SYMBOLS, 251);
       const res = await request(server)
         .post(pathToArticles)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -188,7 +191,7 @@ describe(`Articles API end-points`, () => {
       article.announce = getRandomString(AVAILABLE_SYMBOLS, 250);
       const res = await request(server)
         .post(pathToArticles)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
@@ -198,7 +201,7 @@ describe(`Articles API end-points`, () => {
       article.text = getRandomString(AVAILABLE_SYMBOLS, 1001);
       const res = await request(server)
         .post(pathToArticles)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -208,7 +211,7 @@ describe(`Articles API end-points`, () => {
       article.text = getRandomString(AVAILABLE_SYMBOLS, 1000);
       const res = await request(server)
         .post(pathToArticles)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
@@ -218,13 +221,13 @@ describe(`Articles API end-points`, () => {
       article.image = `123.png`;
       const resWithPng = await request(server)
         .post(pathToArticles)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(article);
       expect(resWithPng.statusCode).toBe(HttpCodes.CREATED);
       article.image = `123.jpg`;
       const resWithJpg = await request(server)
         .post(pathToArticles)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(article);
       expect(resWithJpg.statusCode).toBe(HttpCodes.CREATED);
     });
@@ -234,7 +237,7 @@ describe(`Articles API end-points`, () => {
       article.image = `123.pmng`;
       const res = await request(server)
         .post(pathToArticles)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -244,7 +247,7 @@ describe(`Articles API end-points`, () => {
       article.date = `10-09-2020`;
       const res = await request(server)
         .post(pathToArticles)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -257,10 +260,9 @@ describe(`Articles API end-points`, () => {
     });
 
     test(`When POST article with not admin access token status code should be ${HttpCodes.FORBIDDEN}`, async () => {
-      const user = await request(server).post(pathToLogin).send(authUserParams);
       const res = await request(server)
         .post(pathToArticles)
-        .set(`cookie`, user.headers[`set-cookie`])
+        .set(`cookie`, userCookie)
         .send(articleData);
       expect(res.statusCode).toBe(HttpCodes.FORBIDDEN);
     });

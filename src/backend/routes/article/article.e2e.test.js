@@ -71,19 +71,22 @@ const createUsers = async () => {
 describe(`Article ID API end-points`, () => {
   let server = null;
   let article = null;
-  let cookie = null;
+  let adminCookie = null;
+  let userCookie = null;
 
   beforeAll(async () => {
     await initTest();
     server = await apiContainer.getInstance();
     const admin = await request(server).post(pathToLogin).send(authAdminParams);
-    cookie = admin.headers[`set-cookie`];
+    adminCookie = admin.headers[`set-cookie`];
+    const user = await request(server).post(pathToLogin).send(authUserParams);
+    userCookie = user.headers[`set-cookie`];
   });
 
   beforeEach(async () => {
     const createArticleResponse = await request(server)
       .post(pathToArticles)
-      .set(`cookie`, cookie)
+      .set(`cookie`, adminCookie)
       .send(articleData);
     article = createArticleResponse.body;
   });
@@ -119,7 +122,7 @@ describe(`Article ID API end-points`, () => {
     test(`When DELETE article status code should be ${HttpCodes.NO_CONTENT}`, async () => {
       const res = await request(server)
         .delete(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send();
       expect(res.statusCode).toBe(HttpCodes.NO_CONTENT);
     });
@@ -127,11 +130,11 @@ describe(`Article ID API end-points`, () => {
     test(`When DELETE not exist article status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
       await request(server)
         .delete(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send();
       const res = await request(server)
         .delete(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send();
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -140,11 +143,11 @@ describe(`Article ID API end-points`, () => {
       await request(server).delete(`${pathToArticles}/${article.id}`);
       await request(server)
         .delete(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send();
       const res = await request(server)
         .delete(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send();
       expect(res.body).toHaveProperty(`message`);
     });
@@ -152,7 +155,7 @@ describe(`Article ID API end-points`, () => {
     test(`When DELETE article when articleId is not number status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
       const res = await request(server)
         .delete(`${pathToArticles}/not-number`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send();
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -160,7 +163,7 @@ describe(`Article ID API end-points`, () => {
     test(`When DELETE article when articleId is number status code should be ${HttpCodes.NO_CONTENT}`, async () => {
       const res = await request(server)
         .delete(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send();
       expect(res.statusCode).toBe(HttpCodes.NO_CONTENT);
     });
@@ -173,10 +176,9 @@ describe(`Article ID API end-points`, () => {
     });
 
     test(`When DELETE article with not admin access token status code should be ${HttpCodes.FORBIDDEN}`, async () => {
-      const user = await request(server).post(pathToLogin).send(authUserParams);
       const res = await request(server)
         .delete(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, user.headers[`set-cookie`])
+        .set(`cookie`, userCookie)
         .send();
       expect(res.statusCode).toBe(HttpCodes.FORBIDDEN);
     });
@@ -186,7 +188,7 @@ describe(`Article ID API end-points`, () => {
     test(`When PUT article params status code should be ${HttpCodes.OK}`, async () => {
       const res = await request(server)
         .put(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(newArticleData);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
@@ -197,7 +199,7 @@ describe(`Article ID API end-points`, () => {
       };
       const res = await request(server)
         .put(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -208,7 +210,7 @@ describe(`Article ID API end-points`, () => {
       };
       const res = await request(server)
         .put(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
@@ -219,7 +221,7 @@ describe(`Article ID API end-points`, () => {
       };
       const res = await request(server)
         .put(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -230,7 +232,7 @@ describe(`Article ID API end-points`, () => {
       };
       const res = await request(server)
         .put(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
@@ -241,7 +243,7 @@ describe(`Article ID API end-points`, () => {
       };
       const res = await request(server)
         .put(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -252,7 +254,7 @@ describe(`Article ID API end-points`, () => {
       };
       const res = await request(server)
         .put(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
@@ -263,7 +265,7 @@ describe(`Article ID API end-points`, () => {
       };
       const res = await request(server)
         .put(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -274,7 +276,7 @@ describe(`Article ID API end-points`, () => {
       };
       const res = await request(server)
         .put(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
@@ -285,7 +287,7 @@ describe(`Article ID API end-points`, () => {
       };
       const res = await request(server)
         .put(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -296,7 +298,7 @@ describe(`Article ID API end-points`, () => {
       };
       const res = await request(server)
         .put(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
@@ -307,13 +309,13 @@ describe(`Article ID API end-points`, () => {
       };
       const resWithPng = await request(server)
         .put(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(articleParams);
       expect(resWithPng.statusCode).toBe(HttpCodes.OK);
       articleParams.image = `123.jpg`;
       const resWithJpg = await request(server)
         .put(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(articleParams);
       expect(resWithJpg.statusCode).toBe(HttpCodes.OK);
     });
@@ -324,7 +326,7 @@ describe(`Article ID API end-points`, () => {
       };
       const res = await request(server)
         .put(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -335,7 +337,7 @@ describe(`Article ID API end-points`, () => {
       };
       const res = await request(server)
         .put(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -346,7 +348,7 @@ describe(`Article ID API end-points`, () => {
       };
       const res = await request(server)
         .put(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -357,7 +359,7 @@ describe(`Article ID API end-points`, () => {
       };
       const res = await request(server)
         .put(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(articleParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -365,7 +367,7 @@ describe(`Article ID API end-points`, () => {
     test(`When PUT article when articleId is not number status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
       const res = await request(server)
         .put(`${pathToArticles}/not-number`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(newArticleData);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -373,7 +375,7 @@ describe(`Article ID API end-points`, () => {
     test(`When PUT article when articleId is number status code should be ${HttpCodes.OK}`, async () => {
       const res = await request(server)
         .put(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(newArticleData);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
@@ -385,11 +387,10 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.UNAUTHORIZED);
     });
 
-    test(`When DELETE article with not admin access token status code should be ${HttpCodes.FORBIDDEN}`, async () => {
-      const user = await request(server).post(pathToLogin).send(authUserParams);
+    test(`When PUT article with not admin access token status code should be ${HttpCodes.FORBIDDEN}`, async () => {
       const res = await request(server)
         .put(`${pathToArticles}/${article.id}`)
-        .set(`cookie`, user.headers[`set-cookie`])
+        .set(`cookie`, userCookie)
         .send(newArticleData);
       expect(res.statusCode).toBe(HttpCodes.FORBIDDEN);
     });

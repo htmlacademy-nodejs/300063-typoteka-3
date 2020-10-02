@@ -50,13 +50,16 @@ const createUsers = async () => {
 
 describe(`Categories API end-points`, () => {
   let server = null;
-  let cookie = null;
+  let adminCookie = null;
+  let userCookie = null;
 
   beforeAll(async () => {
     await initTest();
     server = await apiContainer.getInstance();
     const admin = await request(server).post(pathToLogin).send(authAdminParams);
-    cookie = admin.headers[`set-cookie`];
+    adminCookie = admin.headers[`set-cookie`];
+    const user = await request(server).post(pathToLogin).send(authUserParams);
+    userCookie = user.headers[`set-cookie`];
   });
 
   afterAll(async () => {
@@ -75,7 +78,7 @@ describe(`Categories API end-points`, () => {
     test(`When POST valid categories status code should be ${HttpCodes.CREATED}`, async () => {
       const res = await request(server)
         .post(pathToCategories)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send({title: `test test`});
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
@@ -83,7 +86,7 @@ describe(`Categories API end-points`, () => {
     test(`When POST empty object status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
       const res = await request(server)
         .post(pathToCategories)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send({});
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -94,7 +97,7 @@ describe(`Categories API end-points`, () => {
       };
       const res = await request(server)
         .post(pathToCategories)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(category);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -105,7 +108,7 @@ describe(`Categories API end-points`, () => {
       };
       const res = await request(server)
         .post(pathToCategories)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(category);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
@@ -116,7 +119,7 @@ describe(`Categories API end-points`, () => {
       };
       const res = await request(server)
         .post(pathToCategories)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(category);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
@@ -127,12 +130,12 @@ describe(`Categories API end-points`, () => {
       };
       const res = await request(server)
         .post(pathToCategories)
-        .set(`cookie`, cookie)
+        .set(`cookie`, adminCookie)
         .send(category);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
 
-    test(`When POST valid categories without access token status code should be ${HttpCodes.UNAUTHORIZED}`, async () => {
+    test(`When POST category without access token status code should be ${HttpCodes.UNAUTHORIZED}`, async () => {
       const category = {
         title: getRandomString(AVAILABLE_SYMBOLS, 10),
       };
@@ -142,14 +145,13 @@ describe(`Categories API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.UNAUTHORIZED);
     });
 
-    test(`When POST valid categories with not admin token status code should be ${HttpCodes.FORBIDDEN}`, async () => {
-      const user = await request(server).post(pathToLogin).send(authUserParams);
+    test(`When POST category with not admin token status code should be ${HttpCodes.FORBIDDEN}`, async () => {
       const category = {
         title: getRandomString(AVAILABLE_SYMBOLS, 10),
       };
       const res = await request(server)
         .post(pathToCategories)
-        .set(`cookie`, user.headers[`set-cookie`])
+        .set(`cookie`, userCookie)
         .send(category);
       expect(res.statusCode).toBe(HttpCodes.FORBIDDEN);
     });
