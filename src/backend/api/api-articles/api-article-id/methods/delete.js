@@ -7,9 +7,10 @@ const {logger} = require(`../../../../utils`);
 
 
 module.exports = async (req, res) => {
+  const {articleId} = req.params;
   const articleDeletedCount = await db.Article.destroy({
     where: {
-      id: req.params.articleId,
+      id: articleId,
     },
   });
   if (articleDeletedCount > 0) {

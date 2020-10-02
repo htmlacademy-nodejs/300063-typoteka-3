@@ -54,6 +54,7 @@
   },
   "homepage": "https://github.com/Kvezal/300063-typoteka-3#readme",
   "dependencies": {
+    "@hapi/joi": "17.1.1",
     "axios": "0.19.2",
     "cross-env": "7.0.2",
     "dateformat": "3.0.3",

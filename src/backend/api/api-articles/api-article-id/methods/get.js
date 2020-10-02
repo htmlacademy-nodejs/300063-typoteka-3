@@ -8,7 +8,8 @@ const {logger} = require(`../../../../utils`);
 
 
 module.exports = async (req, res) => {
-  const article = await db.Article.findByPk(req.params.articleId, {
+  const {articleId} = req.params;
+  const article = await db.Article.findByPk(articleId, {
     group: [
       [EModelName.ARTICLES, EArticleFieldName.ID].join(`.`),
       [EModelName.CATEGORIES, EModelName.ARTICLE_CATEGORY, EForeignKey.ARTICLE_ID].join(`.`),
@@ -19,7 +20,7 @@ module.exports = async (req, res) => {
       EArticleFieldName.ANNOUNCE,
       EArticleFieldName.TEXT,
       EArticleFieldName.IMAGE,
-      [EArticleFieldName.DATE, `date`],
+      EArticleFieldName.DATE,
       [sequelize.Sequelize.fn(
           `ARRAY_AGG`,
           sequelize.Sequelize.col(

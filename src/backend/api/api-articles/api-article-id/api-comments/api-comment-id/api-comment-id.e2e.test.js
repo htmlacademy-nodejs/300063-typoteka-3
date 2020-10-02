@@ -9,11 +9,12 @@ const apiServer = require(`../../../../index`);
 const pathToArticles = `/api/articles`;
 
 const articleData = {
-  title: `Обзор новейшего смартфона`,
+  title: `Обзор новейшего смартфона test`,
   image: `123.png`,
   announce: `Золотое сечение — соотношение двух величин, гармоническая пропорция.`,
   text: `Вы можете достичь всего. Стоит только немного постараться и запастись книгами. Это один из лучших рок-музыкантов. Собрать камни бесконечности легко, если вы прирожденный герой.`,
   categories: [1, 2, 3],
+  date: `2020-09-10`,
 };
 
 const commentData = {
@@ -56,5 +57,15 @@ describe(`Article comments API end-points`, () => {
     await request(server).delete(`${pathToArticles}/${article.id}/comments/${comment.id}`);
     const res = await request(server).delete(`${pathToArticles}/${article.id}/comments/${comment.id}`);
     expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+  });
+
+  test(`When DELETE comment when commentId is not number status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    const res = await request(server).delete(`${pathToArticles}/${article.id}/comments/not-number`);
+    expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+  });
+
+  test(`When DELETE comment when commentId is number status code should be ${HttpCodes.NO_CONTENT}`, async () => {
+    const res = await request(server).delete(`${pathToArticles}/${article.id}/comments/${comment.id}`);
+    expect(res.statusCode).toBe(HttpCodes.NO_CONTENT);
   });
 });

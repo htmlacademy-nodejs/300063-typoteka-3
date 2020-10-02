@@ -2,10 +2,16 @@
 
 const {Router} = require(`express`);
 
-const {getSearch} = require(`./methods`);
+const {getComments, deleteComment} = require(`./methods`);
+
+const {paramsValidator} = require(`../../middleware`);
+const {getRouteParamsValidationSchema} = require(`../../utils`);
 
 
-const apiSearch = new Router();
-apiSearch.get(`/`, getSearch);
+const routeParamsValidationMiddleware = paramsValidator(getRouteParamsValidationSchema([`commentId`]));
 
-module.exports = apiSearch;
+const apiComments = new Router();
+apiComments.get(`/`, getComments);
+apiComments.delete(`/:commentId`, routeParamsValidationMiddleware, deleteComment);
+
+module.exports = apiComments;

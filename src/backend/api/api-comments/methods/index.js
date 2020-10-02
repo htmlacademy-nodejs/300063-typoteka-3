@@ -1,8 +1,10 @@
 'use strict';
 
-const getSearch = require(`./get`);
+const getComments = require(`./get`);
+const deleteComment = require(`./delete`);
 
 
 module.exports = {
-  getSearch,
+  getComments,
+  deleteComment,
 };

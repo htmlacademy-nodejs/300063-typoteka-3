@@ -2,42 +2,43 @@
 
 const {articleAdapter, FileAdapter} = require(`../../../../adapters`);
 const {logger, transformDate} = require(`../../../../utils`);
-const getEditArticlePage = require(`./get`);
 
 
-const setFileName = async (req, res) => {
+const setFileName = async (req) => {
   if (!req.file) {
-    const currentArticleResponse = await articleAdapter.getItemById(req.params.id);
+    const currentArticleResponse = await articleAdapter.getItemById(req.params.articleId);
     req.body.image = req.body.image || currentArticleResponse.image;
     return;
   }
-  const fileResponse = await FileAdapter.download(req.file);
-  if (fileResponse.error) {
-    logger.endRequest(req, fileResponse);
-    await getEditArticlePage(req, res);
-  } else {
-    req.body.image = fileResponse;
-  }
+  req.body.image = await FileAdapter.download(req.file);
 };
 
 const updateArticleItemAndRedirect = async (req, res) => {
-  if (!req.body.categories) {
-    req.body.categories = [];
-  }
-  if (Object.keys(req.body.categories).length !== 0) {
-    req.body.categories = Object.keys(req.body.categories);
-  }
+  const {date, title, announce, categories, text, image} = req.body;
+  const {articleId} = req.params;
   const articleParams = {
-    ...req.body,
-    createdAt: transformDate(req.body.date),
+    title,
+    announce,
+    text,
+    categories: categories && categories.map((category) => +category),
+    image,
+    date: transformDate(date),
   };
-  const articleResponse = await articleAdapter.updateItemById(req.params.id, articleParams);
-  if (articleResponse.error) {
-    logger.endRequest(req, articleResponse);
-    await getEditArticlePage(req, res);
-  } else {
-    res.redirect(`/articles/${req.params.id}`);
+  const articleRes = await articleAdapter.updateItemById(articleId, articleParams);
+  let path = `/my`;
+  if (articleRes.content && articleRes.content.errorMessages) {
+    const queryParams = {
+      article: {
+        ...articleParams,
+        id: articleId,
+        date,
+      },
+      errorMessages: articleRes.content.errorMessages,
+    };
+    const query = encodeURIComponent(JSON.stringify(queryParams));
+    path = `/articles/edit/${articleId}?params=${query}`;
   }
+  res.redirect(path);
 };
 
 

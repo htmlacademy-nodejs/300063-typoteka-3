@@ -1,19 +1,13 @@
 'use strict';
 
-const {ONE_PAGE_LIMIT} = require(`../../../common/params`);
 const request = require(`../request`);
 const {dateAdapter} = require(`../date`);
 
 
 class ArticleAdapter {
-  async getList() {
-    const articles = await request.get(`articles`);
-    articles.list = articles.list.map(this._adaptArticle);
-    return articles;
-  }
-
-  async getPartList(page) {
-    const articles = await request.get(`articles?limit=${ONE_PAGE_LIMIT}&page=${page}`);
+  async getList(queryParams) {
+    let path = `articles`;
+    const articles = await request.get(path, queryParams);
     articles.list = articles.list.map(this._adaptArticle);
     return articles;
   }
@@ -27,16 +21,12 @@ class ArticleAdapter {
     return this._adaptArticle(article);
   }
 
-  updateItemById(articleId, params) {
-    return request.put(`articles/${articleId}`, params);
+  async deleteItem(articleId) {
+    return await request.delete(`articles/${articleId}`);
   }
 
-  async searchByTitle(title) {
-    let articleList = await request.get(`search?title=${encodeURI(title)}`);
-    if (articleList.statusCode >= 400) {
-      articleList = [];
-    }
-    return articleList.map(this._adaptArticle);
+  async updateItemById(articleId, params) {
+    return await request.put(`articles/${articleId}`, params);
   }
 
   _adaptArticle(article) {

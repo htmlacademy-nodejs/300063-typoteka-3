@@ -1,10 +1,10 @@
 .post__wrapper.post__wrapper--comments
   section.post__comments.comments
-    h2.comments__title.title.title--middle= comments.list.length !== 0 ? `Комментарии` : `Комментарии отсутствуют`
+    h2#comments.comments__title.title.title--middle= comments.length !== 0 ? `Комментарии` : `Комментарии отсутствуют`
     ul.comments__list
-      each comment in comments.list
+      each comment in comments
         li.comments__comment
-          img.comments__avatar.avatar(src= comment.account.avatar alt='аватар пользователя')
+          img.comments__avatar.avatar(src=`img/${comment.account.avatar}` alt='аватар пользователя')
           .comments__text
             .comments__head
               p= `${comment.account.firstname} ${comment.account.lastname} •`
@@ -20,11 +20,12 @@
             | Чтобы присоединиться к переписке нужно зарегистрироваться
     else if account.type === `user`
       .comments__footer.comments__footer--user
-        form(action='#' method='POST')
+        form(action=`/articles/${article.id}` method='POST')
           .comments__avatar.avatar
             img(src= account.avatar alt='аватар пользователя')
           label
-            textarea(rows='1' placeholder='Присоединиться к обсуждению')
+            textarea#new-comment(rows='1' name='text' placeholder='Присоединиться к обсуждению' required)= newComment && newComment.text || ``
           button.comments__button.button.button--colored(type='submit') Опубликовать
-        if comments.hasUserError
-          p.comments__error Сообщение не может быть пустым, напишите что-нибудь!
+        if errorMessages
+          each error in errorMessages
+            p.comments__error= error

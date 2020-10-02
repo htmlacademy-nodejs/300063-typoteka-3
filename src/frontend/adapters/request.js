@@ -3,6 +3,7 @@
 const axios = require(`axios`);
 
 const {DEFAULT_PROTOCOL, DEFAULT_DOMAIN, DEFAULT_BACKEND_PORT} = require(`../../common/params`);
+const {getQueryString} = require(`../utils`);
 
 
 class Request {
@@ -13,6 +14,34 @@ class Request {
     this._url = `${protocol}://${domain}:${port}/api`;
   }
 
+  get(path, queryParams) {
+    const url = this._getUrl(path, queryParams);
+    return axios.get(url)
+      .then((res) => res.data)
+      .catch(this._getErrorStatus);
+  }
+
+  post(path, body, queryParams) {
+    const url = this._getUrl(path, queryParams);
+    return axios.post(url, body)
+      .then((res) => res.data)
+      .catch(this._getErrorStatus);
+  }
+
+  put(path, body, queryParams) {
+    const url = this._getUrl(path, queryParams);
+    return axios.put(url, body)
+      .then((res) => res.data)
+      .catch(this._getErrorStatus);
+  }
+
+  delete(path, queryParams) {
+    const url = this._getUrl(path, queryParams);
+    return axios.delete(url)
+      .then((res) => res.data)
+      .catch(this._getErrorStatus);
+  }
+
   _getErrorStatus(error) {
     return {
       status: `failed`,
@@ -21,22 +50,10 @@ class Request {
     };
   }
 
-  get(path) {
-    return axios.get(`${this._url}/${path}`)
-      .then((res) => res.data)
-      .catch(this._getErrorStatus);
-  }
-
-  async post(path, body) {
-    return await axios.post(`${this._url}/${path}`, body)
-      .then((res) => res.data)
-      .catch(this._getErrorStatus);
-  }
-
-  async put(path, body) {
-    return await axios.put(`${this._url}/${path}`, body)
-      .then((res) => res.data)
-      .catch(this._getErrorStatus);
+  _getUrl(path, queryParams) {
+    const queryString = getQueryString(queryParams);
+    const query = queryString && `?${queryString}`;
+    return `${this._url}/${path}${query}`;
   }
 }
 

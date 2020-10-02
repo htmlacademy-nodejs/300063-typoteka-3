@@ -9,7 +9,7 @@ const EArticleFieldName = {
   ANNOUNCE: `announce`,
   TEXT: `text`,
   IMAGE: `image`,
-  DATE: `createdAt`,
+  DATE: `date`,
 };
 
 const getArticleModel = (sequelize, DataTypes) => {
@@ -31,11 +31,13 @@ const getArticleModel = (sequelize, DataTypes) => {
       type: new DataTypes.STRING(150),
       allowNull: false,
     },
+    [EArticleFieldName.DATE]: {
+      type: DataTypes.DATE,
+      allowNull: false,
+    },
   }, {
     sequelize,
     modelName: EModelName.ARTICLES,
-    timestamp: true,
-    paranoid: true,
   });
   return Article;
 };

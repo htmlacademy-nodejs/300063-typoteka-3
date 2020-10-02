@@ -4,11 +4,13 @@ block content
   main.main-page
     h1.visually-hidden= hiddenTitle
     p= description
-    if hasContent
+    if categories && categories.length
       section.main-page__theme-list
         h2.visually-hidden Список тем
         include ../common/themes
+    if hotArticles && hotArticles.length || comments && comments.length
       include ../common/section-flex/section-flex
+    if articles && articles.length
       include ../common/article-preview-list/article-preview-list
     else
       include ../common/empty/empty-section

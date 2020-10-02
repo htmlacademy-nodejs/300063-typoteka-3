@@ -5,7 +5,7 @@ block content
     section.modal.modal--flex
       .popup.popup--new-publication.popup--flex
         .new-publication
-          button.popup__button.button.button--popup-close(type='button' aria-label='Закрыть окно') Закрыть окно
+          a.popup__button.button.button--popup-close(aria-label='Закрыть окно' href='/my') Закрыть окно
           .new-publication__form.form
             form(action=(type === `add` ? `/articles/add` : `/articles/edit/${article.id}`) method='post' enctype='multipart/form-data')
               .new-publication__header
@@ -20,8 +20,9 @@ block content
                     input#new-publication-date(
                       type='text'
                       name='date'
-                      placeholder=(article.date && article.date.day || ``)
-                      value=(article.date && article.date.day || ``)
+                      required
+                      placeholder=(article && article.date || ``)
+                      value=(article && article.date || ``)
                     )
                 button.new-publication__button.button.button--colored(type='submit')= type === `add` ? `Опубликовать` : `Редактировать`
               .form__wrapper.form__wrapper--intro
@@ -47,8 +48,9 @@ block content
                     input(
                       id=category.id
                       type='checkbox'
-                      name=`categories[${category.id}]`
-                      checked=(article.categories && article.categories.includes(category))
+                      name=`categories[]`
+                      value=category.id
+                      checked=(article.categories && article.categories.includes(category.id))
                     )
                     label(for=category.id)= category.title
                   a.new-publication__form-link.button.button--transparent(href='#') Добавить категорию
@@ -60,4 +62,8 @@ block content
                   label
                     textarea(rows='5' placeholder='Полный текст публикации' name='text')= article.text
 
+              if errorMessages
+                .form__validation-error
+                  each error in errorMessages
+                    p.form__error-message= error
       .modal__overlay

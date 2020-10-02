@@ -1,28 +1,27 @@
 'use strict';
 
 const {accountAdapter, categoryAdapter, dateAdapter} = require(`../../../../adapters`);
-const {logger, transformDate} = require(`../../../../utils`);
+const {logger} = require(`../../../../utils`);
 
-
-const getArticle = (article) => {
-  const date = article.createdDate ? transformDate(article.createdDate) : new Date();
-  return {
-    ...article,
-    createdDate: dateAdapter.get(date),
-  };
-};
 
 module.exports = async (req, res) => {
   const categories = await categoryAdapter.getList();
+  let {article, errorMessages} = req.locals || {};
+  if (!article) {
+    article = {
+      date: dateAdapter.get(new Date().toISOString()).day,
+    };
+  }
   const content = {
     type: `add`,
-    article: getArticle(req.body),
+    article,
     account: accountAdapter.getAuth(),
     categories,
     scriptList: [
       `js/vendor.js`,
       `js/main.js`
     ],
+    errorMessages,
   };
   res.render(`pages/articles/edit`, content);
   logger.endRequest(req, res);

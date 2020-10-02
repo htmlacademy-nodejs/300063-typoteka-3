@@ -1,51 +1,84 @@
 'use strict';
 
-const {logger} = require(`../../utils`);
-const {accountAdapter, articleAdapter} = require(`../../adapters`);
-const {ONE_PAGE_LIMIT, MAX_DISPLAYED_PAGES} = require(`../../../common/params`);
+const {logger, getPaginatorParams, getQueryString} = require(`../../utils`);
+const {accountAdapter, articleAdapter, categoryAdapter, commentAdapter} = require(`../../adapters`);
+const {
+  ONE_PAGE_LIMIT,
+  LAST_COMMENT_COUNT,
+  LAST_COMMENT_LETTERS,
+  HOT_ARTICLE_COUNT,
+  HOT_ARTICLE_ANNOUNCE_LETTER,
+  FIRST_PAGE,
+} = require(`../../../common/params`);
 
 
-const FIRST_PAGE = 1;
-const PAGE_DIFFERENTIAL = Math.floor(MAX_DISPLAYED_PAGES / 2);
-const DIFFERENT_BETWEEN_FIRST_AND_LAST_PAGE = MAX_DISPLAYED_PAGES - 1;
+const getCategories = async () => {
+  return await categoryAdapter.getList({
+    minArticleCount: 1,
+  });
+};
 
-const getPaginator = (page, lastPage) => {
-  if (lastPage <= MAX_DISPLAYED_PAGES) {
-    return {
-      start: FIRST_PAGE,
-      end: lastPage,
-      page,
-    };
-  }
-  let start = page - PAGE_DIFFERENTIAL;
-  if (start < FIRST_PAGE) {
-    start = FIRST_PAGE;
-  }
-  let end = start + DIFFERENT_BETWEEN_FIRST_AND_LAST_PAGE;
-  if (lastPage < end) {
-    end = lastPage;
-    start = end - DIFFERENT_BETWEEN_FIRST_AND_LAST_PAGE;
-  }
-  return {
-    start,
-    end,
-    page,
-  };
+const getArticles = async (queryParams) => {
+  return await articleAdapter.getList({
+    ...queryParams,
+    limit: ONE_PAGE_LIMIT,
+  });
+};
+
+const getHotArticles = async () => {
+  const articlesRes = await articleAdapter.getList({
+    limit: HOT_ARTICLE_COUNT,
+    sort: `commentCount`,
+    minCommentCount: 1,
+  });
+  articlesRes.list = articlesRes.list.map((hotArticle) => ({
+    ...hotArticle,
+    announce: hotArticle.announce.length > LAST_COMMENT_LETTERS
+      ? `${hotArticle.announce.slice(0, HOT_ARTICLE_ANNOUNCE_LETTER)}...`
+      : hotArticle.announce,
+  }));
+  return articlesRes;
+};
+
+const getComments = async () => {
+  const commentsRes = await commentAdapter.getList({
+    limit: LAST_COMMENT_COUNT,
+  });
+  return commentsRes.map((comment) => ({
+    ...comment,
+    text: comment.text.length > LAST_COMMENT_LETTERS
+      ? `${comment.text.slice(0, LAST_COMMENT_LETTERS)}...`
+      : comment.text,
+  }));
 };
 
 module.exports = async (req, res) => {
   const page = +req.query.page || FIRST_PAGE;
-  const articles = await articleAdapter.getPartList(page);
+  const category = req.query.category || null;
+
+  const categories = await getCategories();
+  const articles = await getArticles({
+    page,
+    category,
+  });
+  const hotArticles = await getHotArticles();
+  const comments = await getComments();
+  const paginator = getPaginatorParams(page, articles.length);
+  const query = getQueryString({
+    category,
+  });
+
   const content = {
     title: `Типотека`,
     hiddenTitle: ` Главная страница личного блога Типотека`,
     description: `Это приветственный текст, который владелец блога может выбрать, чтобы описать себя 👏`,
     account: accountAdapter.getAuth(),
-    articleList: articles.list,
-    hasContent: true,
-    hasHot: true,
-    hasLastComments: true,
-    paginator: getPaginator(page, Math.ceil(articles.length / ONE_PAGE_LIMIT)),
+    categories,
+    articles: articles.list,
+    hotArticles: hotArticles.list,
+    comments,
+    paginator,
+    query: query && `&${query}`,
   };
   res.render(`pages/main`, content);
   logger.endRequest(req, res);
