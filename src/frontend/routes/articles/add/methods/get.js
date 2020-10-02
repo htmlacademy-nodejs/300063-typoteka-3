@@ -1,12 +1,12 @@
 'use strict';
 
-const {accountAdapter, categoryAdapter, dateAdapter} = require(`../../../../adapters`);
+const {categoryAdapter, dateAdapter} = require(`../../../../adapters`);
 const {logger} = require(`../../../../utils`);
 
 
 module.exports = async (req, res) => {
+  let {account, errorMessages, article} = req.locals;
   const categories = await categoryAdapter.getList();
-  let {article, errorMessages} = req.locals || {};
   if (!article) {
     article = {
       date: dateAdapter.get(new Date().toISOString()).day,
@@ -15,7 +15,7 @@ module.exports = async (req, res) => {
   const content = {
     type: `add`,
     article,
-    account: accountAdapter.getAuth(),
+    account,
     categories,
     scriptList: [
       `js/vendor.js`,

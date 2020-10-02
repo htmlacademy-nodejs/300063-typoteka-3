@@ -1,5 +1,6 @@
 'use strict';
 
+const bcrypt = require(`bcrypt`);
 const chalk = require(`chalk`);
 const {nanoid} = require(`nanoid`);
 
@@ -7,7 +8,6 @@ const {
   FILE_CATEGORIES_PATH,
   FILE_FIRSTNAMES_PATH,
   FILE_LASTNAMES_PATH,
-  FILE_EMAILS_PATH,
   FILE_AVATARS_PATH,
   FILE_IMAGES_PATH,
   FILE_COMMENTS_PATH,
@@ -17,7 +17,7 @@ const {
   ExitCode,
 } = require(`../../common/params`);
 const {db, sequelize} = require(`../db`);
-const {getRandomInt, readFile, shuffle} = require(`../utils`);
+const {getRandomInt, readFile, shuffle, getRandomEmail} = require(`../utils`);
 
 
 const showAccessError = (error, tableName) => {
@@ -31,15 +31,19 @@ const fillCategoryTable = async (categories) => {
     .catch((error) => showAccessError(error, `categories`));
 };
 
-const fillAccountTable = async (firstnames, lastnames, emails, avatars, count) => {
-  const accountsForDbTable = Array(count).fill({}).map((item, index) => ({
-    firstname: firstnames[getRandomInt(0, firstnames.length - 1)],
-    lastname: lastnames[getRandomInt(0, lastnames.length - 1)],
-    email: emails[getRandomInt(0, emails.length - 1)],
-    avatar: avatars[getRandomInt(0, avatars.length - 1)],
-    password: nanoid(),
-    isAdmin: index === 0,
-  }));
+const fillAccountTable = async (firstnames, lastnames, avatars, count) => {
+  const accountsForDbTable = Array(count).fill({}).map((item, index) => {
+    const isAdmin = index === 0;
+    const password = bcrypt.hashSync(isAdmin ? `123456` : nanoid(), 10);
+    return {
+      firstname: firstnames[getRandomInt(0, firstnames.length - 1)],
+      lastname: lastnames[getRandomInt(0, lastnames.length - 1)],
+      email: isAdmin ? `test@mail.ru` : getRandomEmail(50, [`ru`, `com`]),
+      avatar: avatars[getRandomInt(0, avatars.length - 1)],
+      password,
+      isAdmin,
+    };
+  });
   await db.Account.bulkCreate(accountsForDbTable)
     .catch((error) => showAccessError(error, `accounts`));
 };
@@ -92,7 +96,6 @@ module.exports = {
     const CATEGORIES = await readFile(FILE_CATEGORIES_PATH);
     const FIRSTNAMES = await readFile(FILE_FIRSTNAMES_PATH);
     const LASTNAMES = await readFile(FILE_LASTNAMES_PATH);
-    const EMAILS = await readFile(FILE_EMAILS_PATH);
     const AVATARS = await readFile(FILE_AVATARS_PATH);
     const TITLES = await readFile(FILE_TITLES_PATH);
     const TEXTS = await readFile(FILE_TEXTS_PATH);
@@ -100,7 +103,7 @@ module.exports = {
     const COMMENTS = await readFile(FILE_COMMENTS_PATH);
 
     await fillCategoryTable(CATEGORIES);
-    await fillAccountTable(FIRSTNAMES, LASTNAMES, EMAILS, AVATARS, count);
+    await fillAccountTable(FIRSTNAMES, LASTNAMES, AVATARS, count);
     await fillArticlesTable(TITLES, TEXTS, IMAGES, count);
     await fillCommentTable(COMMENTS, count);
     await fillArticleCategoryTable();

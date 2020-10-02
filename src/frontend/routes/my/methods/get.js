@@ -5,8 +5,10 @@ const {articleAdapter} = require(`../../../adapters`);
 
 
 module.exports = async (req, res) => {
+  const {account} = req.locals;
   const articles = await articleAdapter.getList();
   const content = {
+    account,
     articleList: articles.list,
   };
   res.render(`pages/my/my`, content);

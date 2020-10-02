@@ -6,6 +6,7 @@ const EModelName = {
   ARTICLES: `Articles`,
   CATEGORIES: `Categories`,
   COMMENTS: `Comments`,
+  REFRESH_TOKENS: `RefreshTokens`,
   ARTICLE_CATEGORY: `articleCategory`,
 };
 

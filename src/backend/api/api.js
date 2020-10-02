@@ -2,6 +2,7 @@
 
 const express = require(`express`);
 const HttpCodes = require(`http-status-codes`);
+const cookieParser = require(`cookie-parser`);
 
 const {initDb, disconnectDb} = require(`../db`);
 const {ExitCode} = require(`../../common/params`);
@@ -50,6 +51,7 @@ class Server {
   }
 
   _initBeforeRouteMiddlewares() {
+    this._server.use(cookieParser());
     this._server.use(logger.expressPinoLogger);
     this._server.use(express.json());
     this._server.use(debugMiddleware);

@@ -9,7 +9,7 @@ module.exports = async (req, res) => {
     firstname: ``,
     lastname: ``,
     email: ``,
-    avatar: `icons/smile.svg`,
+    avatar: ``,
   };
   const content = {
     title: `Типотека`,

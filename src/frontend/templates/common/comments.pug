@@ -4,7 +4,7 @@
     ul.comments__list
       each comment in comments
         li.comments__comment
-          img.comments__avatar.avatar(src=`img/${comment.account.avatar}` alt='аватар пользователя')
+          img.comments__avatar.avatar(src=`img/${comment.account.avatar || `icons/smile.svg`}` alt='аватар пользователя')
           .comments__text
             .comments__head
               p= `${comment.account.firstname} ${comment.account.lastname} •`
@@ -13,16 +13,16 @@
 
     if !account
       .comments__footer.comments__footer--visitor
-        button.comments__button.button.button--colored(type=`submit` ) Войти
+        a.comments__button.button.button--colored(href=`/login`) Войти
         .comments__registration
           p.text.text--signature
             b.title.title--small Регистрация
             | Чтобы присоединиться к переписке нужно зарегистрироваться
-    else if account.type === `user`
+    else if account
       .comments__footer.comments__footer--user
         form(action=`/articles/${article.id}` method='POST')
           .comments__avatar.avatar
-            img(src= account.avatar alt='аватар пользователя')
+            img(src=`img/${account.avatar || `icons/smile.svg`}` alt='аватар пользователя')
           label
             textarea#new-comment(rows='1' name='text' placeholder='Присоединиться к обсуждению' required)= newComment && newComment.text || ``
           button.comments__button.button.button--colored(type='submit') Опубликовать

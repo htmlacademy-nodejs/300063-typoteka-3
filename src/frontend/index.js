@@ -2,6 +2,7 @@
 
 const path = require(`path`);
 
+const cookieParser = require(`cookie-parser`);
 const express = require(`express`);
 
 const {DEFAULT_VIEW_DIR, DEFAULT_PUBLIC_DIR, DEFAULT_FRONTEND_PORT} = require(`../common/params`);
@@ -12,6 +13,7 @@ const mainRoute = require(`./routes`);
 
 const app = express();
 app.use(logger.expressPinoLogger);
+app.use(cookieParser());
 app.use(express.json());
 app.use(debugMiddleware);
 

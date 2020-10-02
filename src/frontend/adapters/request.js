@@ -3,7 +3,6 @@
 const axios = require(`axios`);
 
 const {DEFAULT_PROTOCOL, DEFAULT_DOMAIN, DEFAULT_BACKEND_PORT} = require(`../../common/params`);
-const {getQueryString} = require(`../utils`);
 
 
 class Request {
@@ -14,46 +13,69 @@ class Request {
     this._url = `${protocol}://${domain}:${port}/api`;
   }
 
-  get(path, queryParams) {
-    const url = this._getUrl(path, queryParams);
+  get(path, params = {}) {
+    const {query} = params;
+    const url = this._getUrl(path, query);
     return axios.get(url)
-      .then((res) => res.data)
       .catch(this._getErrorStatus);
   }
 
-  post(path, body, queryParams) {
-    const url = this._getUrl(path, queryParams);
-    return axios.post(url, body)
-      .then((res) => res.data)
+  post(path, body, params = {}) {
+    const {query, headers} = params;
+    const url = this._getUrl(path, query);
+    return axios({
+      method: `POST`,
+      url,
+      data: body,
+      headers,
+    })
       .catch(this._getErrorStatus);
   }
 
-  put(path, body, queryParams) {
-    const url = this._getUrl(path, queryParams);
+  put(path, body, params = {}) {
+    const {query} = params;
+    const url = this._getUrl(path, query);
     return axios.put(url, body)
-      .then((res) => res.data)
       .catch(this._getErrorStatus);
   }
 
-  delete(path, queryParams) {
-    const url = this._getUrl(path, queryParams);
+  delete(path, params = {}) {
+    const {query} = params;
+    const url = this._getUrl(path, query);
     return axios.delete(url)
-      .then((res) => res.data)
       .catch(this._getErrorStatus);
   }
 
   _getErrorStatus(error) {
     return {
-      status: `failed`,
-      statusCode: error.response.status,
-      content: error.response.data,
+      data: {
+        status: `failed`,
+        statusCode: error.response.status,
+        content: error.response.data,
+      }
     };
   }
 
   _getUrl(path, queryParams) {
-    const queryString = getQueryString(queryParams);
+    const queryString = this._getQueryString(queryParams);
     const query = queryString && `?${queryString}`;
     return `${this._url}/${path}${query}`;
+  }
+
+  _getQueryString(queryParams) {
+    if (!queryParams) {
+      return ``;
+    }
+    const keys = Object.keys(queryParams);
+    if (keys.length === 0) {
+      return ``;
+    }
+    const queries = keys.reduce((acc, key) => {
+      return queryParams[key]
+        ? acc.concat(`${key}=${queryParams[key]}`)
+        : acc;
+    }, []);
+    return `${queries.join(`&`)}`;
   }
 }
 

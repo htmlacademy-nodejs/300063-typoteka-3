@@ -18,6 +18,7 @@ const articleData = {
 };
 
 const commentData = {
+  accountId: 1,
   text: `Новый комментарий`,
 };
 

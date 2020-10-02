@@ -5,28 +5,32 @@ const {dateAdapter} = require(`../date`);
 
 
 class ArticleAdapter {
-  async getList(queryParams) {
+  async getList(params) {
     let path = `articles`;
-    const articles = await request.get(path, queryParams);
+    const articlesRes = await request.get(path, params);
+    const articles = articlesRes.data;
     articles.list = articles.list.map(this._adaptArticle);
     return articles;
   }
 
-  addItem(params) {
-    return request.post(`articles`, params);
+  async addItem(params) {
+    const res = await request.post(`articles`, params);
+    return res.data;
   }
 
   async getItemById(articleId) {
-    const article = await request.get(`articles/${articleId}`);
-    return this._adaptArticle(article);
+    const articleRes = await request.get(`articles/${articleId}`);
+    return this._adaptArticle(articleRes.data);
   }
 
   async deleteItem(articleId) {
-    return await request.delete(`articles/${articleId}`);
+    const res = await request.delete(`articles/${articleId}`);
+    return res.data;
   }
 
   async updateItemById(articleId, params) {
-    return await request.put(`articles/${articleId}`, params);
+    const res = await request.put(`articles/${articleId}`, params);
+    return res.data;
   }
 
   _adaptArticle(article) {

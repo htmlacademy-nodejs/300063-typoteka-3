@@ -5,23 +5,28 @@ const {dateAdapter} = require(`../date`);
 
 
 class CommentAdapter {
-  async getList(queryParams) {
-    const comments = await request.get(`comments`, queryParams);
-    return this._adaptComment(comments);
+  async getList(params) {
+    const res = await request.get(`comments`, params);
+    return this._adaptComment(res.data);
   }
 
   async getListByArticleId(articleId) {
-    const comments = await request.get(`articles/${articleId}/comments`);
-    return this._adaptComment(comments);
+    const res = await request.get(`articles/${articleId}/comments`);
+    return this._adaptComment(res.data);
   }
 
   async addItem(params) {
-    const {articleId, text} = params;
-    return await request.post(`articles/${articleId}/comments`, {text});
+    const {text, articleId, accountId} = params;
+    const res = await request.post(`articles/${articleId}/comments`, {
+      text,
+      accountId,
+    });
+    return res.data;
   }
 
   async deleteItem(commentId) {
-    return await request.delete(`comments/${commentId}`);
+    const res = await request.delete(`comments/${commentId}`);
+    return res.data;
   }
 
   _adaptComment(comments) {

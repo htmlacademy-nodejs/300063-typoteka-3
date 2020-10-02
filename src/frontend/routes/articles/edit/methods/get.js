@@ -1,11 +1,11 @@
 'use strict';
 
-const {accountAdapter, articleAdapter, categoryAdapter} = require(`../../../../adapters`);
+const {articleAdapter, categoryAdapter} = require(`../../../../adapters`);
 const {logger} = require(`../../../../utils`);
 
 
 module.exports = async (req, res) => {
-  let {article, errorMessages} = req.locals || {};
+  let {account, article, errorMessages} = req.locals;
   const articleRes = await articleAdapter.getItemById(req.params.articleId);
   if (articleRes.content && articleRes.content.errorMessages) {
     res.status(article.statusCode).send();
@@ -26,7 +26,7 @@ module.exports = async (req, res) => {
   const content = {
     type: `edit`,
     article,
-    account: accountAdapter.getAuth(),
+    account,
     categories,
     scriptList: [
       `js/vendor.js`,

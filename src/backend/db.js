@@ -9,6 +9,7 @@ const {
   getArticleModel,
   getCategoryModel,
   getCommentModel,
+  getRefreshTokenModel,
   EForeignKey,
   EModelName,
 } = require(`./models`);
@@ -20,6 +21,7 @@ const Account = getAccountModel(sequelize, DataTypes);
 const Article = getArticleModel(sequelize, DataTypes);
 const Category = getCategoryModel(sequelize, DataTypes);
 const Comment = getCommentModel(sequelize, DataTypes);
+const RefreshToken = getRefreshTokenModel(sequelize, DataTypes);
 
 Account.hasMany(Comment, {
   as: EModelName.COMMENTS,
@@ -70,6 +72,7 @@ module.exports = {
     Article,
     Category,
     Comment,
+    RefreshToken,
   },
   sequelize,
   initDb,

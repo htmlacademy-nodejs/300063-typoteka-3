@@ -18,6 +18,7 @@ const articleData = {
 };
 
 const commentData = {
+  accountId: 1,
   text: `Новый комментарий`,
 };
 
@@ -70,6 +71,7 @@ describe(`Article comments API end-points`, () => {
 
   test(`When POST article with invalid text when length is great then 1000 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
     const comment = {
+      accountId: 1,
       text: new Array(1001).fill(`i`).join(``),
     };
     const res = await request(server).post(`${pathToArticles}/${article.id}/comments`).send(comment);
@@ -78,6 +80,7 @@ describe(`Article comments API end-points`, () => {
 
   test(`When POST article with valid text when length is equal 1000 status code should be ${HttpCodes.CREATED}`, async () => {
     const comment = {
+      accountId: 1,
       text: new Array(1000).fill(`i`).join(``),
     };
     const res = await request(server).post(`${pathToArticles}/${article.id}/comments`).send(comment);

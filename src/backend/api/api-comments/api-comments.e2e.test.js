@@ -17,6 +17,7 @@ const articleData = {
   date: `2020-09-10`,
 };
 const commentData = {
+  accountId: 1,
   text: `Новый комментарий`,
 };
 
