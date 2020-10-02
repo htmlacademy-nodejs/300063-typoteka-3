@@ -63,7 +63,10 @@ module.exports = [
     path: routeName.CATEGORIES,
     Component: ApiCategories,
     middleware: {
-      post: [schemaValidator(newCategorySchema)],
+      post: [
+        checkAdmin,
+        schemaValidator(newCategorySchema)
+      ],
     },
     children: [
       {

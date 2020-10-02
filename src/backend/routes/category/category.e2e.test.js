@@ -1,23 +1,62 @@
 'use strict';
 
+const bcrypt = require(`bcrypt`);
 const request = require(`supertest`);
 const HttpCodes = require(`http-status-codes`);
 
 const {apiContainer} = require(`../../api`);
-const {initDb} = require(`../../db`);
+const {db, initDb} = require(`../../db`);
 const {getRandomString} = require(`../../utils`);
 
 
 const pathToCategories = `/api/categories`;
+const pathToLogin = `/api/user/login`;
 const AVAILABLE_SYMBOLS = `abcdefghijklmnopqrstuvwxyz`;
+const authAdminParams = {
+  email: `admin@mail.ru`,
+  password: `123456`,
+};
+const authUserParams = {
+  email: `user@mail.ru`,
+  password: `654321`,
+};
+
+const initTest = async () => {
+  await initDb(true);
+  await createUsers();
+};
+
+const createUsers = async () => {
+  return await db.Account.bulkCreate([
+    {
+      firstname: getRandomString(AVAILABLE_SYMBOLS, 20),
+      lastname: getRandomString(AVAILABLE_SYMBOLS, 20),
+      email: authAdminParams.email,
+      avatar: `test.png`,
+      password: bcrypt.hashSync(authAdminParams.password, 10),
+      isAdmin: true,
+    },
+    {
+      firstname: getRandomString(AVAILABLE_SYMBOLS, 20),
+      lastname: getRandomString(AVAILABLE_SYMBOLS, 20),
+      email: authUserParams.email,
+      avatar: `test.png`,
+      password: bcrypt.hashSync(authUserParams.password, 10),
+      isAdmin: false,
+    },
+  ]);
+};
 
 
 describe(`Categories API end-points`, () => {
   let server = null;
+  let cookie = null;
 
   beforeAll(async () => {
-    await initDb(true);
+    await initTest();
     server = await apiContainer.getInstance();
+    const admin = await request(server).post(pathToLogin).send(authAdminParams);
+    cookie = admin.headers[`set-cookie`];
   });
 
   afterAll(async () => {
@@ -32,7 +71,10 @@ describe(`Categories API end-points`, () => {
     };
 
     beforeAll(async () => {
-      const categoryRes = await request(server).post(pathToCategories).send(categoryParams);
+      const categoryRes = await request(server)
+        .post(pathToCategories)
+        .set(`cookie`, cookie)
+        .send(categoryParams);
       category = categoryRes.body;
     });
 
@@ -85,7 +127,10 @@ describe(`Categories API end-points`, () => {
     };
 
     beforeAll(async () => {
-      const categoryRes = await request(server).post(pathToCategories).send(categoryParams);
+      const categoryRes = await request(server)
+        .post(pathToCategories)
+        .set(`cookie`, cookie)
+        .send(categoryParams);
       category = categoryRes.body;
     });
 
