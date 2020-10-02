@@ -1,8 +1,9 @@
 'use strict';
 
 const {Router} = require(`express`);
+
+const {upload} = require(`../../../utils`);
 const {getAddArticlePage, postAddArticlePage} = require(`./methods`);
-const {upload} = require(`frontend/utils`);
 
 
 const addRoute = new Router();

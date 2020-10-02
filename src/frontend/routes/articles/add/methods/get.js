@@ -1,7 +1,8 @@
 'use strict';
 
-const {logger, transformDate} = require(`frontend/utils`);
-const {accountAdapter, categoryAdapter, dateAdapter} = require(`frontend/adapters`);
+const {accountAdapter, categoryAdapter, dateAdapter} = require(`../../../../adapters`);
+const {logger, transformDate} = require(`../../../../utils`);
+
 
 const getArticle = (article) => {
   const date = article.createdDate ? transformDate(article.createdDate) : new Date();
@@ -12,12 +13,12 @@ const getArticle = (article) => {
 };
 
 module.exports = async (req, res) => {
-  const categoryList = await categoryAdapter.getList();
+  const categories = await categoryAdapter.getList();
   const content = {
     type: `add`,
     article: getArticle(req.body),
     account: accountAdapter.getAuth(),
-    categoryList,
+    categories,
     scriptList: [
       `js/vendor.js`,
       `js/main.js`

@@ -2,28 +2,26 @@
 
 const HttpCodes = require(`http-status-codes`);
 
-const {commentAdapter} = require(`backend/adapters`);
-const {logger} = require(`backend/utils`);
+const {db} = require(`../../../../../../db`);
+const {logger} = require(`../../../../../../utils`);
 
-
-const commentResponseMap = new Map([
-  [`article`, (res, req, result) => {
-    result.error.message = `Article with ${req.params.articleId} id isn't exist`;
-    res.status(HttpCodes.BAD_REQUEST).send(result);
-  }],
-  [`comment`, (res, req, result) => {
-    result.error.message = `Comment with ${req.params.commentId} id isn't exist`;
-    res.status(HttpCodes.BAD_REQUEST).send(result);
-  }],
-]);
 
 module.exports = async (req, res) => {
-  const result = commentAdapter.removeItemById(req.params.articleId, req.params.commentId);
-  if (result.error) {
-    commentResponseMap.get(result.error.entity)(res, req, result);
+  const article = await db.Article.findByPk(req.params.articleId);
+  if (!article) {
+    res.status(HttpCodes.BAD_REQUEST).send({message: `Article with ${req.params.articleId} ID isn't exist`});
     logger.endRequest(req, res);
-  } else {
-    res.status(HttpCodes.NO_CONTENT).send(result);
-    logger.endRequest(req, res);
+    return;
   }
+  const articleDeletedCount = await db.Comment.destroy({
+    where: {
+      id: req.params.commentId,
+    }
+  });
+  if (articleDeletedCount > 0) {
+    res.status(HttpCodes.NO_CONTENT).send();
+  } else {
+    res.status(HttpCodes.BAD_REQUEST).send({message: `Comment with ${req.params.commentId} ID isn't exist`});
+  }
+  logger.endRequest(req, res);
 };

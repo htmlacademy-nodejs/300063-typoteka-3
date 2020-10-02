@@ -1,7 +1,7 @@
 'use strict';
 
-const {logger} = require(`frontend/utils`);
-const {commentAdapter} = require(`frontend/adapters`);
+const {logger} = require(`../../../../utils`);
+const {commentAdapter} = require(`../../../../adapters`);
 
 
 module.exports = async (req, res) => {

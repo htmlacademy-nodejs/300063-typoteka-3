@@ -4,11 +4,10 @@
     ul.comments__list
       each comment in comments.list
         li.comments__comment
-          .comments__avatar.avatar
-            img(src= comment.account.avatar alt='аватар пользователя')
+          img.comments__avatar.avatar(src= comment.account.avatar alt='аватар пользователя')
           .comments__text
             .comments__head
-              p= comment.account.name + ` •`
+              p= `${comment.account.firstname} ${comment.account.lastname} •`
               time.comments__date(datetime=comment.date.stamp)= `${comment.date.day}, ${comment.date.time}`
             p.comments__message= comment.text
 
@@ -22,7 +21,7 @@
     else if account.type === `user`
       .comments__footer.comments__footer--user
         form(action='#' method='POST')
-          .avatar
+          .comments__avatar.avatar
             img(src= account.avatar alt='аватар пользователя')
           label
             textarea(rows='1' placeholder='Присоединиться к обсуждению')

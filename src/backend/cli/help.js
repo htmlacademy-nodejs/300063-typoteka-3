@@ -2,6 +2,7 @@
 
 const chalk = require(`chalk`);
 
+
 const descriptions = {
   '--version': {
     alias: `-v`,
@@ -20,6 +21,16 @@ const descriptions = {
     alias: `-s`,
     info: `запускает сервер на указанном порту (по-умолчанию :3000)`,
     option: `<port>`,
+  },
+  '--initdb': {
+    alias: `-idb`,
+    info: `инициализирует базу данный, (если передать параметр force все данные в таблицах будут удалены)`,
+    option: `<force> [force]`,
+  },
+  '--filldb': {
+    alias: `-fdb`,
+    info: `заполняет таблицу данными (count задает одинаковое количество пользователей и статей)`,
+    option: `<count>`,
   },
 };
 

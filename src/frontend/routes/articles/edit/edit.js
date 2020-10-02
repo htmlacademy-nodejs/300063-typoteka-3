@@ -2,7 +2,7 @@
 
 const {Router} = require(`express`);
 
-const {upload} = require(`frontend/utils`);
+const {upload} = require(`../../../utils`);
 const {getEditArticlePage, postEditArticlePage} = require(`./methods`);
 
 

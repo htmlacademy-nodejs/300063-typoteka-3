@@ -1,8 +1,8 @@
 'use strict';
 
 const {Router} = require(`express`);
-const {logger} = require(`frontend/utils`);
-const {accountAdapter} = require(`frontend/adapters`);
+const {logger} = require(`../../../utils`);
+const {accountAdapter} = require(`../../../adapters`);
 
 
 const categoryRoute = new Router();

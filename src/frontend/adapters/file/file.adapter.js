@@ -3,7 +3,7 @@
 const path = require(`path`);
 const fs = require(`fs`).promises;
 
-const {params} = require(`common`);
+const {DEFAULT_PUBLIC_DIR} = require(`../../../common/params`);
 
 
 class FileAdapter {
@@ -22,7 +22,7 @@ class FileAdapter {
       return this._getError(`size`, `File can't be empty`);
     }
     try {
-      const publicDir = process.env.PUBLIC_DIR || params.DEFAULT_PUBLIC_DIR;
+      const publicDir = process.env.PUBLIC_DIR || DEFAULT_PUBLIC_DIR;
       const newFilePath = path.resolve(destination, `../${publicDir}/img/${filename}`);
       await fs.rename(filePath, newFilePath);
       return filename;

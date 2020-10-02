@@ -1,7 +1,7 @@
 'use strict';
 
-const {articleAdapter, FileAdapter} = require(`frontend/adapters`);
-const {logger, transformDate} = require(`frontend/utils`);
+const {articleAdapter, FileAdapter} = require(`../../../../adapters`);
+const {logger, transformDate} = require(`../../../../utils`);
 const getAddArticlePage = require(`./get`);
 
 
@@ -27,7 +27,7 @@ const addArticleItemAndRedirectToMyArticles = async (req, res) => {
   }
   const articleParams = {
     ...req.body,
-    createdDate: transformDate(req.body.createdDate),
+    createdAt: transformDate(req.body.date),
   };
   const articleRes = await articleAdapter.addItem(articleParams);
   if (articleRes.content && articleRes.content.error) {

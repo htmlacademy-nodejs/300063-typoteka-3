@@ -34,7 +34,7 @@ class ArticleAdapter {
   _adaptArticle(article) {
     return {
       ...article,
-      createdDate: dateAdapter.get(article.createdDate),
+      date: dateAdapter.get(article.date),
     };
   }
 }
