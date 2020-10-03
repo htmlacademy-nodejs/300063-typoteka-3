@@ -4,11 +4,13 @@ const bcrypt = require(`bcrypt`);
 const HttpCodes = require(`http-status-codes`);
 const request = require(`supertest`);
 
+const {commonParams} = require(`../../../common/params`);
 const {apiContainer} = require(`../../api`);
 const {db, initDb} = require(`../../db`);
 const {getRandomString} = require(`../../utils`);
 
 
+const salt = +process.env.SALT_ROUND || commonParams.SALT_ROUND;
 const pathToComments = `/api/comments`;
 const pathToArticles = `/api/articles`;
 const pathToLogin = `/api/user/login`;
@@ -52,7 +54,7 @@ const createUsers = async () => {
       lastname: getRandomString(AVAILABLE_SYMBOLS, 20),
       email: authAdminParams.email,
       avatar: `test.png`,
-      password: bcrypt.hashSync(authAdminParams.password, 10),
+      password: bcrypt.hashSync(authAdminParams.password, salt),
       isAdmin: true,
     },
     {
@@ -60,7 +62,7 @@ const createUsers = async () => {
       lastname: getRandomString(AVAILABLE_SYMBOLS, 20),
       email: authUserParams.email,
       avatar: `test.png`,
-      password: bcrypt.hashSync(authUserParams.password, 10),
+      password: bcrypt.hashSync(authUserParams.password, salt),
       isAdmin: false,
     },
   ]);

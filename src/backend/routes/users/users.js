@@ -3,11 +3,12 @@
 const bcrypt = require(`bcrypt`);
 const HttpCodes = require(`http-status-codes`);
 
+const {commonParams} = require(`../../../common/params`);
 const {db} = require(`../../db`);
 const {EAccountFieldName} = require(`../../models`);
 
 
-const salt = 10;
+const salt = +process.env.SALT_ROUND || commonParams.SALT_ROUND;
 
 class ApiUsers {
   constructor() {

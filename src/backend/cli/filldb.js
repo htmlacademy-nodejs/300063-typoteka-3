@@ -4,11 +4,12 @@ const bcrypt = require(`bcrypt`);
 const chalk = require(`chalk`);
 const {nanoid} = require(`nanoid`);
 
-const {backendParams, ExitCode} = require(`../../common/params`);
+const {commonParams, backendParams, ExitCode} = require(`../../common/params`);
 const {db, sequelize} = require(`../db`);
 const {getRandomInt, readFile, shuffle, getRandomEmail} = require(`../utils`);
 
 
+const salt = +process.env.SALT_ROUND || commonParams.SALT_ROUND;
 const showAccessError = (error, tableName) => {
   console.error(chalk.red(`Operation failed. Access to the "${tableName}" table`));
   process.exit(ExitCode.ERROR);
@@ -23,7 +24,7 @@ const fillCategoryTable = async (categories) => {
 const fillAccountTable = async (firstnames, lastnames, avatars, count) => {
   const accountsForDbTable = Array(count).fill({}).map((item, index) => {
     const isAdmin = index === 0;
-    const password = bcrypt.hashSync(isAdmin ? `123456` : nanoid(), 10);
+    const password = bcrypt.hashSync(isAdmin ? `123456` : nanoid(), salt);
     return {
       firstname: firstnames[getRandomInt(0, firstnames.length - 1)],
       lastname: lastnames[getRandomInt(0, lastnames.length - 1)],
