@@ -15,13 +15,15 @@ block content
           form(action='/login' method='POST')
             .form__field
               label
-                input(type='email' name='email' placeholder='Электронная почта' required)
-            if error && error.email
-              p.form__error-message Некоторая ошибка произошла, беда!
+                input(type='email' name='email' placeholder='Электронная почта' required value=authParams && authParams.email || '')
             .form__field
               label
                 input(type='password' name='password' placeholder='Пароль' required)
-            if error && error.password
-              p.form__error-message Некоторая ошибка произошла, беда!
+            if errorMessages
+              .form__validation-error
+                p.form__error-message При регистрации произошли ошибки:
+                ul.form__errors
+                  each error in errorMessages
+                    li.form__error= error
             button.form__submit-btn.form__submit-btn--log-in.button.button--colored(type='submit') Войти
       .modal__overlay
