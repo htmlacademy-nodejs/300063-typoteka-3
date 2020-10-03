@@ -33,21 +33,26 @@ class ArticleRoute {
   }
 
   async post(req, res) {
+    const {account} = req.locals;
     const {articleId} = req.params;
     const {text, action} = req.body;
-    const {account} = req.locals;
+    const {cookie} = req.headers;
 
+    const additionalParams = {
+      headers: {cookie},
+    };
     if (action === `delete`) {
-      await articleAdapter.deleteItem(articleId);
+      await articleAdapter.deleteItem(articleId, additionalParams);
       res.redirect(`/${routeName.MY}`);
       return;
     }
 
-    const commentRes = await commentAdapter.addItem({
+    const commentParams = {
       text,
       articleId,
       accountId: account.id,
-    });
+    };
+    const commentRes = await commentAdapter.addItem(commentParams, additionalParams);
 
     let path = `/${routeName.ARTICLES}/${articleId}#comments`;
     if (commentRes.content && commentRes.content.errorMessages) {

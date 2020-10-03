@@ -10,18 +10,13 @@ class CommentAdapter {
     return this._adaptComment(res.data);
   }
 
-  async addItem(params) {
-    const {text, articleId, accountId} = params;
-    const res = await request.post(`comments`, {
-      text,
-      accountId,
-      articleId,
-    });
+  async addItem(commentBody, params) {
+    const res = await request.post(`comments`, commentBody, params);
     return res.data;
   }
 
-  async deleteItem(commentId) {
-    const res = await request.delete(`comments/${commentId}`);
+  async deleteItem(commentId, params) {
+    const res = await request.delete(`comments/${commentId}`, params);
     return res.data;
   }
 

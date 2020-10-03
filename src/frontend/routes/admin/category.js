@@ -11,7 +11,7 @@ class CategoryRoute {
   constructor() {
     this.post = this.post.bind(this);
     this._actionMap = new Map([
-      [`save`, this._saveCategory.bind(this)],
+      [`save`, this._updateCategory.bind(this)],
       [`delete`, this._deleteCategory.bind(this)],
     ]);
   }
@@ -26,14 +26,17 @@ class CategoryRoute {
     logger.endRequest(req, res);
   }
 
-  async _saveCategory(req, res) {
+  async _updateCategory(req, res) {
     const {categoryId} = req.params;
     const {title} = req.body;
+    const {cookie} = req.headers;
     const categoryParams = {
       id: +categoryId,
       title,
     };
-    const updatedCategoryRes = await categoryAdapter.updateItem(categoryParams);
+    const updatedCategoryRes = await categoryAdapter.updateItem(categoryParams, {
+      headers: {cookie},
+    });
 
     let path = `/${routeName.CATEGORIES}`;
     if (updatedCategoryRes.content && updatedCategoryRes.content.errorMessages) {
@@ -48,20 +51,10 @@ class CategoryRoute {
 
   async _deleteCategory(req, res) {
     const {categoryId} = req.params;
-    const a = await categoryAdapter.deleteItem(categoryId);
-    console.log(22222);
-    console.log(22222);
-    console.log(22222);
-    console.log(22222);
-    console.log(22222);
-    console.log(22222);
-    console.log(22222);
-    console.log(22222);
-    console.log(22222);
-    console.log(22222);
-    console.log(22222);
-    console.log(22222);
-    console.log(a);
+    const {cookie} = req.headers;
+    await categoryAdapter.deleteItem(categoryId, {
+      headers: {cookie},
+    });
     res.redirect(`/${routeName.CATEGORIES}`);
   }
 }

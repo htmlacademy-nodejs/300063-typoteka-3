@@ -32,6 +32,7 @@ class AddArticleRoute {
 
   async post(req, res) {
     const {date, title, announce, categories, text, image} = req.body;
+    const {cookie} = req.headers;
     const articleParams = {
       title,
       announce,
@@ -40,7 +41,9 @@ class AddArticleRoute {
       image,
       date: transformDate(date),
     };
-    const articleRes = await articleAdapter.addItem(articleParams);
+    const articleRes = await articleAdapter.addItem(articleParams, {
+      headers: {cookie},
+    });
     let path = `/${routeName.MY}`;
     if (articleRes.content && articleRes.content.errorMessages) {
       const query = getQueryString({

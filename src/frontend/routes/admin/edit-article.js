@@ -48,6 +48,7 @@ class EditArticleRoute {
 
   async post(req, res) {
     const {date, title, announce, categories, text, image} = req.body;
+    const {cookie} = req.headers;
     const {articleId} = req.params;
     const articleParams = {
       title,
@@ -57,7 +58,9 @@ class EditArticleRoute {
       image,
       date: transformDate(date),
     };
-    const articleRes = await articleAdapter.updateItemById(articleId, articleParams);
+    const articleRes = await articleAdapter.updateItemById(articleId, articleParams, {
+      headers: {cookie},
+    });
     let path = `/${routeName.MY}`;
     if (articleRes.content && articleRes.content.errorMessages) {
       const query = getQueryString({

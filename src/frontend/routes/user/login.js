@@ -33,7 +33,7 @@ class LoginRoute {
       res.redirect(`/${routeName.LOGIN}`);
     }
     res.set(`set-cookie`, loginCookies);
-    res.redirect(routeName.MAIN);
+    res.redirect(`/${routeName.MAIN}`);
     logger.endRequest(req, res);
   }
 }

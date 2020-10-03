@@ -9,19 +9,19 @@ class CategoryAdapter {
     return res.data;
   }
 
-  async addItem(categoryParams) {
-    const res = await request.post(`categories`, categoryParams);
+  async addItem(categoryBody, params) {
+    const res = await request.post(`categories`, categoryBody, params);
     return res.data;
   }
 
-  async updateItem(categoryParams) {
-    const {id, title} = categoryParams;
-    const res = await request.put(`categories/${id}`, {title});
+  async updateItem(categoryBody, params) {
+    const {id, title} = categoryBody;
+    const res = await request.put(`categories/${id}`, {title}, params);
     return res.data;
   }
 
-  async deleteItem(categoryId) {
-    const res = await request.delete(`categories/${categoryId}`);
+  async deleteItem(categoryId, params) {
+    const res = await request.delete(`categories/${categoryId}`, params);
     return res.data;
   }
 }

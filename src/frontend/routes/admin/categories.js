@@ -28,8 +28,11 @@ class CategoriesRoute {
 
   async post(req, res) {
     const {title} = req.body;
+    const {cookie} = req.headers;
     const categoryParams = {title};
-    const createdCategoryRes = await categoryAdapter.addItem(categoryParams);
+    const createdCategoryRes = await categoryAdapter.addItem(categoryParams, {
+      headers: {cookie},
+    });
     let path = `/${routeName.CATEGORIES}`;
     if (createdCategoryRes.content && createdCategoryRes.content.errorMessages) {
       const query = getQueryString({

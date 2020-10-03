@@ -15,35 +15,30 @@ class Request {
   }
 
   get(path, params = {}) {
-    const {query} = params;
+    const {query, headers} = params;
     const url = this._getUrl(path, query);
-    return axios.get(url)
+    return axios.get(url, {headers})
       .catch(this._getErrorStatus);
   }
 
   post(path, body, params = {}) {
     const {query, headers} = params;
     const url = this._getUrl(path, query);
-    return axios({
-      method: `POST`,
-      url,
-      data: body,
-      headers,
-    })
+    return axios.post(url, body, {headers})
       .catch(this._getErrorStatus);
   }
 
   put(path, body, params = {}) {
-    const {query} = params;
+    const {query, headers} = params;
     const url = this._getUrl(path, query);
-    return axios.put(url, body)
+    return axios.put(url, body, {headers})
       .catch(this._getErrorStatus);
   }
 
   delete(path, params = {}) {
-    const {query} = params;
+    const {query, headers} = params;
     const url = this._getUrl(path, query);
-    return axios.delete(url)
+    return axios.delete(url, {headers})
       .catch(this._getErrorStatus);
   }
 
