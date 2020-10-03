@@ -20,7 +20,7 @@ module.exports = {
     sync: [],
     async: [disconnectDb],
   },
-  middlewares: {
+  middleware: {
     before: [
       cookieParser(),
       logger.expressPinoLogger,

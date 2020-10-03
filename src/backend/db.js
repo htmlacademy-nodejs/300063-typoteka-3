@@ -35,10 +35,12 @@ Comment.belongsTo(Account, {
 Article.hasOne(Comment, {
   as: EModelName.COMMENTS,
   foreignKey: EForeignKey.ARTICLE_ID,
+  onDelete: `CASCADE`,
 });
 Comment.belongsTo(Article, {
   as: EModelName.ARTICLES,
   foreignKey: EForeignKey.ARTICLE_ID,
+  onDelete: `CASCADE`,
 });
 
 Article.belongsToMany(Category, {
