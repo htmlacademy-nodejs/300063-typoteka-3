@@ -27,7 +27,7 @@ const articleData = {
 };
 const commentData = {
   accountId: 1,
-  text: getRandomString(AVAILABLE_SYMBOLS, 10),
+  text: getRandomString(AVAILABLE_SYMBOLS, 25),
 };
 const authAdminParams = {
   email: `admin@mail.ru`,
@@ -172,6 +172,39 @@ describe(`Comments API end-points`, () => {
         .send(comment);
       expect(postCommentResponse.body).toHaveProperty(property);
     });
+
+
+
+    test(`When POST article comment with invalid text when length is less then 20 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+      const comment = {
+        ...commentData,
+        articleId: article.id,
+
+        text: getRandomString(AVAILABLE_SYMBOLS, 19),
+      };
+      const res = await request(server)
+        .post(pathToComments)
+        .set(`cookie`, userCookie)
+        .send(comment);
+      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+    });
+
+    test(`When POST article comment with valid text when length is equal 20 status code should be ${HttpCodes.CREATED}`, async () => {
+      const comment = {
+        ...commentData,
+        articleId: article.id,
+        text: getRandomString(AVAILABLE_SYMBOLS, 20),
+      };
+      const res = await request(server)
+        .post(pathToComments)
+        .set(`cookie`, userCookie)
+        .send(comment);
+      expect(res.statusCode).toBe(HttpCodes.CREATED);
+    });
+
+
+
+
 
     test(`When POST article comment with invalid text when length is great then 1000 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
       const comment = {

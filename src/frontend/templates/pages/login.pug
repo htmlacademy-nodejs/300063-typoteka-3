@@ -15,7 +15,13 @@ block content
           form(action='/login' method='POST')
             .form__field
               label
-                input(type='email' name='email' placeholder='Электронная почта' required value=authParams && authParams.email || '')
+                input(
+                  type='email'
+                  name='email'
+                  placeholder='Электронная почта'
+                  required
+                  value=authParams && authParams.email || ''
+                )
             .form__field
               label
                 input(type='password' name='password' placeholder='Пароль' required)

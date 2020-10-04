@@ -10,9 +10,9 @@ block content
             li.publication__list-item
               .publication__header
                 img.publication__list-image(src=`img/${comment.account.avatar || `icons/smile.svg`}` width='20' height='20' alt='Аватар пользователя')
-                b.publication__list-name= comment.account.name
+                b.publication__list-name= `${comment.account.firstname} ${comment.account.lastname}`
                 time.publication__item-time(datetime=comment.date.stamp)= `${comment.date.day}, ${comment.date.time}`
-              a.publication__item-text(href='#')= comment.text
-              p.publication__text-strong= comment.articleTitle
+              a.publication__item-text(href=`/articles/${comment.article.id}`)= comment.text
+              p.publication__text-strong= comment.article.title
               button.publication__button.button.button--close-item(type='submit' name='action' value='delete')
                 span.visually-hidden Закрыть строку списка

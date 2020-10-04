@@ -50,11 +50,11 @@ class ApiArticles {
   }
 
   async _getArticles(req) {
-    const {page = null, limit = null, minCommentCount = null, isSearch = `false`} = req.query;
-    const title = `%${req.query.title}%`;
+    const {page = null, limit = null, minCommentCount = null, title = null} = req.query;
     const category = +req.query.category || null;
     const offset = page && limit && (limit * (page - 1));
     const articlesSql = this._getArticleSql(req);
+    const search = title === null ? title : `%${title}%`;
     return await sequelize.query(articlesSql, {
       type: sequelize.QueryTypes.SELECT,
       replacements: {
@@ -62,8 +62,7 @@ class ApiArticles {
         offset,
         category,
         minCommentCount,
-        title,
-        isSearch
+        search,
       },
     });
   }
@@ -106,7 +105,7 @@ class ApiArticles {
       ) AS "filteredArticlesByCategory"
         ON "filteredArticlesByCategory"."${EForeignKey.ARTICLE_ID}" = "${EModelName.ARTICLES}"."${EArticleFieldName.ID}"
       WHERE
-        (:isSearch = 'false' OR "${EModelName.ARTICLES}"."${EArticleFieldName.TITLE}" ILIKE :title)
+        (:search IS NULL OR "${EModelName.ARTICLES}"."${EArticleFieldName.TITLE}" ILIKE :search)
         AND (:minCommentCount IS NULL OR "comments"."count" >= :minCommentCount)
       GROUP BY "${EModelName.ARTICLES}"."${EArticleFieldName.ID}", "comments"."count"
       ORDER BY "${sort}" DESC

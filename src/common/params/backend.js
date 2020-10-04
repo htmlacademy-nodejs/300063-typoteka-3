@@ -43,6 +43,7 @@ module.exports = {
       MIN_TITLE_SYMBOL_COUNT: 5,
     },
     comment: {
+      MIN_TEXT_SYMBOL_COUNT: 20,
       MAX_TEXT_SYMBOL_COUNT: 1000,
     },
     token: {

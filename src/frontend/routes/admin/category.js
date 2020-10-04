@@ -52,11 +52,20 @@ class CategoryRoute {
   async _deleteCategory(req, res) {
     const {categoryId} = req.params;
     const {cookie} = req.headers;
-    await categoryAdapter.deleteItem(categoryId, {
+    const deletedCategoryRes = await categoryAdapter.deleteItem(categoryId, {
       headers: {cookie},
     });
-    res.redirect(`/${routeName.CATEGORIES}`);
+    let path = `/${routeName.CATEGORIES}`;
+    if (deletedCategoryRes.content && deletedCategoryRes.content.errorMessages) {
+      const query = getQueryString({
+        updatedCategory: JSON.stringify({
+          id: +categoryId,
+        }),
+        errorMessages: JSON.stringify(deletedCategoryRes.content.errorMessages),
+      });
+      path = `/${routeName.CATEGORIES}?${query}`;
+    }
+    res.redirect(path);
   }
 }
-
 module.exports = CategoryRoute;

@@ -1,5 +1,5 @@
 section.main-page__last.last
-  h2.last__name
+  h2.hot__name
     | Последние комментарии
     |
     span.last__icon.last__icon--cloud
@@ -9,6 +9,6 @@ section.main-page__last.last
         li.last__list-item
           img.last__list-image(src=`img/${comment.account.avatar || 'icons/smile.svg'}` width='20' height='20' alt='Аватар пользователя')
           b.last__list-name= `${comment.account.firstname} ${comment.account.lastname}`
-          a.last__list-link(href=`/articles/${comment.articleId}`)= comment.text
+          a.last__list-link(href=`/articles/${comment.article.id}`)= comment.text
   else
     p.hot__empty Здесь пока ничего нет...

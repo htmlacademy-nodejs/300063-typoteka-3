@@ -7,7 +7,10 @@ const {schemaMessages} = require(`../messages`);
 const {ECommentFieldName, EForeignKey} = require(`../models`);
 
 
+const {MIN_TEXT_SYMBOL_COUNT, MAX_TEXT_SYMBOL_COUNT} = backendParams.db.comment;
+
 const {
+  MIN_TEXT_LENGTH,
   MAX_TEXT_LENGTH,
   REQUIRED_TEXT_FIELD,
   REQUIRED_ACCOUNT_ID_FIELD,
@@ -16,9 +19,11 @@ const {
 
 module.exports = Joi.object({
   [ECommentFieldName.TEXT]: Joi.string()
-    .max(backendParams.db.comment.MAX_TEXT_SYMBOL_COUNT)
+    .min(MIN_TEXT_SYMBOL_COUNT)
+    .max(MAX_TEXT_SYMBOL_COUNT)
     .required()
     .messages({
+      'string.min': MIN_TEXT_LENGTH,
       'string.max': MAX_TEXT_LENGTH,
       'any.required': REQUIRED_TEXT_FIELD,
       'string.empty': REQUIRED_TEXT_FIELD,

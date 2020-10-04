@@ -25,7 +25,7 @@ const articleData = {
 };
 const commentData = {
   accountId: 1,
-  text: `Новый комментарий`,
+  text: getRandomString(AVAILABLE_SYMBOLS, 25),
 };
 const authAdminParams = {
   email: `admin@mail.ru`,

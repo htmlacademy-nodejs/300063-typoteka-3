@@ -1,6 +1,6 @@
 'use strict';
 
-const {articleAdapter, commentAdapter} = require(`../../adapters`);
+const {articleAdapter, commentAdapter, categoryAdapter} = require(`../../adapters`);
 const routeName = require(`../../route-name`);
 const {getQueryString, logger} = require(`../../utils`);
 
@@ -19,12 +19,16 @@ class ArticleRoute {
     const comments = await commentAdapter.getList({
       query: {articleId}
     });
+    const categories = await categoryAdapter.getList({
+      query: {articleId}
+    });
     const content = {
+      account,
       isPost: true,
       article,
-      account,
-      scriptList: [`js/main.js`],
+      categories,
       comments,
+      scriptList: [`js/main.js`],
       errorMessages,
       newComment,
     };

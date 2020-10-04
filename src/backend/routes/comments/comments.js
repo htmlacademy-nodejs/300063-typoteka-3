@@ -6,6 +6,7 @@ const {db} = require(`../../db`);
 const {
   EModelName,
   EAccountFieldName,
+  EArticleFieldName,
   ECommentFieldName,
   EForeignKey,
 } = require(`../../models`);
@@ -64,19 +65,28 @@ class ApiComments {
         ECommentFieldName.ID,
         ECommentFieldName.TEXT,
         ECommentFieldName.DATE,
-        EForeignKey.ARTICLE_ID,
       ],
-      include: [{
-        model: db.Account,
-        as: EModelName.ACCOUNTS,
-        attributes: [
-          EAccountFieldName.ID,
-          EAccountFieldName.FIRSTNAME,
-          EAccountFieldName.LASTNAME,
-          EAccountFieldName.EMAIL,
-          EAccountFieldName.AVATAR
-        ],
-      }],
+      include: [
+        {
+          model: db.Account,
+          as: EModelName.ACCOUNTS,
+          attributes: [
+            EAccountFieldName.ID,
+            EAccountFieldName.FIRSTNAME,
+            EAccountFieldName.LASTNAME,
+            EAccountFieldName.EMAIL,
+            EAccountFieldName.AVATAR
+          ],
+        },
+        {
+          model: db.Article,
+          as: EModelName.ARTICLES,
+          attributes: [
+            EArticleFieldName.ID,
+            EArticleFieldName.TITLE,
+          ],
+        }
+      ],
       order: [
         [ECommentFieldName.DATE, `DESC`],
       ],
@@ -103,6 +113,10 @@ class ApiComments {
         email: comment[EModelName.ACCOUNTS][EAccountFieldName.EMAIL],
         avatar: comment[EModelName.ACCOUNTS][EAccountFieldName.AVATAR],
       },
+      article: {
+        id: comment[EModelName.ARTICLES][EArticleFieldName.ID],
+        title: comment[EModelName.ARTICLES][EArticleFieldName.TITLE],
+      }
     }));
   }
 }
