@@ -99,7 +99,7 @@ describe(`Article ID API end-points`, () => {
   });
 
   describe(`GET`, () => {
-    test(`When GET exist article by ID status code should be ${HttpCodes.OK}`, async () => {
+    test(`When GET exist article by ID status code should be 200`, async () => {
       const res = await request(server).get(`${pathToArticles}/${article.id}`);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
@@ -109,19 +109,19 @@ describe(`Article ID API end-points`, () => {
       expect(res.body).toHaveProperty(property);
     });
 
-    test(`When GET article when articleId is not number status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When GET article when articleId is not number status code should be 400`, async () => {
       const res = await request(server).get(`${pathToArticles}/not-number`).send(newArticleData);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When GET article when articleId is number status code should be ${HttpCodes.OK}`, async () => {
+    test(`When GET article when articleId is number status code should be 200`, async () => {
       const res = await request(server).get(`${pathToArticles}/${article.id}`).send(newArticleData);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
   });
 
   describe(`DELETE`, () => {
-    test(`When DELETE article status code should be ${HttpCodes.NO_CONTENT}`, async () => {
+    test(`When DELETE article status code should be 204`, async () => {
       const res = await request(server)
         .delete(`${pathToArticles}/${article.id}`)
         .set(`cookie`, adminCookie)
@@ -129,7 +129,7 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.NO_CONTENT);
     });
 
-    test(`When DELETE not exist article status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When DELETE not exist article status code should be 400`, async () => {
       await request(server)
         .delete(`${pathToArticles}/${article.id}`)
         .set(`cookie`, adminCookie)
@@ -154,7 +154,7 @@ describe(`Article ID API end-points`, () => {
       expect(res.body).toHaveProperty(`message`);
     });
 
-    test(`When DELETE article when articleId is not number status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When DELETE article when articleId is not number status code should be 400`, async () => {
       const res = await request(server)
         .delete(`${pathToArticles}/not-number`)
         .set(`cookie`, adminCookie)
@@ -162,7 +162,7 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When DELETE article when articleId is number status code should be ${HttpCodes.NO_CONTENT}`, async () => {
+    test(`When DELETE article when articleId is number status code should be 204`, async () => {
       const res = await request(server)
         .delete(`${pathToArticles}/${article.id}`)
         .set(`cookie`, adminCookie)
@@ -170,14 +170,14 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.NO_CONTENT);
     });
 
-    test(`When DELETE article without access token status code should be ${HttpCodes.UNAUTHORIZED}`, async () => {
+    test(`When DELETE article without access token status code should be 401`, async () => {
       const res = await request(server)
         .delete(`${pathToArticles}/${article.id}`)
         .send();
       expect(res.statusCode).toBe(HttpCodes.UNAUTHORIZED);
     });
 
-    test(`When DELETE article with not admin access token status code should be ${HttpCodes.FORBIDDEN}`, async () => {
+    test(`When DELETE article with not admin access token status code should be 403`, async () => {
       const res = await request(server)
         .delete(`${pathToArticles}/${article.id}`)
         .set(`cookie`, userCookie)
@@ -187,7 +187,7 @@ describe(`Article ID API end-points`, () => {
   });
 
   describe(`PUT`, () => {
-    test(`When PUT article params status code should be ${HttpCodes.OK}`, async () => {
+    test(`When PUT article params status code should be 200`, async () => {
       const res = await request(server)
         .put(`${pathToArticles}/${article.id}`)
         .set(`cookie`, adminCookie)
@@ -195,7 +195,7 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
-    test(`When PUT article with invalid title when length is less then 30 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When PUT article with invalid title when length is less then 30 status code should be 400`, async () => {
       const articleParams = {
         title: getRandomString(AVAILABLE_SYMBOLS, 29),
       };
@@ -206,7 +206,7 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When PUT article with valid title when length is equal 30 status code should be ${HttpCodes.OK}`, async () => {
+    test(`When PUT article with valid title when length is equal 30 status code should be 200`, async () => {
       const articleParams = {
         title: getRandomString(AVAILABLE_SYMBOLS, 30),
       };
@@ -217,7 +217,7 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
-    test(`When PUT article with invalid title when length is great then 250 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When PUT article with invalid title when length is great then 250 status code should be 400`, async () => {
       const articleParams = {
         title: getRandomString(AVAILABLE_SYMBOLS, 251),
       };
@@ -228,7 +228,7 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When PUT article with valid title when length is equal 250 status code should be ${HttpCodes.OK}`, async () => {
+    test(`When PUT article with valid title when length is equal 250 status code should be 200`, async () => {
       const articleParams = {
         title: getRandomString(AVAILABLE_SYMBOLS, 250),
       };
@@ -239,7 +239,7 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
-    test(`When PUT article with invalid announce when length is less then 30 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When PUT article with invalid announce when length is less then 30 status code should be 400`, async () => {
       const articleParams = {
         announce: getRandomString(AVAILABLE_SYMBOLS, 29),
       };
@@ -250,7 +250,7 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When PUT article with valid announce when length is equal 30 status code should be ${HttpCodes.OK}`, async () => {
+    test(`When PUT article with valid announce when length is equal 30 status code should be 200`, async () => {
       const articleParams = {
         announce: getRandomString(AVAILABLE_SYMBOLS, 30),
       };
@@ -261,7 +261,7 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
-    test(`When PUT article with invalid announce when length is great then 250 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When PUT article with invalid announce when length is great then 250 status code should be 400`, async () => {
       const articleParams = {
         announce: getRandomString(AVAILABLE_SYMBOLS, 251),
       };
@@ -272,7 +272,7 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When PUT article with valid announce when length is equal 250 status code should be ${HttpCodes.OK}`, async () => {
+    test(`When PUT article with valid announce when length is equal 250 status code should be 200`, async () => {
       const articleParams = {
         announce: getRandomString(AVAILABLE_SYMBOLS, 250),
       };
@@ -283,7 +283,7 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
-    test(`When PUT article with invalid text when length is great then 1000 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When PUT article with invalid text when length is great then 1000 status code should be 400`, async () => {
       const articleParams = {
         text: getRandomString(AVAILABLE_SYMBOLS, 1001),
       };
@@ -294,7 +294,7 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When PUT article with valid text when length is equal 1000 status code should be ${HttpCodes.OK}`, async () => {
+    test(`When PUT article with valid text when length is equal 1000 status code should be 200`, async () => {
       const articleParams = {
         text: getRandomString(AVAILABLE_SYMBOLS, 1000),
       };
@@ -305,7 +305,7 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
-    test(`When PUT article with valid image extension status code should be ${HttpCodes.OK}`, async () => {
+    test(`When PUT article with valid image extension status code should be 200`, async () => {
       const articleParams = {
         image: `123.png`,
       };
@@ -322,7 +322,7 @@ describe(`Article ID API end-points`, () => {
       expect(resWithJpg.statusCode).toBe(HttpCodes.OK);
     });
 
-    test(`When PUT article with invalid image extension status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When PUT article with invalid image extension status code should be 400`, async () => {
       const articleParams = {
         image: `123.pmng`,
       };
@@ -333,7 +333,7 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When PUT article with invalid date format status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When PUT article with invalid date format status code should be 400`, async () => {
       const articleParams = {
         date: `10-09-2020`,
       };
@@ -344,7 +344,7 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When PUT article with categories length equal 0 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When PUT article with categories length equal 0 status code should be 400`, async () => {
       const articleParams = {
         categories: [],
       };
@@ -355,7 +355,7 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When PUT article with not exist property status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When PUT article with not exist property status code should be 400`, async () => {
       const articleParams = {
         test: `test`,
       };
@@ -366,7 +366,7 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When PUT article when articleId is not number status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When PUT article when articleId is not number status code should be 400`, async () => {
       const res = await request(server)
         .put(`${pathToArticles}/not-number`)
         .set(`cookie`, adminCookie)
@@ -374,7 +374,7 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When PUT article when articleId is number status code should be ${HttpCodes.OK}`, async () => {
+    test(`When PUT article when articleId is number status code should be 200`, async () => {
       const res = await request(server)
         .put(`${pathToArticles}/${article.id}`)
         .set(`cookie`, adminCookie)
@@ -382,14 +382,14 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
-    test(`When PUT article without access token status code should be ${HttpCodes.UNAUTHORIZED}`, async () => {
+    test(`When PUT article without access token status code should be 401`, async () => {
       const res = await request(server)
         .put(`${pathToArticles}/${article.id}`)
         .send(newArticleData);
       expect(res.statusCode).toBe(HttpCodes.UNAUTHORIZED);
     });
 
-    test(`When PUT article with not admin access token status code should be ${HttpCodes.FORBIDDEN}`, async () => {
+    test(`When PUT article with not admin access token status code should be 403`, async () => {
       const res = await request(server)
         .put(`${pathToArticles}/${article.id}`)
         .set(`cookie`, userCookie)

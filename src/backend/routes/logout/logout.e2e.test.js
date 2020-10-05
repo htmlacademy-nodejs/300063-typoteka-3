@@ -51,7 +51,7 @@ describe(`Auth API end-points`, () => {
     server = null;
   });
 
-  test(`When POST logout with valid refresh token status code should be ${HttpCodes.NO_CONTENT}`, async () => {
+  test(`When POST logout with valid refresh token status code should be 204`, async () => {
     const logoutRes = await request(server)
       .post(pathToLogout)
       .set('cookie', cookies)
@@ -59,7 +59,7 @@ describe(`Auth API end-points`, () => {
     expect(logoutRes.statusCode).toBe(HttpCodes.NO_CONTENT);
   });
 
-  test(`When POST logout without refresh token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+  test(`When POST logout without refresh token status code should be 400`, async () => {
     const newCookies = cookies.filter((cookie) => !cookie.match(`refreshToken`));
     const logoutRes = await request(server)
       .post(pathToLogout)
@@ -68,7 +68,7 @@ describe(`Auth API end-points`, () => {
     expect(logoutRes.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 
-  test(`When POST logout with empty refresh token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+  test(`When POST logout with empty refresh token status code should be 400`, async () => {
     const newCookies = cookies.map((cookie) => cookie.match(`refreshToken`) ? `refreshToken=; Path=/` : cookie);
     const logoutRes = await request(server)
       .post(pathToLogout)
@@ -77,7 +77,7 @@ describe(`Auth API end-points`, () => {
     expect(logoutRes.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 
-  test(`When POST logout without access token status code should be ${HttpCodes.UNAUTHORIZED}`, async () => {
+  test(`When POST logout without access token status code should be 401`, async () => {
     const newCookies = cookies.filter((cookie) => !cookie.match(`accessToken`));
     const logoutRes = await request(server)
       .post(pathToLogout)
@@ -86,7 +86,7 @@ describe(`Auth API end-points`, () => {
     expect(logoutRes.statusCode).toBe(HttpCodes.UNAUTHORIZED);
   });
 
-  test(`When POST logout with invalid access token status code should be ${HttpCodes.FORBIDDEN}`, async () => {
+  test(`When POST logout with invalid access token status code should be 403`, async () => {
     const newCookies = cookies.map((cookie) => cookie.match(`accessToken`) ? `accessToken=not-exist-token; Path=/` : cookie);
     const logoutRes = await request(server).post(pathToLogout)
       .set('cookie', newCookies)
@@ -94,7 +94,7 @@ describe(`Auth API end-points`, () => {
     expect(logoutRes.statusCode).toBe(HttpCodes.FORBIDDEN);
   });
 
-  test(`When POST logout without access token status code should be ${HttpCodes.UNAUTHORIZED}`, async () => {
+  test(`When POST logout without access token status code should be 401`, async () => {
     const newCookies = cookies.filter((cookie) => !cookie.match(`accessToken`));
     const logoutRes = await request(server).post(pathToLogout)
       .set('cookie', newCookies)

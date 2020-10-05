@@ -83,14 +83,14 @@ describe(`Articles API end-points`, () => {
   });
 
   describe(`GET`, () => {
-    test(`When GET article list status code should be ${HttpCodes.OK}`, async () => {
+    test(`When GET article list status code should be 200`, async () => {
       const res = await request(server).get(pathToArticles);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
   });
 
   describe(`POST`, () => {
-    test(`When POST article status code should be ${HttpCodes.CREATED}`, async() => {
+    test(`When POST article status code should be 201`, async() => {
       const res = await request(server)
         .post(pathToArticles)
         .set(`cookie`, adminCookie)
@@ -108,7 +108,7 @@ describe(`Articles API end-points`, () => {
       await request(server).delete(`${pathToArticles}/${res.body.id}`);
     });
 
-    test.each([`title`, `announce`, `categories`, `date`])(`When POST article without %p property status code should be ${HttpCodes.BAD_REQUEST}`, async (property) => {
+    test.each([`title`, `announce`, `categories`, `date`])(`When POST article without %p property status code should be 400`, async (property) => {
       const article = {...articleData};
       delete article[property];
       const res = await request(server)
@@ -118,7 +118,7 @@ describe(`Articles API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When POST article with invalid title when length is less then 30 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When POST article with invalid title when length is less then 30 status code should be 400`, async () => {
       const article = {...articleData};
       article.title = getRandomString(AVAILABLE_SYMBOLS, 29);
       const res = await request(server)
@@ -128,7 +128,7 @@ describe(`Articles API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When POST article with valid title when length is equal 30 status code should be ${HttpCodes.CREATED}`, async () => {
+    test(`When POST article with valid title when length is equal 30 status code should be 201`, async () => {
       const article = {...articleData};
       article.title = getRandomString(AVAILABLE_SYMBOLS, 30);
       const res = await request(server)
@@ -138,7 +138,7 @@ describe(`Articles API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
 
-    test(`When POST article with invalid title when length is great then 250 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When POST article with invalid title when length is great then 250 status code should be 400`, async () => {
       const article = {...articleData};
       article.title = getRandomString(AVAILABLE_SYMBOLS, 251);
       const res = await request(server)
@@ -148,7 +148,7 @@ describe(`Articles API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When POST article with valid title when length is equal 250 status code should be ${HttpCodes.CREATED}`, async () => {
+    test(`When POST article with valid title when length is equal 250 status code should be 201`, async () => {
       const article = {...articleData};
       article.title = getRandomString(AVAILABLE_SYMBOLS, 250);
       const res = await request(server)
@@ -158,7 +158,7 @@ describe(`Articles API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
 
-    test(`When POST article with invalid announce when length is less then 30 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When POST article with invalid announce when length is less then 30 status code should be 400`, async () => {
       const article = {...articleData};
       article.announce = getRandomString(AVAILABLE_SYMBOLS, 29);
       const res = await request(server)
@@ -168,7 +168,7 @@ describe(`Articles API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When POST article with valid announce when length is equal 30 status code should be ${HttpCodes.CREATED}`, async () => {
+    test(`When POST article with valid announce when length is equal 30 status code should be 201`, async () => {
       const article = {...articleData};
       article.announce = getRandomString(AVAILABLE_SYMBOLS, 30);
       const res = await request(server)
@@ -178,7 +178,7 @@ describe(`Articles API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
 
-    test(`When POST article with invalid announce when length is great then 250 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When POST article with invalid announce when length is great then 250 status code should be 400`, async () => {
       const article = {...articleData};
       article.announce = getRandomString(AVAILABLE_SYMBOLS, 251);
       const res = await request(server)
@@ -188,7 +188,7 @@ describe(`Articles API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When POST article with valid announce when length is equal 250 status code should be ${HttpCodes.CREATED}`, async () => {
+    test(`When POST article with valid announce when length is equal 250 status code should be 201`, async () => {
       const article = {...articleData};
       article.announce = getRandomString(AVAILABLE_SYMBOLS, 250);
       const res = await request(server)
@@ -198,7 +198,7 @@ describe(`Articles API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
 
-    test(`When POST article with invalid text when length is great then 1000 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When POST article with invalid text when length is great then 1000 status code should be 400`, async () => {
       const article = {...articleData};
       article.text = getRandomString(AVAILABLE_SYMBOLS, 1001);
       const res = await request(server)
@@ -208,7 +208,7 @@ describe(`Articles API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When POST article with valid text when length is equal 1000 status code should be ${HttpCodes.CREATED}`, async () => {
+    test(`When POST article with valid text when length is equal 1000 status code should be 201`, async () => {
       const article = {...articleData};
       article.text = getRandomString(AVAILABLE_SYMBOLS, 1000);
       const res = await request(server)
@@ -218,7 +218,7 @@ describe(`Articles API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
 
-    test(`When POST article with valid image extension status code should be ${HttpCodes.CREATED}`, async () => {
+    test(`When POST article with valid image extension status code should be 201`, async () => {
       const article = {...articleData};
       article.image = `123.png`;
       const resWithPng = await request(server)
@@ -234,7 +234,7 @@ describe(`Articles API end-points`, () => {
       expect(resWithJpg.statusCode).toBe(HttpCodes.CREATED);
     });
 
-    test(`When POST article with invalid image extension status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When POST article with invalid image extension status code should be 400`, async () => {
       const article = {...articleData};
       article.image = `123.pmng`;
       const res = await request(server)
@@ -244,7 +244,7 @@ describe(`Articles API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When POST article with invalid date format status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When POST article with invalid date format status code should be 400`, async () => {
       const article = {...articleData};
       article.date = `10-09-2020`;
       const res = await request(server)
@@ -254,14 +254,14 @@ describe(`Articles API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When POST article without access token status code should be ${HttpCodes.UNAUTHORIZED}`, async () => {
+    test(`When POST article without access token status code should be 401`, async () => {
       const res = await request(server)
         .post(pathToArticles)
         .send(articleData);
       expect(res.statusCode).toBe(HttpCodes.UNAUTHORIZED);
     });
 
-    test(`When POST article with not admin access token status code should be ${HttpCodes.FORBIDDEN}`, async () => {
+    test(`When POST article with not admin access token status code should be 403`, async () => {
       const res = await request(server)
         .post(pathToArticles)
         .set(`cookie`, userCookie)

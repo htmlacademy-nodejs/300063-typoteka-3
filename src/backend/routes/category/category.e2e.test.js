@@ -83,7 +83,7 @@ describe(`Categories API end-points`, () => {
       category = categoryRes.body;
     });
 
-    test(`When PUT category with invalid categoryId status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When PUT category with invalid categoryId status code should be 400`, async () => {
       const updatedCategoryParams = {
         title: getRandomString(AVAILABLE_SYMBOLS, 10),
       };
@@ -94,7 +94,7 @@ describe(`Categories API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When PUT category with invalid title when length is less then 5 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When PUT category with invalid title when length is less then 5 status code should be 400`, async () => {
       const updatedCategoryParams = {
         title: getRandomString(AVAILABLE_SYMBOLS, 4),
       };
@@ -105,7 +105,7 @@ describe(`Categories API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When PUT category with valid title when length is equal 5 status code should be ${HttpCodes.OK}`, async () => {
+    test(`When PUT category with valid title when length is equal 5 status code should be 200`, async () => {
       const updatedCategoryParams = {
         title: getRandomString(AVAILABLE_SYMBOLS, 5),
       };
@@ -116,7 +116,7 @@ describe(`Categories API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
-    test(`When PUT category with invalid title when length is great then 30 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When PUT category with invalid title when length is great then 30 status code should be 400`, async () => {
       const updatedCategoryParams = {
         title: getRandomString(AVAILABLE_SYMBOLS, 31),
       };
@@ -127,7 +127,7 @@ describe(`Categories API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When PUT category with valid title when length is equal 30 status code should be ${HttpCodes.OK}`, async () => {
+    test(`When PUT category with valid title when length is equal 30 status code should be 200`, async () => {
       const updatedCategoryParams = {
         title: getRandomString(AVAILABLE_SYMBOLS, 30),
       };
@@ -138,7 +138,7 @@ describe(`Categories API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
-    test(`When PUT category without admin access token status code should be ${HttpCodes.UNAUTHORIZED}`, async () => {
+    test(`When PUT category without admin access token status code should be 401`, async () => {
       const updatedCategoryParams = {
         title: getRandomString(AVAILABLE_SYMBOLS, 30),
       };
@@ -148,7 +148,7 @@ describe(`Categories API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.UNAUTHORIZED);
     });
 
-    test(`When PUT category with not admin access token status code should be ${HttpCodes.FORBIDDEN}`, async () => {
+    test(`When PUT category with not admin access token status code should be 403`, async () => {
       const updatedCategoryParams = {
         title: getRandomString(AVAILABLE_SYMBOLS, 30),
       };
@@ -175,26 +175,26 @@ describe(`Categories API end-points`, () => {
       category = categoryRes.body;
     });
 
-    test(`When DELETE category with invalid categoryId status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When DELETE category with invalid categoryId status code should be 400`, async () => {
       const res = await request(server)
         .delete(`${pathToCategories}/invalid-category-id`)
         .set(`cookie`, adminCookie);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When DELETE category with valid categoryId status code should be ${HttpCodes.NO_CONTENT}`, async () => {
+    test(`When DELETE category with valid categoryId status code should be 204`, async () => {
       const res = await request(server)
         .delete(`${pathToCategories}/${category.id}`)
         .set(`cookie`, adminCookie);
       expect(res.statusCode).toBe(HttpCodes.NO_CONTENT);
     });
 
-    test(`When DELETE category without access token status code should be ${HttpCodes.UNAUTHORIZED}`, async () => {
+    test(`When DELETE category without access token status code should be 401`, async () => {
       const res = await request(server).delete(`${pathToCategories}/${category.id}`);
       expect(res.statusCode).toBe(HttpCodes.UNAUTHORIZED);
     });
 
-    test(`When DELETE category with not admin access token status code should be ${HttpCodes.FORBIDDEN}`, async () => {
+    test(`When DELETE category with not admin access token status code should be 403`, async () => {
       const res = await request(server)
         .delete(`${pathToCategories}/${category.id}`)
         .set(`cookie`, userCookie);

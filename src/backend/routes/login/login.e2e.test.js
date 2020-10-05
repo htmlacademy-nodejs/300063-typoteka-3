@@ -43,12 +43,12 @@ describe(`Auth API end-points`, () => {
     server = null;
   });
 
-  test(`When POST auth with valid data status code should be ${HttpCodes.OK}`, async () => {
+  test(`When POST auth with valid data status code should be 200`, async () => {
     const authRes = await request(server).post(pathToLogin).send(auth);
     expect(authRes.statusCode).toBe(HttpCodes.OK);
   });
 
-  test(`When POST auth with not exist user status code should be ${HttpCodes.FORBIDDEN}`, async () => {
+  test(`When POST auth with not exist user status code should be 403`, async () => {
     const authData = {
       email: getRandomEmail(100, [`ru`, `com`]),
       password: getRandomString(AVAILABLE_SYMBOLS, 6),
@@ -57,7 +57,7 @@ describe(`Auth API end-points`, () => {
     expect(authRes.statusCode).toBe(HttpCodes.FORBIDDEN);
   });
 
-  test(`When POST auth with invalid password status code should be ${HttpCodes.FORBIDDEN}`, async () => {
+  test(`When POST auth with invalid password status code should be 403`, async () => {
     const authData = {
       ...auth,
       password: getRandomString(AVAILABLE_SYMBOLS, 6),
@@ -68,7 +68,7 @@ describe(`Auth API end-points`, () => {
 
   test.each(
     [`email`, `password`]
-  )(`When POST auth data without %p field status code should be ${HttpCodes.BAD_REQUEST}`, async (propertyName) => {
+  )(`When POST auth data without %p field status code should be 400`, async (propertyName) => {
     const authData = {...auth};
     delete authData[propertyName];
     const authRes = await request(server).post(pathToLogin).send(authData);

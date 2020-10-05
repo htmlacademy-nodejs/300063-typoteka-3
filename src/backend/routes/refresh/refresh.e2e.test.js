@@ -51,7 +51,7 @@ describe(`Auth API end-points`, () => {
     server = null;
   });
 
-  test(`When POST auth with valid data status code should be ${HttpCodes.OK}`, async () => {
+  test(`When POST auth with valid data status code should be 200`, async () => {
     const refreshTokenRes = await request(server)
       .post(pathToRefresh)
       .set('cookie', cookie)
@@ -59,14 +59,14 @@ describe(`Auth API end-points`, () => {
     expect(refreshTokenRes.statusCode).toBe(HttpCodes.OK);
   });
 
-  test(`When POST auth without token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+  test(`When POST auth without token status code should be 400`, async () => {
     const refreshTokenRes = await request(server)
       .post(pathToRefresh)
       .send();
     expect(refreshTokenRes.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 
-  test(`When POST auth with empty token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+  test(`When POST auth with empty token status code should be 400`, async () => {
     const refreshTokenRes = await request(server)
       .post(pathToRefresh)
       .set('cookie', [`refreshToken=; Path=/`])
@@ -74,7 +74,7 @@ describe(`Auth API end-points`, () => {
     expect(refreshTokenRes.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 
-  test(`When POST auth with not exist token status code should be ${HttpCodes.NOT_FOUND}`, async () => {
+  test(`When POST auth with not exist token status code should be 404`, async () => {
     const refreshTokenRes = await request(server)
       .post(pathToRefresh)
       .set('cookie', [`refreshToken=not-exist-token; Path=/`])

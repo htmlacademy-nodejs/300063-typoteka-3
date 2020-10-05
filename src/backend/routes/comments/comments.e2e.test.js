@@ -109,12 +109,12 @@ describe(`Comments API end-points`, () => {
   });
 
   describe(`GET`, () => {
-    test(`When GET comment list status code should be ${HttpCodes.OK}`, async () => {
+    test(`When GET comment list status code should be 200`, async () => {
       const res = await request(server).get(pathToComments);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
-    test(`When GET comment list by article id with not exist article status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When GET comment list by article id with not exist article status code should be 400`, async () => {
       await request(server)
         .delete(`${pathToArticles}/${article.id}`)
         .set(`cookie`, adminCookie)
@@ -123,7 +123,7 @@ describe(`Comments API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When GET comment list with limit status code should be ${HttpCodes.OK}`, async () => {
+    test(`When GET comment list with limit status code should be 200`, async () => {
       const res = await request(server).get(`${pathToComments}?limit=${commentLimit}`);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
@@ -136,7 +136,7 @@ describe(`Comments API end-points`, () => {
   });
 
   describe(`POST`, () => {
-    test(`When POST article comment status code should be ${HttpCodes.CREATED}`, async () => {
+    test(`When POST article comment status code should be 201`, async () => {
       const comment = {
         ...commentData,
         articleId: article.id,
@@ -148,7 +148,7 @@ describe(`Comments API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
 
-    test(`When POST article comment without "text" property should have ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When POST article comment without "text" property should have 400`, async () => {
       const comment = {
         ...commentData,
         articleId: article.id,
@@ -175,7 +175,7 @@ describe(`Comments API end-points`, () => {
 
 
 
-    test(`When POST article comment with invalid text when length is less then 20 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When POST article comment with invalid text when length is less then 20 status code should be 400`, async () => {
       const comment = {
         ...commentData,
         articleId: article.id,
@@ -189,7 +189,7 @@ describe(`Comments API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When POST article comment with valid text when length is equal 20 status code should be ${HttpCodes.CREATED}`, async () => {
+    test(`When POST article comment with valid text when length is equal 20 status code should be 201`, async () => {
       const comment = {
         ...commentData,
         articleId: article.id,
@@ -206,7 +206,7 @@ describe(`Comments API end-points`, () => {
 
 
 
-    test(`When POST article comment with invalid text when length is great then 1000 status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+    test(`When POST article comment with invalid text when length is great then 1000 status code should be 400`, async () => {
       const comment = {
         ...commentData,
         articleId: article.id,
@@ -220,7 +220,7 @@ describe(`Comments API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test(`When POST article comment with valid text when length is equal 1000 status code should be ${HttpCodes.CREATED}`, async () => {
+    test(`When POST article comment with valid text when length is equal 1000 status code should be 201`, async () => {
       const comment = {
         ...commentData,
         articleId: article.id,
@@ -233,7 +233,7 @@ describe(`Comments API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
 
-    test(`When POST article comment without access token status code should be ${HttpCodes.UNAUTHORIZED}`, async () => {
+    test(`When POST article comment without access token status code should be 401`, async () => {
       const comment = {
         ...commentData,
         articleId: article.id,
@@ -245,7 +245,7 @@ describe(`Comments API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.UNAUTHORIZED);
     });
 
-    test(`When POST article comment with not admin access token status code should be ${HttpCodes.CREATED}`, async () => {
+    test(`When POST article comment with not admin access token status code should be 201`, async () => {
       const comment = {
         ...commentData,
         articleId: article.id,
@@ -258,7 +258,7 @@ describe(`Comments API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.CREATED);
     });
 
-    test(`When POST article comment with admin access token status code should be ${HttpCodes.CREATED}`, async () => {
+    test(`When POST article comment with admin access token status code should be 201`, async () => {
       const comment = {
         ...commentData,
         articleId: article.id,
