@@ -31,7 +31,7 @@
     "start::frontend": "cross-env LOG_LEVEL=error node -r pino-debug -r dotenv/config ./src/frontend/app.js ./src/frontend/logs/app.log 1> ./src/frontend/logs/info.log 2> ./src/frontend/logs/error.log",
     "start::frontend::dev": "cross-env nodemon -r pino-debug -r dotenv/config ./src/frontend/app.js | ./node_modules/.bin/pino-pretty",
     "start::frontend::debug": "cross-env LOG_LEVEL=debug nodemon -r pino-debug -r dotenv/config ./src/frontend/app.js | ./node_modules/.bin/pino-pretty",
-    "test::common": "jest ./src/backend --setupFiles dotenv/config --verbose --runInBand",
+    "test::common": "jest ./src/common --setupFiles dotenv/config --verbose --runInBand",
     "test::common::dev": "jest ./src/common --setupFiles dotenv/config --verbose --runInBand --watch",
     "eslint": "eslint --ext .js src/"
   },
