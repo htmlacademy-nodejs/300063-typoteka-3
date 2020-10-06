@@ -11,9 +11,18 @@ const {getRandomString} = require(`../../utils`);
 
 
 const salt = +process.env.SALT_ROUND || commonParams.SALT_ROUND;
+const pathToArticles = `/api/articles`;
 const pathToCategories = `/api/categories`;
 const pathToLogin = `/api/user/login`;
 const AVAILABLE_SYMBOLS = `abcdefghijklmnopqrstuvwxyz`;
+const articleData = {
+  title: getRandomString(AVAILABLE_SYMBOLS, 40),
+  image: `123.png`,
+  announce: getRandomString(AVAILABLE_SYMBOLS, 40),
+  text: getRandomString(AVAILABLE_SYMBOLS, 40),
+  categories: [1, 2, 3],
+  date: `2020-09-10`,
+};
 const authAdminParams = {
   email: `admin@mail.ru`,
   password: `123456`,
@@ -73,6 +82,55 @@ describe(`Categories API end-points`, () => {
     test(`When GET categories status code should be 200`, async () => {
       const res = await request(server).get(pathToCategories);
       expect(res.statusCode).toBe(HttpCodes.OK);
+    });
+
+    test(`When GET categories with minArticleCount status code should be 200`, async () => {
+      const res = await request(server).get(`${pathToCategories}?minArticleCount=5`);
+      expect(res.statusCode).toBe(HttpCodes.OK);
+    });
+
+    test(`When GET categories with articleId status code should be 200`, async () => {
+      const categoryRes = await request(server)
+        .post(pathToCategories)
+        .set(`cookie`, adminCookie)
+        .send({
+          title: getRandomString(AVAILABLE_SYMBOLS, 15),
+        });
+      const article = {
+        ...articleData,
+        categories: [categoryRes.body.id],
+      };
+      const articleRes = await request(server)
+        .post(pathToArticles)
+        .set(`cookie`, adminCookie)
+        .send(article);
+      const res = await request(server).get(`${pathToCategories}?articleId=${articleRes.body.id}`);
+      expect(res.statusCode).toBe(HttpCodes.OK);
+    });
+
+    test(`When GET categories with articleId should have categories`, async () => {
+      const categoryRes1 = await request(server)
+        .post(pathToCategories)
+        .set(`cookie`, adminCookie)
+        .send({
+          title: getRandomString(AVAILABLE_SYMBOLS, 15),
+        });
+      const categoryRes2 = await request(server)
+        .post(pathToCategories)
+        .set(`cookie`, adminCookie)
+        .send({
+          title: getRandomString(AVAILABLE_SYMBOLS, 15),
+        });
+      const article = {
+        ...articleData,
+        categories: [categoryRes1.body.id, categoryRes2.body.id],
+      };
+      const articleRes = await request(server)
+        .post(pathToArticles)
+        .set(`cookie`, adminCookie)
+        .send(article);
+      const res = await request(server).get(`${pathToCategories}?articleId=${articleRes.body.id}`);
+      expect(res.body).toHaveLength(2);
     });
   });
 
