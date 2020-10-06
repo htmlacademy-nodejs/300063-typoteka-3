@@ -208,9 +208,32 @@ describe(`App Builder test`, () => {
       expect(testFunction).toBeCalledTimes(1);
     });
 
-    test(`should work without before app middleware when finding route`, async () => {
+    test(`should work without after app middleware when finding route`, async () => {
       const testConfig = {...config};
       delete testConfig.middleware.after;
+      const testFunction = jest.fn();
+      testConfig.routes = [
+        {path: `/`, Component: getComponent(`test`, testFunction)}
+      ];
+      const appContainer = new AppBuilder(testConfig);
+      const app = await appContainer.getInstance();
+      await request(app).get(`/`);
+      expect(testFunction).toBeCalledTimes(1);
+    });
+
+    test(`should call routes app middleware when finding route`, async () => {
+      const testConfig = {...config};
+      const testFunction = jest.fn();
+      testConfig.middleware.routes = [testMiddleware(testFunction)];
+      const appContainer = new AppBuilder(testConfig);
+      const app = await appContainer.getInstance();
+      await request(app).get(`/`);
+      expect(testFunction).toBeCalledTimes(1);
+    });
+
+    test(`should work without routes app middleware when finding route`, async () => {
+      const testConfig = {...config};
+      delete testConfig.middleware.routes;
       const testFunction = jest.fn();
       testConfig.routes = [
         {path: `/`, Component: getComponent(`test`, testFunction)}
@@ -240,8 +263,9 @@ describe(`App Builder test`, () => {
       const testConfig = {...config};
       delete testConfig.routes;
       const appContainer = new AppBuilder(testConfig);
-      const app = await appContainer.getInstance();
-      expect(app).toBeNull();
+      let hasError = false;
+      await appContainer.getInstance().catch(() => hasError = true);
+      expect(hasError).toBeTruthy();
     });
 
     test.each([

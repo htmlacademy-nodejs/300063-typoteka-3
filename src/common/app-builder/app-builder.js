@@ -11,8 +11,7 @@ class AppBuilder {
 
   async getInstance() {
     if (!this._config.routes || this._config.routes === 0) {
-      console.error(`"routes" должен быть в конфигурации`);
-      return null;
+      throw new Error(`"routes" должен быть в конфигурации`);
     }
     if (!this._app) {
       await this._init();
@@ -77,12 +76,9 @@ class AppBuilder {
 
   _initPrefixRouter() {
     const prefix = this._config.prefix ? `/${this._config.prefix}` : ``;
-    let router = this._app;
-    if (prefix) {
-      router = new express.Router();
-      this._app.use(prefix, router);
-    }
-    this._prefixRouter = router;
+    this._prefixRouter = new express.Router();
+    const middleware = this._config.middleware && this._config.middleware.routes || [];
+    this._app.use(prefix, middleware, this._prefixRouter);
   }
 
   _buildRoutes(routes, router = this._prefixRouter) {

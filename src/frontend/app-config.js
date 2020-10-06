@@ -25,11 +25,13 @@ module.exports = {
   ],
   middleware: {
     before: [
+      staticMiddleware(path.resolve(__dirname, process.env.PUBLIC_DIR || frontendParams.DEFAULT_PUBLIC_DIR))
+    ],
+    routes: [
       logger.expressPinoLogger,
       cookieParser(),
       json(),
       debug,
-      staticMiddleware(path.resolve(__dirname, process.env.PUBLIC_DIR || frontendParams.DEFAULT_PUBLIC_DIR)),
       urlencoded({extended: false}),
       initializeLocals,
       decryptTokenDetails,
