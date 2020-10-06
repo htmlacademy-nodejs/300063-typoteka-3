@@ -15,10 +15,16 @@ class MainRoute {
     const page = +req.query.page || frontendParams.FIRST_PAGE;
     const category = req.query.category || null;
 
-    const categories = await this._getCategories();
-    const articles = await this._getArticles({
-      page,
-      category,
+    const categories = await this._getCategories(req);
+    const articles = await articleAdapter.getList({
+      query: {
+        page,
+        category,
+        limit: frontendParams.ONE_PAGE_LIMIT,
+      },
+      headers: {
+        cookie: req.headers.cookie,
+      },
     });
     const hotArticles = await this._getHotArticles();
     const comments = await this._getComments();
@@ -43,19 +49,13 @@ class MainRoute {
   }
 
 
-  async _getCategories() {
+  async _getCategories(req) {
     return await categoryAdapter.getList({
       query: {
         minArticleCount: 1,
       },
-    });
-  }
-
-  async _getArticles(queryParams) {
-    return await articleAdapter.getList({
-      query: {
-        ...queryParams,
-        limit: frontendParams.ONE_PAGE_LIMIT,
+      headers: {
+        cookie: req.headers.cookie,
       },
     });
   }

@@ -15,12 +15,22 @@ class ArticleRoute {
     const {account} = req.locals;
     const {comment: newComment, errorMessages} = this._getQueryParams(req);
     const {articleId} = req.params;
-    const article = await articleAdapter.getItemById(articleId);
+    const article = await articleAdapter.getItemById(articleId, {
+      headers: {
+        cookie: req.headers.cookie,
+      }
+    });
+    if (article.content && article.content.errorMessages) {
+      res.redirect(`/${routeName.NOT_FOUND}`);
+    }
     const comments = await commentAdapter.getList({
-      query: {articleId}
+      query: {articleId},
     });
     const categories = await categoryAdapter.getList({
-      query: {articleId}
+      query: {articleId},
+      headers: {
+        cookie: req.headers.cookie,
+      },
     });
     const content = {
       account,

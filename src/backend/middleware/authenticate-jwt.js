@@ -4,8 +4,8 @@ const HttpCodes = require(`http-status-codes`);
 
 
 module.exports = (req, res, next) => {
-  const {isUnauthorized, account} = req.locals;
-  if (isUnauthorized) {
+  const {tokenData, account} = req.locals;
+  if (!tokenData) {
     res.sendStatus(HttpCodes.UNAUTHORIZED);
     return;
   }

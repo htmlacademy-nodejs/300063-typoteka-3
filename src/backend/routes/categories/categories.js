@@ -3,7 +3,7 @@
 const HttpCodes = require(`http-status-codes`);
 
 const {db, sequelize} = require(`../../db`);
-const {EModelName, ECategoryFieldName, EForeignKey} = require(`../../models`);
+const {EModelName, EArticleFieldName, ECategoryFieldName, EForeignKey} = require(`../../models`);
 const {logger} = require(`../../utils`);
 
 
@@ -27,6 +27,9 @@ class ApiCategories {
         FROM "${EModelName.CATEGORIES}"
         LEFT JOIN "${EModelName.ARTICLE_CATEGORY}"
           ON "${EModelName.ARTICLE_CATEGORY}"."${EForeignKey.CATEGORY_ID}" = "${EModelName.CATEGORIES}"."${ECategoryFieldName.ID}"
+        LEFT JOIN "${EModelName.ARTICLES}"
+          ON "${EModelName.ARTICLE_CATEGORY}"."${EForeignKey.ARTICLE_ID}" = "${EModelName.ARTICLES}"."${EArticleFieldName.ID}"
+          WHERE :isAdmin = 'true' OR "${EModelName.ARTICLES}"."${EArticleFieldName.DATE}" <= NOW()
         GROUP BY "${EModelName.CATEGORIES}"."${ECategoryFieldName.ID}"
         HAVING COUNT("${EModelName.CATEGORIES}"."${ECategoryFieldName.ID}") >= :minArticleCount
       ) AS "articlesCategoryCount"
@@ -41,11 +44,14 @@ class ApiCategories {
 
   async get(req, res) {
     const {minArticleCount = 0, articleId = null} = req.query;
+    const {account} = req.locals;
+    const isAdmin = Boolean(account) && account.isAdmin;
     const categories = await sequelize.query(this._categorySql, {
       type: sequelize.QueryTypes.SELECT,
       replacements: {
         minArticleCount,
         articleId,
+        isAdmin,
       }
     });
     res.status(HttpCodes.OK).send(categories);

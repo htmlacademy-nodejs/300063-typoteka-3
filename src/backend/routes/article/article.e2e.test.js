@@ -396,5 +396,16 @@ describe(`Article ID API end-points`, () => {
         .send(newArticleData);
       expect(res.statusCode).toBe(HttpCodes.FORBIDDEN);
     });
+
+    test(`When PUT article with not existed id status code should be 400`, async () => {
+      await request(server)
+        .delete(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, adminCookie);
+      const res = await request(server)
+        .put(`${pathToArticles}/${article.id}`)
+        .set(`cookie`, adminCookie)
+        .send(newArticleData);
+      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+    });
   });
 });

@@ -2,7 +2,7 @@
 
 module.exports = (req, res, next) => {
   req.locals = {
-    isUnauthorized: true,
+    tokenData: null,
     account: null,
   };
   next();

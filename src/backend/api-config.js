@@ -9,6 +9,7 @@ const {initDb, disconnectDb} = require(`./db`);
 const {
   getAccountById,
   debug,
+  decryptTokenDetails,
   initLocals,
 } = require(`./middleware`);
 const {logger} = require(`./utils`);
@@ -31,6 +32,7 @@ module.exports = {
       express.json(),
       debug,
       initLocals,
+      decryptTokenDetails,
       getAccountById,
     ],
     after: [

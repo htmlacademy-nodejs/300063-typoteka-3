@@ -17,7 +17,6 @@ class ApiArticles {
   async get(req, res) {
     const articles = await this._getArticles(req);
     const articleCount = await this._getArticleCount(req);
-
     res.status(HttpCodes.OK).send({
       list: articles,
       length: articleCount
@@ -51,10 +50,12 @@ class ApiArticles {
 
   async _getArticles(req) {
     const {page = null, limit = null, minCommentCount = null, title = null} = req.query;
+    const {account} = req.locals;
     const category = +req.query.category || null;
     const offset = page && limit && (limit * (page - 1));
     const articlesSql = this._getArticleSql(req);
     const search = title === null ? title : `%${title}%`;
+    const isAdmin = Boolean(account) && account.isAdmin;
     return await sequelize.query(articlesSql, {
       type: sequelize.QueryTypes.SELECT,
       replacements: {
@@ -63,6 +64,7 @@ class ApiArticles {
         category,
         minCommentCount,
         search,
+        isAdmin,
       },
     });
   }
@@ -107,6 +109,7 @@ class ApiArticles {
       WHERE
         (:search IS NULL OR "${EModelName.ARTICLES}"."${EArticleFieldName.TITLE}" ILIKE :search)
         AND (:minCommentCount IS NULL OR "comments"."count" >= :minCommentCount)
+        AND (:isAdmin = 'true' OR "${EModelName.ARTICLES}"."${EArticleFieldName.DATE}" <= NOW())
       GROUP BY "${EModelName.ARTICLES}"."${EArticleFieldName.ID}", "comments"."count"
       ORDER BY "${sort}" DESC
       LIMIT :limit

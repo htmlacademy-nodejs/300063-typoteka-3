@@ -18,8 +18,8 @@ class ArticleAdapter {
     return res.data;
   }
 
-  async getItemById(articleId) {
-    const articleRes = await request.get(`articles/${articleId}`);
+  async getItemById(articleId, params) {
+    const articleRes = await request.get(`articles/${articleId}`, params);
     return this._adaptArticle(articleRes.data);
   }
 

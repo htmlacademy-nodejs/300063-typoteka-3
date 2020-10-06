@@ -38,7 +38,11 @@ class ApiArticle {
       includeIgnoreAttributes: false,
       include: [EModelName.CATEGORIES],
     });
-    res.status(HttpCodes.OK).send(article);
+    if (article) {
+      res.status(HttpCodes.OK).send(article);
+    } else {
+      res.status(HttpCodes.NOT_FOUND).send({errorMessages: [`Публикации с ${articleId} не существует`]});
+    }
     logger.endRequest(req, res);
   }
 
@@ -56,6 +60,11 @@ class ApiArticle {
         EArticleFieldName.DATE,
       ],
     });
+    if (!article) {
+      res.status(HttpCodes.BAD_REQUEST).send({errorMessages: [`Публикации с ${articleId} не существует`]});
+      logger.endRequest(req, res);
+      return;
+    }
     article[EArticleFieldName.TITLE] = title || article[EArticleFieldName.TITLE];
     article[EArticleFieldName.ANNOUNCE] = announce || article[EArticleFieldName.ANNOUNCE];
     article[EArticleFieldName.TEXT] = text || article[EArticleFieldName.TEXT];

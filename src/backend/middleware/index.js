@@ -5,6 +5,7 @@ const authentication = require(`./authenticate`);
 const authenticationJwt = require(`./authenticate-jwt`);
 const checkAdmin = require(`./check-admin`);
 const debug = require(`./debug`);
+const decryptTokenDetails = require(`./decrypt-token-details`);
 const initLocals = require(`./init-locals`);
 const paramsValidator = require(`./params-validator`);
 const schemaValidator = require(`./schema-validator`);
@@ -16,6 +17,7 @@ module.exports = {
   authenticationJwt,
   checkAdmin,
   debug,
+  decryptTokenDetails,
   initLocals,
   paramsValidator,
   schemaValidator,

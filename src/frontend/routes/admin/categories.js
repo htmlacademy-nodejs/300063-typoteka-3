@@ -13,7 +13,11 @@ class CategoriesRoute {
 
   async get(req, res) {
     const {account} = req.locals;
-    const categories = await categoryAdapter.getList();
+    const categories = await categoryAdapter.getList({
+      headers: {
+        cookie: req.headers.cookie,
+      },
+    });
     const {createdCategory, updatedCategory, errorMessages} = this._parseQueryParams(req);
     const content = {
       account,
