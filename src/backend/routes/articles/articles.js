@@ -16,11 +16,15 @@ class ApiArticles {
 
   async get(req, res) {
     const articles = await this._getArticles(req);
-    const articleCount = await this._getArticleCount(req);
-    res.status(HttpCodes.OK).send({
-      list: articles,
-      length: articleCount
-    });
+    if (!articles) {
+      res.status(HttpCodes.BAD_REQUEST).send({errorMessages: [`При задании параметра page нужно указывать limit`]});
+    } else {
+      const articleCount = await this._getArticleCount(req);
+      res.status(HttpCodes.OK).send({
+        list: articles,
+        length: articleCount
+      });
+    }
     logger.endRequest(req, res);
   }
 
@@ -50,6 +54,9 @@ class ApiArticles {
 
   async _getArticles(req) {
     const {page = null, limit = null, minCommentCount = null, title = null} = req.query;
+    if (page && !limit) {
+      return null;
+    }
     const {account} = req.locals;
     const category = +req.query.category || null;
     const offset = page && limit && (limit * (page - 1));
