@@ -86,16 +86,8 @@ describe(`Auth API end-points`, () => {
     expect(logoutRes.statusCode).toBe(HttpCodes.UNAUTHORIZED);
   });
 
-  test(`When POST logout with invalid access token status code should be 403`, async () => {
+  test(`When POST logout with invalid access token status code should be 401`, async () => {
     const newCookies = cookies.map((cookie) => cookie.match(`accessToken`) ? `accessToken=not-exist-token; Path=/` : cookie);
-    const logoutRes = await request(server).post(pathToLogout)
-      .set('cookie', newCookies)
-      .send();
-    expect(logoutRes.statusCode).toBe(HttpCodes.FORBIDDEN);
-  });
-
-  test(`When POST logout without access token status code should be 401`, async () => {
-    const newCookies = cookies.filter((cookie) => !cookie.match(`accessToken`));
     const logoutRes = await request(server).post(pathToLogout)
       .set('cookie', newCookies)
       .send();

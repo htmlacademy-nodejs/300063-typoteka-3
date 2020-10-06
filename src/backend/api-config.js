@@ -4,10 +4,14 @@ const cookieParser = require(`cookie-parser`);
 const express = require(`express`);
 const HttpCodes = require(`http-status-codes`);
 
-const {initDb, disconnectDb} = require(`./db`);
-const {debug} = require(`./middleware`);
-const {logger} = require(`./utils`);
 const apiRoutes = require(`./api-routes`);
+const {initDb, disconnectDb} = require(`./db`);
+const {
+  getAccountById,
+  debug,
+  initLocals,
+} = require(`./middleware`);
+const {logger} = require(`./utils`);
 
 
 module.exports = {
@@ -21,11 +25,13 @@ module.exports = {
     async: [disconnectDb],
   },
   middleware: {
-    before: [
+    routes: [
       cookieParser(),
       logger.expressPinoLogger,
       express.json(),
-      debug
+      debug,
+      initLocals,
+      getAccountById,
     ],
     after: [
       (req, res) => {
