@@ -43,12 +43,12 @@ block content
                       type='text'
                       placeholder='Фотография'
                       name='image'
-                      value=(article.image || ``)
+                      value=(article.image || '')
                       readonly
                     )
                   .form__image-loader.form__image-loader--publication
                     label
-                      input.visually-hidden(type='file' name='picture' value=(article.image ? article.image : ``))
+                      input.visually-hidden(type='file' accept='.png, .jpg' name='picture' value=(article.image || ''))
                       | Обзор
                   button.button.button--transparent(type='button') Удалить
                 .new-publication__checkbox.new-publication__checkbox--auto

@@ -52,17 +52,22 @@ class CategoryRoute {
     const deletedCategoryRes = await categoryAdapter.deleteItem(categoryId, {
       headers: {cookie},
     });
+    const path = this._getPath(deletedCategoryRes, categoryId);
+    res.redirect(path);
+  }
+
+  _getPath(categoryRes, categoryId) {
     let path = `/${routeName.CATEGORIES}`;
-    if (deletedCategoryRes.content && deletedCategoryRes.content.errorMessages) {
+    if (categoryRes.content && categoryRes.content.errorMessages) {
       const query = getQueryString({
         updatedCategory: JSON.stringify({
           id: +categoryId,
         }),
-        errorMessages: JSON.stringify(deletedCategoryRes.content.errorMessages),
+        errorMessages: JSON.stringify(categoryRes.content.errorMessages),
       });
       path = `/${routeName.CATEGORIES}?${query}`;
     }
-    res.redirect(path);
+    return path;
   }
 
   async _sendBadRequestCode(req, res) {

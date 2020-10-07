@@ -2,6 +2,7 @@
 
 const {backendParams} = require(`../../common/params`);
 
+
 const {
   Account,
   Article,
@@ -9,19 +10,18 @@ const {
   Comment,
 } = backendParams.db;
 
-
 module.exports = {
   Article: {
-    MIN_TITLE_LENGTH: `Заголовок должен содержать не меньше ${Article.MIN_TITLE_LENGTH} символов`,
-    MAX_TITLE_LENGTH: `Заголовок должен содержать не больше ${Article.MAX_TITLE_LENGTH} символов`,
+    MIN_TITLE_LENGTH: `Заголовок должен содержать не меньше ${Article.MIN_TITLE_SYMBOL_COUNT} символов`,
+    MAX_TITLE_LENGTH: `Заголовок должен содержать не больше ${Article.MAX_TITLE_SYMBOL_COUNT} символов`,
     TITLE_REQUIRED_FIELD: `Поле заголовка обязательно для заполнения`,
     IMAGE_EXTENSION: `Допускаются только изображения с расширениемя jpg и png`,
     MIN_CATEGORY_ITEMS: `Необходимо выбрать хотя бы 1 категорию`,
-    MIN_ANNOUNCE_LENGTH: `Анонс должен содержать не меньше ${Article.MIN_ANNOUNCE_LENGTH} символов`,
-    MAX_ANNOUNCE_LENGTH: `Анонс должен содержать не больше ${Article.MAX_ANNOUNCE_LENGTH} символов`,
+    MIN_ANNOUNCE_LENGTH: `Анонс должен содержать не меньше ${Article.MIN_ANNOUNCE_SYMBOL_COUNT} символов`,
+    MAX_ANNOUNCE_LENGTH: `Анонс должен содержать не больше ${Article.MAX_ANNOUNCE_SYMBOL_COUNT} символов`,
     ANNOUNCE_REQUIRED_FIELD: `Поле анонса обязателно для заполнения`,
-    MAX_TEXT_LENGTH: `Текст публикации должен содержать не больше ${Article.MAX_TEXT_LENGTH} символов`,
-    MAX_IMAGE_NAME_LENGTH: `Название изображения не может содержать больше ${Article.MAX_IMAGE_NAME_LENGTH} символов`,
+    MAX_TEXT_LENGTH: `Текст публикации должен содержать не больше ${Article.MAX_TEXT_SYMBOL_COUNT} символов`,
+    MAX_IMAGE_NAME_LENGTH: `Название изображения не может содержать больше ${Article.MAX_IMAGE_NAME_SYMBOL_COUNT} символов`,
     DATE_FORMAT: `Укажите дату согласно стандарту ISO 8601`,
     DATE_REQUIRED: `Выберите дату публикации`,
   },

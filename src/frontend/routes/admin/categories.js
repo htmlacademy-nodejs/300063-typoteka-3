@@ -37,14 +37,7 @@ class CategoriesRoute {
     const createdCategoryRes = await categoryAdapter.addItem(categoryParams, {
       headers: {cookie},
     });
-    let path = `/${routeName.CATEGORIES}`;
-    if (createdCategoryRes.content && createdCategoryRes.content.errorMessages) {
-      const query = getQueryString({
-        createdCategory: JSON.stringify(categoryParams),
-        errorMessages: JSON.stringify(createdCategoryRes.content.errorMessages),
-      });
-      path = `/${routeName.CATEGORIES}?${query}`;
-    }
+    const path = this._getPath(createdCategoryRes, categoryParams);
     res.redirect(path);
     logger.endRequest(req, res);
   }
@@ -56,6 +49,18 @@ class CategoriesRoute {
       updatedCategory: updatedCategory && JSON.parse(updatedCategory),
       errorMessages: errorMessages && JSON.parse(errorMessages),
     };
+  }
+
+  _getPath(createdCategoryRes, categoryParams) {
+    let path = `/${routeName.CATEGORIES}`;
+    if (createdCategoryRes.content && createdCategoryRes.content.errorMessages) {
+      const query = getQueryString({
+        createdCategory: JSON.stringify(categoryParams),
+        errorMessages: JSON.stringify(createdCategoryRes.content.errorMessages),
+      });
+      path = `/${routeName.CATEGORIES}?${query}`;
+    }
+    return path;
   }
 }
 

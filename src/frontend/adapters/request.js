@@ -44,7 +44,6 @@ class Request {
   }
 
   _getErrorStatus(error) {
-    console.log(error.response && error.response);
     return {
       data: {
         status: `failed`,

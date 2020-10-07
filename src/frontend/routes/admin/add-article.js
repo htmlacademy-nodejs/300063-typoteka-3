@@ -39,22 +39,15 @@ class AddArticleRoute {
       text,
       categories: categories ? categories.map((category) => +category) : [],
       image,
-      date: transformDate(date),
+      date,
     };
-    const articleRes = await articleAdapter.addItem(articleParams, {
+    const articleRes = await articleAdapter.addItem({
+      ...articleParams,
+      date: transformDate(date),
+    }, {
       headers: {cookie},
     });
-    let path = `/${routeName.MY}`;
-    if (articleRes.content && articleRes.content.errorMessages) {
-      const query = getQueryString({
-        article: JSON.stringify({
-          ...articleParams,
-          date,
-        }),
-        errorMessages: JSON.stringify(articleRes.content.errorMessages),
-      });
-      path = `/${routeName.ARTICLES}/${routeName.ADD}?${query}`;
-    }
+    const path = this._getPath(articleRes, articleParams);
     res.redirect(path);
     logger.endRequest(req, res);
   }
@@ -72,6 +65,18 @@ class AddArticleRoute {
       errorMessages = JSON.parse(errorMessages);
     }
     return {article, errorMessages};
+  }
+
+  _getPath(articleRes, articleParams) {
+    let path = `/${routeName.MY}`;
+    if (articleRes.content && articleRes.content.errorMessages) {
+      const query = getQueryString({
+        article: JSON.stringify(articleParams),
+        errorMessages: JSON.stringify(articleRes.content.errorMessages),
+      });
+      path = `/${routeName.ARTICLES}/${routeName.ADD}?${query}`;
+    }
+    return path;
   }
 }
 

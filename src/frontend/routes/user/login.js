@@ -28,15 +28,9 @@ class LoginRoute {
       email,
       password,
     });
-    let path = `/${routeName.MAIN}`;
-    if (loginRes.content && loginRes.content.errorMessages) {
-      const query = getQueryString({
-        authParams: JSON.stringify({email}),
-        errorMessages: JSON.stringify(loginRes.content.errorMessages),
-      });
-      path = `/${routeName.LOGIN}?${query}`;
-    } else {
-      res.set(`set-cookie`, loginRes);
+    const path = this._getPath(loginRes, email);
+    if (loginRes.status !== `failed`) {
+      res.set(`set-cookie`, loginRes).redirect(path);
     }
     res.redirect(path);
     logger.endRequest(req, res);
@@ -51,6 +45,18 @@ class LoginRoute {
       errorMessages = JSON.parse(errorMessages);
     }
     return {authParams, errorMessages};
+  }
+
+  _getPath(loginRes, email) {
+    let path = `/${routeName.MAIN}`;
+    if (loginRes.content && loginRes.content.errorMessages) {
+      const query = getQueryString({
+        authParams: JSON.stringify({email}),
+        errorMessages: JSON.stringify(loginRes.content.errorMessages),
+      });
+      path = `/${routeName.LOGIN}?${query}`;
+    }
+    return path;
   }
 }
 

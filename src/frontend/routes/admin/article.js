@@ -79,28 +79,29 @@ class ArticleRoute {
     const {text} = req.body;
     const {cookie} = req.headers;
 
-    const commentRes = await commentAdapter.addItem(
-        {
-          text,
-          articleId,
-          accountId: account.id,
-        },
-        {
-          headers: {cookie},
-        }
-    );
+    const commentData = {
+      text,
+      articleId,
+      accountId: account.id,
+    };
+    const commentRes = await commentAdapter.addItem(commentData, {
+      headers: {cookie},
+    });
+    const path = this._getPath(commentRes, commentData);
+    res.redirect(path);
+  }
 
+  _getPath(commentRes, commentData) {
+    const {text, articleId} = commentData;
     let path = `/${routeName.ARTICLES}/${articleId}#comments`;
     if (commentRes.content && commentRes.content.errorMessages) {
       const query = getQueryString({
-        comment: JSON.stringify({
-          text,
-        }),
+        comment: JSON.stringify({text}),
         errorMessages: JSON.stringify(commentRes.content.errorMessages),
       });
       path = `/${routeName.ARTICLES}/${articleId}?${query}#new-comment`;
     }
-    res.redirect(path);
+    return path;
   }
 }
 

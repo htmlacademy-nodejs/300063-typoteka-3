@@ -56,23 +56,18 @@ class EditArticleRoute {
       text,
       categories: categories && categories.map((category) => +category),
       image,
-      date: transformDate(date),
+      date,
     };
-    const articleRes = await articleAdapter.updateItemById(articleId, articleParams, {
+    const articleRes = await articleAdapter.updateItemById(articleId, {
+      ...articleParams,
+      date: transformDate(date),
+    }, {
       headers: {cookie},
     });
-    let path = `/${routeName.MY}`;
-    if (articleRes.content && articleRes.content.errorMessages) {
-      const query = getQueryString({
-        article: JSON.stringify({
-          ...articleParams,
-          id: articleId,
-          date,
-        }),
-        errorMessages: JSON.stringify(articleRes.content.errorMessages),
-      });
-      path = `/${routeName.ARTICLES}/${routeName.EDIT}/${articleId}?${query}`;
-    }
+    const path = this._getPath(articleRes, {
+      ...articleParams,
+      id: articleId,
+    });
     res.redirect(path);
     logger.endRequest(req, res);
   }
@@ -86,6 +81,19 @@ class EditArticleRoute {
       errorMessages = JSON.parse(errorMessages);
     }
     return {article, errorMessages};
+  }
+
+  _getPath(articleRes, articleParams) {
+    const {id} = articleParams;
+    let path = `/${routeName.MY}`;
+    if (articleRes.content && articleRes.content.errorMessages) {
+      const query = getQueryString({
+        article: JSON.stringify(articleParams),
+        errorMessages: JSON.stringify(articleRes.content.errorMessages),
+      });
+      path = `/${routeName.ARTICLES}/${routeName.EDIT}/${id}?${query}`;
+    }
+    return path;
   }
 }
 
