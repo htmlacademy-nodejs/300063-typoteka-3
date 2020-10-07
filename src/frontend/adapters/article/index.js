@@ -1,6 +1,6 @@
 'use strict';
 
-const articleAdapter = require(`./article.adapter`);
+const articleAdapter = require(`./article-adapter`);
 
 
 module.exports = {
