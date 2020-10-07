@@ -9,6 +9,10 @@ class ArticleRoute {
   constructor() {
     this.get = this.get.bind(this);
     this.post = this.post.bind(this);
+    this._actionMap = new Map([
+      [`delete`, this._deleteArticle.bind(this)],
+      [`addComment`, this._addComment.bind(this)]
+    ]);
   }
 
   async get(req, res) {
@@ -47,26 +51,44 @@ class ArticleRoute {
   }
 
   async post(req, res) {
+    const {action = `addComment`} = req.body;
+    this._actionMap.get(action)(req, res);
+    logger.endRequest(req, res);
+  }
+
+  _getQueryParams(req) {
+    const {comment, errorMessages} = req.query;
+    return {
+      comment: comment && JSON.parse(comment),
+      errorMessages: errorMessages && JSON.parse(errorMessages),
+    };
+  }
+
+  async _deleteArticle(req, res) {
+    const {articleId} = req.params;
+    const {cookie} = req.headers;
+    await articleAdapter.deleteItem(articleId, {
+      headers: {cookie},
+    });
+    res.redirect(`/${routeName.MY}`);
+  }
+
+  async _addComment(req, res) {
     const {account} = req.locals;
     const {articleId} = req.params;
-    const {text, action} = req.body;
+    const {text} = req.body;
     const {cookie} = req.headers;
 
-    const additionalParams = {
-      headers: {cookie},
-    };
-    if (action === `delete`) {
-      await articleAdapter.deleteItem(articleId, additionalParams);
-      res.redirect(`/${routeName.MY}`);
-      return;
-    }
-
-    const commentParams = {
-      text,
-      articleId,
-      accountId: account.id,
-    };
-    const commentRes = await commentAdapter.addItem(commentParams, additionalParams);
+    const commentRes = await commentAdapter.addItem(
+        {
+          text,
+          articleId,
+          accountId: account.id,
+        },
+        {
+          headers: {cookie},
+        }
+    );
 
     let path = `/${routeName.ARTICLES}/${articleId}#comments`;
     if (commentRes.content && commentRes.content.errorMessages) {
@@ -79,15 +101,6 @@ class ArticleRoute {
       path = `/${routeName.ARTICLES}/${articleId}?${query}#new-comment`;
     }
     res.redirect(path);
-    logger.endRequest(req, res);
-  }
-
-  _getQueryParams(req) {
-    const {comment, errorMessages} = req.query;
-    return {
-      comment: comment && JSON.parse(comment),
-      errorMessages: errorMessages && JSON.parse(errorMessages),
-    };
   }
 }
 

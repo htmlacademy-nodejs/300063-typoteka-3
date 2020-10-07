@@ -12,14 +12,10 @@ class CommentRoute {
 
   async post(req, res) {
     const {commentId} = req.params;
-    const {action} = req.body;
     const {cookie} = req.headers;
-
-    if (action === `delete`) {
-      await commentAdapter.deleteItem(commentId, {
-        headers: {cookie},
-      });
-    }
+    await commentAdapter.deleteItem(commentId, {
+      headers: {cookie},
+    });
     res.redirect(`/${routeName.MY}/${routeName.COMMENTS}`);
     logger.endRequest(req, res);
   }

@@ -13,16 +13,13 @@ class CategoryRoute {
     this._actionMap = new Map([
       [`save`, this._updateCategory.bind(this)],
       [`delete`, this._deleteCategory.bind(this)],
+      [`default`, this._sendBadRequestCode.bind(this)]
     ]);
   }
 
   async post(req, res) {
-    const action = this._actionMap.get(req.body.action);
-    if (!action) {
-      res.status(HttpCodes.BAD_REQUEST);
-    } else {
-      action(req, res);
-    }
+    const {action = `default`} = req.body;
+    this._actionMap.get(action)(req, res);
     logger.endRequest(req, res);
   }
 
@@ -66,6 +63,10 @@ class CategoryRoute {
       path = `/${routeName.CATEGORIES}?${query}`;
     }
     res.redirect(path);
+  }
+
+  async _sendBadRequestCode(req, res) {
+    res.sendStatus(HttpCodes.BAD_REQUEST);
   }
 }
 module.exports = CategoryRoute;
