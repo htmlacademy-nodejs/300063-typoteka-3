@@ -37,6 +37,7 @@ const destroy = {
 };
 const middleware = {
   before: [],
+  routes: [],
   after: [],
 };
 const routes = [
