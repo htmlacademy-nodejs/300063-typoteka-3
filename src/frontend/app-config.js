@@ -35,7 +35,7 @@ module.exports = {
       urlencoded({extended: false}),
       initializeLocals,
       decryptTokenDetails,
-      getAccountById
+      getAccountById,
     ],
     after: [
       redirectToNotFound,

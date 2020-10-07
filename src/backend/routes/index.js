@@ -4,6 +4,7 @@ const {ApiArticle} = require(`./article`);
 const {ApiArticles} = require(`./articles`);
 const {ApiCategories} = require(`./categories`);
 const {ApiCategory} = require(`./category`);
+const {ApiCheckServer} = require(`./check-server`);
 const {ApiComments} = require(`./comments`);
 const {ApiComment} = require(`./comment`);
 const {ApiUser} = require(`./user`);
@@ -18,6 +19,7 @@ module.exports = {
   ApiArticles,
   ApiCategories,
   ApiCategory,
+  ApiCheckServer,
   ApiComments,
   ApiComment,
   ApiUser,

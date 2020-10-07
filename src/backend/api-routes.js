@@ -6,6 +6,7 @@ const {
   ApiArticles,
   ApiCategories,
   ApiCategory,
+  ApiCheckServer,
   ApiComments,
   ApiComment,
   ApiUser,
@@ -147,6 +148,15 @@ module.exports = [
         path: routeName.REFRESH,
         Component: ApiRefresh,
       },
+    ],
+  },
+  {
+    path: routeName.CHECK,
+    children: [
+      {
+        path: routeName.SERVER,
+        Component: ApiCheckServer,
+      }
     ],
   }
 ];

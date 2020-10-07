@@ -2,6 +2,7 @@
 
 const getAccountById = require(`./account-by-id`);
 const checkAdmin = require(`./check-admin`);
+const checkServer = require(`./check-server`);
 const debug = require(`./debug.middleware`);
 const decryptTokenDetails = require(`./decrypt-token-details`);
 const redirectToInternalServerError = require(`./internale-server-error`);
@@ -16,6 +17,7 @@ const uploadFile = require(`./upload`);
 module.exports = {
   getAccountById,
   checkAdmin,
+  checkServer,
   debug,
   redirectToInternalServerError,
   initializeLocals,

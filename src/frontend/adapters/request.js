@@ -1,6 +1,7 @@
 'use strict';
 
 const axios = require(`axios`);
+const HttpCodes = require(`http-status-codes`);
 
 const {commonParams} = require(`../../common/params`);
 const {getQueryString} = require(`../utils`);
@@ -43,11 +44,14 @@ class Request {
   }
 
   _getErrorStatus(error) {
+    console.log(error.response && error.response);
     return {
       data: {
         status: `failed`,
-        statusCode: error.response.status,
-        content: error.response.data,
+        statusCode: error.response && error.response.status || HttpCodes.INTERNAL_SERVER_ERROR,
+        content: error.response && error.response.data || {
+          errorMessages: [`Сервер недоступен`],
+        },
       }
     };
   }
