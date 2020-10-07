@@ -13,7 +13,7 @@ class AddArticleRoute {
 
   async get(req, res) {
     const {account} = req.locals;
-    let {article, errorMessages} = this._parseQueryParams(req);
+    const {article, errorMessages} = this._parseQueryParams(req);
     const categories = await categoryAdapter.getList();
     const content = {
       type: `add`,

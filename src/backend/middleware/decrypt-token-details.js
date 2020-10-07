@@ -5,7 +5,7 @@ const jwt = require(`jsonwebtoken`);
 const {commonParams} = require(`../../common/params`);
 
 
-let JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || commonParams.JWT_ACCESS_SECRET_DEFAULT;
+const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || commonParams.JWT_ACCESS_SECRET_DEFAULT;
 
 module.exports = async (req, res, next) => {
   const {accessToken} = req.cookies;

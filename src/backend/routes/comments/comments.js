@@ -21,8 +21,8 @@ class ApiComments {
 
   async get(req, res) {
     const isNotArticleError = await this._checkArticle(req);
-    let status = isNotArticleError ? HttpCodes.OK : HttpCodes.BAD_REQUEST;
-    let content = isNotArticleError
+    const status = isNotArticleError ? HttpCodes.OK : HttpCodes.BAD_REQUEST;
+    const content = isNotArticleError
       ? await this._getComments(req)
       : `Публикации с id ${req.params.articleId} не существует`;
     res.status(status).send(content);
@@ -48,7 +48,7 @@ class ApiComments {
 
   async _checkArticle(req) {
     const {articleId = null} = req.query;
-    let article = articleId && await db.Article.findByPk(articleId);
+    const article = articleId && await db.Article.findByPk(articleId);
     return !articleId || Boolean(article);
   }
 

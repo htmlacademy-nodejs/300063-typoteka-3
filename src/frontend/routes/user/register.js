@@ -53,7 +53,7 @@ class RegisterRoute {
   }
 
   _parseQueryParams(req) {
-    let {user, errorMessages} = req.query;
+    const {user, errorMessages} = req.query;
     return {
       user: user && JSON.parse(user) || {},
       errorMessages: errorMessages && JSON.parse(errorMessages),
