@@ -10,7 +10,7 @@ const {db, initDb} = require(`../../db`);
 const {getRandomString} = require(`../../utils`);
 
 
-const salt = +process.env.SALT_ROUND || commonParams.SALT_ROUND;
+const SALT_ROUND = +process.env.SALT_ROUND || commonParams.SALT_ROUND;
 const PATH_TO_COMMENTS = `/api/comments`;
 const PATH_TO_ARTICLES = `/api/articles`;
 const PATH_TO_LOGIN = `/api/user/login`;
@@ -52,7 +52,7 @@ const createUsers = async () => {
       lastname: getRandomString(AVAILABLE_SYMBOLS, 20),
       email: authAdminParams.email,
       avatar: `test.png`,
-      password: bcrypt.hashSync(authAdminParams.password, salt),
+      password: bcrypt.hashSync(authAdminParams.password, SALT_ROUND),
       isAdmin: true,
     },
     {
@@ -60,7 +60,7 @@ const createUsers = async () => {
       lastname: getRandomString(AVAILABLE_SYMBOLS, 20),
       email: authUserParams.email,
       avatar: `test.png`,
-      password: bcrypt.hashSync(authUserParams.password, salt),
+      password: bcrypt.hashSync(authUserParams.password, SALT_ROUND),
       isAdmin: false,
     },
   ]);

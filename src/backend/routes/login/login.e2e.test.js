@@ -12,9 +12,7 @@ const {getRandomString, getRandomEmail} = require(`../../utils`);
 const PATH_TO_USER = `/api/user`;
 const PATH_TO_LOGIN = `/api/user/login`;
 const AVAILABLE_SYMBOLS = `abcdefghijklmnopqrstuvwxyz`;
-
 const password = getRandomString(AVAILABLE_SYMBOLS, 6);
-
 const userDate = {
   firstname: getRandomString(AVAILABLE_SYMBOLS, 10),
   lastname: getRandomString(AVAILABLE_SYMBOLS, 10),
@@ -23,7 +21,6 @@ const userDate = {
   password,
   repeatedPassword: password,
 };
-
 const auth = {
   email: userDate.email,
   password: userDate.password,
