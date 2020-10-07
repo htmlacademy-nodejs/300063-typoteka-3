@@ -7,6 +7,7 @@ const checkAdmin = require(`./check-admin`);
 const debug = require(`./debug`);
 const decryptTokenDetails = require(`./decrypt-token-details`);
 const initLocals = require(`./init-locals`);
+const notFound = require(`./not-found`);
 const paramsValidator = require(`./params-validator`);
 const schemaValidator = require(`./schema-validator`);
 
@@ -19,6 +20,7 @@ module.exports = {
   debug,
   decryptTokenDetails,
   initLocals,
+  notFound,
   paramsValidator,
   schemaValidator,
 };
