@@ -17,7 +17,8 @@ class RegisterRoute {
       title: `Типотека`,
       user,
       scriptList: [
-        `js/main.js`
+        `js/main.js`,
+        `js/avatar.js`
       ],
       errorMessages,
     };
