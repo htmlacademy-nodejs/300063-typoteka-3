@@ -9,8 +9,8 @@ const {initDb} = require(`../../db`);
 const {getRandomString, getRandomEmail} = require(`../../utils`);
 
 
-const pathToUser = `/api/user`;
-const pathToLogin = `/api/user/login`;
+const PATH_TO_USER = `/api/user`;
+const PATH_TO_LOGIN = `/api/user/login`;
 const pathToLogout = `/api/user/logout`;
 const AVAILABLE_SYMBOLS = `abcdefghijklmnopqrstuvwxyz`;
 
@@ -38,11 +38,11 @@ describe(`Auth API end-points`, () => {
   beforeAll(async () => {
     await initDb(true);
     server = await apiContainer.getInstance();
-    await request(server).post(pathToUser).send(userDate);
+    await request(server).post(PATH_TO_USER).send(userDate);
   });
 
   beforeEach(async () => {
-    const postAuthRes = await request(server).post(pathToLogin).send(auth);
+    const postAuthRes = await request(server).post(PATH_TO_LOGIN).send(auth);
     cookies = postAuthRes.headers[`set-cookie`];
   });
 

@@ -11,8 +11,8 @@ const {getRandomString} = require(`../../utils`);
 
 
 const salt = +process.env.SALT_ROUND || commonParams.SALT_ROUND;
-const pathToCategories = `/api/categories`;
-const pathToLogin = `/api/user/login`;
+const PATH_TO_CATEGORIES = `/api/categories`;
+const PATH_TO_LOGIN = `/api/user/login`;
 const AVAILABLE_SYMBOLS = `abcdefghijklmnopqrstuvwxyz`;
 const authAdminParams = {
   email: `admin@mail.ru`,
@@ -58,9 +58,9 @@ describe(`Categories API end-points`, () => {
   beforeAll(async () => {
     await initTest();
     server = await apiContainer.getInstance();
-    const admin = await request(server).post(pathToLogin).send(authAdminParams);
+    const admin = await request(server).post(PATH_TO_LOGIN).send(authAdminParams);
     adminCookie = admin.headers[`set-cookie`];
-    const user = await request(server).post(pathToLogin).send(authUserParams);
+    const user = await request(server).post(PATH_TO_LOGIN).send(authUserParams);
     userCookie = user.headers[`set-cookie`];
   });
 
@@ -77,7 +77,7 @@ describe(`Categories API end-points`, () => {
 
     beforeAll(async () => {
       const categoryRes = await request(server)
-        .post(pathToCategories)
+        .post(PATH_TO_CATEGORIES)
         .set(`cookie`, adminCookie)
         .send(categoryParams);
       category = categoryRes.body;
@@ -88,7 +88,7 @@ describe(`Categories API end-points`, () => {
         title: getRandomString(AVAILABLE_SYMBOLS, 10),
       };
       const res = await request(server)
-        .put(`${pathToCategories}/invalid-category-id`)
+        .put(`${PATH_TO_CATEGORIES}/invalid-category-id`)
         .set(`cookie`, adminCookie)
         .send(updatedCategoryParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
@@ -99,7 +99,7 @@ describe(`Categories API end-points`, () => {
         title: getRandomString(AVAILABLE_SYMBOLS, 4),
       };
       const res = await request(server)
-        .put(`${pathToCategories}/${category.id}`)
+        .put(`${PATH_TO_CATEGORIES}/${category.id}`)
         .set(`cookie`, adminCookie)
         .send(updatedCategoryParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
@@ -110,7 +110,7 @@ describe(`Categories API end-points`, () => {
         title: getRandomString(AVAILABLE_SYMBOLS, 5),
       };
       const res = await request(server)
-        .put(`${pathToCategories}/${category.id}`)
+        .put(`${PATH_TO_CATEGORIES}/${category.id}`)
         .set(`cookie`, adminCookie)
         .send(updatedCategoryParams);
       expect(res.statusCode).toBe(HttpCodes.OK);
@@ -121,7 +121,7 @@ describe(`Categories API end-points`, () => {
         title: getRandomString(AVAILABLE_SYMBOLS, 31),
       };
       const res = await request(server)
-        .put(`${pathToCategories}/${category.id}`)
+        .put(`${PATH_TO_CATEGORIES}/${category.id}`)
         .set(`cookie`, adminCookie)
         .send(updatedCategoryParams);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
@@ -132,7 +132,7 @@ describe(`Categories API end-points`, () => {
         title: getRandomString(AVAILABLE_SYMBOLS, 30),
       };
       const res = await request(server)
-        .put(`${pathToCategories}/${category.id}`)
+        .put(`${PATH_TO_CATEGORIES}/${category.id}`)
         .set(`cookie`, adminCookie)
         .send(updatedCategoryParams);
       expect(res.statusCode).toBe(HttpCodes.OK);
@@ -143,7 +143,7 @@ describe(`Categories API end-points`, () => {
         title: getRandomString(AVAILABLE_SYMBOLS, 30),
       };
       const res = await request(server)
-        .put(`${pathToCategories}/${category.id}`)
+        .put(`${PATH_TO_CATEGORIES}/${category.id}`)
         .send(updatedCategoryParams);
       expect(res.statusCode).toBe(HttpCodes.UNAUTHORIZED);
     });
@@ -153,7 +153,7 @@ describe(`Categories API end-points`, () => {
         title: getRandomString(AVAILABLE_SYMBOLS, 30),
       };
       const res = await request(server)
-        .put(`${pathToCategories}/${category.id}`)
+        .put(`${PATH_TO_CATEGORIES}/${category.id}`)
         .set(`cookie`, userCookie)
         .send(updatedCategoryParams);
       expect(res.statusCode).toBe(HttpCodes.FORBIDDEN);
@@ -169,7 +169,7 @@ describe(`Categories API end-points`, () => {
 
     beforeAll(async () => {
       const categoryRes = await request(server)
-        .post(pathToCategories)
+        .post(PATH_TO_CATEGORIES)
         .set(`cookie`, adminCookie)
         .send(categoryParams);
       category = categoryRes.body;
@@ -177,26 +177,26 @@ describe(`Categories API end-points`, () => {
 
     test(`When DELETE category with invalid categoryId status code should be 400`, async () => {
       const res = await request(server)
-        .delete(`${pathToCategories}/invalid-category-id`)
+        .delete(`${PATH_TO_CATEGORIES}/invalid-category-id`)
         .set(`cookie`, adminCookie);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
     test(`When DELETE category with valid categoryId status code should be 204`, async () => {
       const res = await request(server)
-        .delete(`${pathToCategories}/${category.id}`)
+        .delete(`${PATH_TO_CATEGORIES}/${category.id}`)
         .set(`cookie`, adminCookie);
       expect(res.statusCode).toBe(HttpCodes.NO_CONTENT);
     });
 
     test(`When DELETE category without access token status code should be 401`, async () => {
-      const res = await request(server).delete(`${pathToCategories}/${category.id}`);
+      const res = await request(server).delete(`${PATH_TO_CATEGORIES}/${category.id}`);
       expect(res.statusCode).toBe(HttpCodes.UNAUTHORIZED);
     });
 
     test(`When DELETE category with not admin access token status code should be 403`, async () => {
       const res = await request(server)
-        .delete(`${pathToCategories}/${category.id}`)
+        .delete(`${PATH_TO_CATEGORIES}/${category.id}`)
         .set(`cookie`, userCookie);
       expect(res.statusCode).toBe(HttpCodes.FORBIDDEN);
     });

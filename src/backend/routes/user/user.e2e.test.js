@@ -8,7 +8,7 @@ const {initDb} = require(`../../db`);
 const {getRandomString, getRandomEmail} = require(`../../utils`);
 
 
-const pathToUser = `/api/user`;
+const PATH_TO_USER = `/api/user`;
 const AVAILABLE_SYMBOLS = `abcdefghijklmnopqrstuvwxyz`;
 
 const getUserDate = () => {
@@ -38,13 +38,13 @@ describe(`User API end-points`, () => {
 
   test(`When GET users status code should be 200`, async () => {
     const userDate = getUserDate();
-    const postUserRes = await request(server).post(pathToUser).send(userDate);
-    const getUsersRes = await request(server).get(`${pathToUser}/${postUserRes.body.id}`).send();
+    const postUserRes = await request(server).post(PATH_TO_USER).send(userDate);
+    const getUsersRes = await request(server).get(`${PATH_TO_USER}/${postUserRes.body.id}`).send();
     expect(getUsersRes.statusCode).toBe(HttpCodes.OK);
   });
 
   test(`When GET user by id status code should be 400`, async () => {
-    const getUsersRes = await request(server).get(`${pathToUser}/invalid-user-id`).send();
+    const getUsersRes = await request(server).get(`${PATH_TO_USER}/invalid-user-id`).send();
     expect(getUsersRes.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 
@@ -52,8 +52,8 @@ describe(`User API end-points`, () => {
     [`id`, `firstname`, `lastname`, `email`, `avatar`, `isAdmin`]
   )(`When GET user by id should return object with %p param`, async (propertyName) => {
     const userDate = getUserDate();
-    const postUserRes = await request(server).post(pathToUser).send(userDate);
-    const getUsersRes = await request(server).get(`${pathToUser}/${postUserRes.body.id}`).send();
+    const postUserRes = await request(server).post(PATH_TO_USER).send(userDate);
+    const getUsersRes = await request(server).get(`${PATH_TO_USER}/${postUserRes.body.id}`).send();
     expect(getUsersRes.body).toHaveProperty(propertyName);
   });
 });

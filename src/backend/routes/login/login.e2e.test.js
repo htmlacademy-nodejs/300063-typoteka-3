@@ -9,8 +9,8 @@ const {initDb} = require(`../../db`);
 const {getRandomString, getRandomEmail} = require(`../../utils`);
 
 
-const pathToUser = `/api/user`;
-const pathToLogin = `/api/user/login`;
+const PATH_TO_USER = `/api/user`;
+const PATH_TO_LOGIN = `/api/user/login`;
 const AVAILABLE_SYMBOLS = `abcdefghijklmnopqrstuvwxyz`;
 
 const password = getRandomString(AVAILABLE_SYMBOLS, 6);
@@ -35,7 +35,7 @@ describe(`Auth API end-points`, () => {
   beforeAll(async () => {
     await initDb(true);
     server = await apiContainer.getInstance();
-    await request(server).post(pathToUser).send(userDate);
+    await request(server).post(PATH_TO_USER).send(userDate);
   });
 
   afterAll(async () => {
@@ -44,7 +44,7 @@ describe(`Auth API end-points`, () => {
   });
 
   test(`When POST auth with valid data status code should be 200`, async () => {
-    const authRes = await request(server).post(pathToLogin).send(auth);
+    const authRes = await request(server).post(PATH_TO_LOGIN).send(auth);
     expect(authRes.statusCode).toBe(HttpCodes.OK);
   });
 
@@ -53,7 +53,7 @@ describe(`Auth API end-points`, () => {
       email: getRandomEmail(100, [`ru`, `com`]),
       password: getRandomString(AVAILABLE_SYMBOLS, 6),
     };
-    const authRes = await request(server).post(pathToLogin).send(authData);
+    const authRes = await request(server).post(PATH_TO_LOGIN).send(authData);
     expect(authRes.statusCode).toBe(HttpCodes.FORBIDDEN);
   });
 
@@ -62,7 +62,7 @@ describe(`Auth API end-points`, () => {
       ...auth,
       password: getRandomString(AVAILABLE_SYMBOLS, 6),
     };
-    const authRes = await request(server).post(pathToLogin).send(authData);
+    const authRes = await request(server).post(PATH_TO_LOGIN).send(authData);
     expect(authRes.statusCode).toBe(HttpCodes.FORBIDDEN);
   });
 
@@ -71,12 +71,12 @@ describe(`Auth API end-points`, () => {
   )(`When POST auth data without %p field status code should be 400`, async (propertyName) => {
     const authData = {...auth};
     delete authData[propertyName];
-    const authRes = await request(server).post(pathToLogin).send(authData);
+    const authRes = await request(server).post(PATH_TO_LOGIN).send(authData);
     expect(authRes.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 
   test.each([`accessToken`, `refreshToken`])(`When POST auth with valid data should set %p cookie`, async (propertyName) => {
-    const authRes = await request(server).post(pathToLogin).send(auth);
+    const authRes = await request(server).post(PATH_TO_LOGIN).send(auth);
     const cookies = authRes.headers[`set-cookie`].map((cookie) => parse(cookie));
     const hasCookie = cookies.some((cookie) => Boolean(cookie[propertyName]));
     expect(hasCookie).toBeTruthy();

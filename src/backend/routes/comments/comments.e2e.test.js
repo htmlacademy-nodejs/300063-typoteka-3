@@ -11,9 +11,9 @@ const {getRandomString} = require(`../../utils`);
 
 
 const salt = +process.env.SALT_ROUND || commonParams.SALT_ROUND;
-const pathToComments = `/api/comments`;
-const pathToArticles = `/api/articles`;
-const pathToLogin = `/api/user/login`;
+const PATH_TO_COMMENTS = `/api/comments`;
+const PATH_TO_ARTICLES = `/api/articles`;
+const PATH_TO_LOGIN = `/api/user/login`;
 const AVAILABLE_SYMBOLS = `abcdefghijklmnopqrstuvwxyz`;
 const commentLimit = 5;
 
@@ -89,15 +89,15 @@ describe(`Comments API end-points`, () => {
   beforeAll(async () => {
     await initTest();
     server = await apiContainer.getInstance();
-    const admin = await request(server).post(pathToLogin).send(authAdminParams);
+    const admin = await request(server).post(PATH_TO_LOGIN).send(authAdminParams);
     adminCookie = admin.headers[`set-cookie`];
-    const user = await request(server).post(pathToLogin).send(authUserParams);
+    const user = await request(server).post(PATH_TO_LOGIN).send(authUserParams);
     userCookie = user.headers[`set-cookie`];
   });
 
   beforeEach(async () => {
     const postArticleResponse = await request(server)
-      .post(pathToArticles)
+      .post(PATH_TO_ARTICLES)
       .set(`cookie`, adminCookie)
       .send(articleData);
     article = postArticleResponse.body;
@@ -110,27 +110,27 @@ describe(`Comments API end-points`, () => {
 
   describe(`GET`, () => {
     test(`When GET comment list status code should be 200`, async () => {
-      const res = await request(server).get(pathToComments);
+      const res = await request(server).get(PATH_TO_COMMENTS);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
     test(`When GET comment list by article id with not exist article status code should be 400`, async () => {
       await request(server)
-        .delete(`${pathToArticles}/${article.id}`)
+        .delete(`${PATH_TO_ARTICLES}/${article.id}`)
         .set(`cookie`, adminCookie)
         .send();
-      const res = await request(server).get(`${pathToComments}?articleId=${article.id}`);
+      const res = await request(server).get(`${PATH_TO_COMMENTS}?articleId=${article.id}`);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
     test(`When GET comment list with limit status code should be 200`, async () => {
-      const res = await request(server).get(`${pathToComments}?limit=${commentLimit}`);
+      const res = await request(server).get(`${PATH_TO_COMMENTS}?limit=${commentLimit}`);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
     test(`When GET comment list with limit should return correct count of comments`, async () => {
       await fillCommentsTable(10);
-      const res = await request(server).get(`${pathToComments}?limit=${commentLimit}`);
+      const res = await request(server).get(`${PATH_TO_COMMENTS}?limit=${commentLimit}`);
       expect(res.body.length).toBe(commentLimit);
     });
   });
@@ -142,7 +142,7 @@ describe(`Comments API end-points`, () => {
         articleId: article.id,
       };
       const res = await request(server)
-        .post(pathToComments)
+        .post(PATH_TO_COMMENTS)
         .set(`cookie`, userCookie)
         .send(comment);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
@@ -155,7 +155,7 @@ describe(`Comments API end-points`, () => {
       };
       delete comment.text;
       const postCommentResponse = await request(server)
-        .post(pathToComments)
+        .post(PATH_TO_COMMENTS)
         .set(`cookie`, userCookie)
         .send(comment);
       expect(postCommentResponse.statusCode).toBe(HttpCodes.BAD_REQUEST);
@@ -167,7 +167,7 @@ describe(`Comments API end-points`, () => {
         articleId: article.id,
       };
       const postCommentResponse = await request(server)
-        .post(pathToComments)
+        .post(PATH_TO_COMMENTS)
         .set(`cookie`, userCookie)
         .send(comment);
       expect(postCommentResponse.body).toHaveProperty(property);
@@ -183,7 +183,7 @@ describe(`Comments API end-points`, () => {
         text: getRandomString(AVAILABLE_SYMBOLS, 19),
       };
       const res = await request(server)
-        .post(pathToComments)
+        .post(PATH_TO_COMMENTS)
         .set(`cookie`, userCookie)
         .send(comment);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
@@ -196,7 +196,7 @@ describe(`Comments API end-points`, () => {
         text: getRandomString(AVAILABLE_SYMBOLS, 20),
       };
       const res = await request(server)
-        .post(pathToComments)
+        .post(PATH_TO_COMMENTS)
         .set(`cookie`, userCookie)
         .send(comment);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
@@ -214,7 +214,7 @@ describe(`Comments API end-points`, () => {
         text: getRandomString(AVAILABLE_SYMBOLS, 1001),
       };
       const res = await request(server)
-        .post(pathToComments)
+        .post(PATH_TO_COMMENTS)
         .set(`cookie`, userCookie)
         .send(comment);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
@@ -227,7 +227,7 @@ describe(`Comments API end-points`, () => {
         text: getRandomString(AVAILABLE_SYMBOLS, 1000),
       };
       const res = await request(server)
-        .post(pathToComments)
+        .post(PATH_TO_COMMENTS)
         .set(`cookie`, userCookie)
         .send(comment);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
@@ -240,7 +240,7 @@ describe(`Comments API end-points`, () => {
         text: getRandomString(AVAILABLE_SYMBOLS, 500),
       };
       const res = await request(server)
-        .post(pathToComments)
+        .post(PATH_TO_COMMENTS)
         .send(comment);
       expect(res.statusCode).toBe(HttpCodes.UNAUTHORIZED);
     });
@@ -252,7 +252,7 @@ describe(`Comments API end-points`, () => {
         text: getRandomString(AVAILABLE_SYMBOLS, 500),
       };
       const res = await request(server)
-        .post(pathToComments)
+        .post(PATH_TO_COMMENTS)
         .set(`cookie`, userCookie)
         .send(comment);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
@@ -265,7 +265,7 @@ describe(`Comments API end-points`, () => {
         text: getRandomString(AVAILABLE_SYMBOLS, 500),
       };
       const res = await request(server)
-        .post(pathToComments)
+        .post(PATH_TO_COMMENTS)
         .set(`cookie`, adminCookie)
         .send(comment);
       expect(res.statusCode).toBe(HttpCodes.CREATED);

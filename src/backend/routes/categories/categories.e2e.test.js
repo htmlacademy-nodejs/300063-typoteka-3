@@ -11,9 +11,9 @@ const {getRandomString} = require(`../../utils`);
 
 
 const salt = +process.env.SALT_ROUND || commonParams.SALT_ROUND;
-const pathToArticles = `/api/articles`;
-const pathToCategories = `/api/categories`;
-const pathToLogin = `/api/user/login`;
+const PATH_TO_ARTICLES = `/api/articles`;
+const PATH_TO_CATEGORIES = `/api/categories`;
+const PATH_TO_LOGIN = `/api/user/login`;
 const AVAILABLE_SYMBOLS = `abcdefghijklmnopqrstuvwxyz`;
 const articleData = {
   title: getRandomString(AVAILABLE_SYMBOLS, 40),
@@ -67,9 +67,9 @@ describe(`Categories API end-points`, () => {
   beforeAll(async () => {
     await initTest();
     server = await apiContainer.getInstance();
-    const admin = await request(server).post(pathToLogin).send(authAdminParams);
+    const admin = await request(server).post(PATH_TO_LOGIN).send(authAdminParams);
     adminCookie = admin.headers[`set-cookie`];
-    const user = await request(server).post(pathToLogin).send(authUserParams);
+    const user = await request(server).post(PATH_TO_LOGIN).send(authUserParams);
     userCookie = user.headers[`set-cookie`];
   });
 
@@ -80,18 +80,18 @@ describe(`Categories API end-points`, () => {
 
   describe(`GET`, () => {
     test(`When GET categories status code should be 200`, async () => {
-      const res = await request(server).get(pathToCategories);
+      const res = await request(server).get(PATH_TO_CATEGORIES);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
     test(`When GET categories with minArticleCount status code should be 200`, async () => {
-      const res = await request(server).get(`${pathToCategories}?minArticleCount=5`);
+      const res = await request(server).get(`${PATH_TO_CATEGORIES}?minArticleCount=5`);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
     test(`When GET categories with articleId status code should be 200`, async () => {
       const categoryRes = await request(server)
-        .post(pathToCategories)
+        .post(PATH_TO_CATEGORIES)
         .set(`cookie`, adminCookie)
         .send({
           title: getRandomString(AVAILABLE_SYMBOLS, 15),
@@ -101,22 +101,22 @@ describe(`Categories API end-points`, () => {
         categories: [categoryRes.body.id],
       };
       const articleRes = await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article);
-      const res = await request(server).get(`${pathToCategories}?articleId=${articleRes.body.id}`);
+      const res = await request(server).get(`${PATH_TO_CATEGORIES}?articleId=${articleRes.body.id}`);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
     test(`When GET categories with articleId should have categories`, async () => {
       const categoryRes1 = await request(server)
-        .post(pathToCategories)
+        .post(PATH_TO_CATEGORIES)
         .set(`cookie`, adminCookie)
         .send({
           title: getRandomString(AVAILABLE_SYMBOLS, 15),
         });
       const categoryRes2 = await request(server)
-        .post(pathToCategories)
+        .post(PATH_TO_CATEGORIES)
         .set(`cookie`, adminCookie)
         .send({
           title: getRandomString(AVAILABLE_SYMBOLS, 15),
@@ -126,10 +126,10 @@ describe(`Categories API end-points`, () => {
         categories: [categoryRes1.body.id, categoryRes2.body.id],
       };
       const articleRes = await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article);
-      const res = await request(server).get(`${pathToCategories}?articleId=${articleRes.body.id}`);
+      const res = await request(server).get(`${PATH_TO_CATEGORIES}?articleId=${articleRes.body.id}`);
       expect(res.body).toHaveLength(2);
     });
   });
@@ -137,7 +137,7 @@ describe(`Categories API end-points`, () => {
   describe(`POST`, () => {
     test(`When POST valid categories status code should be 201`, async () => {
       const res = await request(server)
-        .post(pathToCategories)
+        .post(PATH_TO_CATEGORIES)
         .set(`cookie`, adminCookie)
         .send({title: `test test`});
       expect(res.statusCode).toBe(HttpCodes.CREATED);
@@ -145,7 +145,7 @@ describe(`Categories API end-points`, () => {
 
     test(`When POST empty object status code should be 400`, async () => {
       const res = await request(server)
-        .post(pathToCategories)
+        .post(PATH_TO_CATEGORIES)
         .set(`cookie`, adminCookie)
         .send({});
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
@@ -156,7 +156,7 @@ describe(`Categories API end-points`, () => {
         title: getRandomString(AVAILABLE_SYMBOLS, 4),
       };
       const res = await request(server)
-        .post(pathToCategories)
+        .post(PATH_TO_CATEGORIES)
         .set(`cookie`, adminCookie)
         .send(category);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
@@ -167,7 +167,7 @@ describe(`Categories API end-points`, () => {
         title: getRandomString(AVAILABLE_SYMBOLS, 5),
       };
       const res = await request(server)
-        .post(pathToCategories)
+        .post(PATH_TO_CATEGORIES)
         .set(`cookie`, adminCookie)
         .send(category);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
@@ -178,7 +178,7 @@ describe(`Categories API end-points`, () => {
         title: getRandomString(AVAILABLE_SYMBOLS, 31),
       };
       const res = await request(server)
-        .post(pathToCategories)
+        .post(PATH_TO_CATEGORIES)
         .set(`cookie`, adminCookie)
         .send(category);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
@@ -189,7 +189,7 @@ describe(`Categories API end-points`, () => {
         title: getRandomString(AVAILABLE_SYMBOLS, 30),
       };
       const res = await request(server)
-        .post(pathToCategories)
+        .post(PATH_TO_CATEGORIES)
         .set(`cookie`, adminCookie)
         .send(category);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
@@ -200,7 +200,7 @@ describe(`Categories API end-points`, () => {
         title: getRandomString(AVAILABLE_SYMBOLS, 10),
       };
       const res = await request(server)
-        .post(pathToCategories)
+        .post(PATH_TO_CATEGORIES)
         .send(category);
       expect(res.statusCode).toBe(HttpCodes.UNAUTHORIZED);
     });
@@ -210,7 +210,7 @@ describe(`Categories API end-points`, () => {
         title: getRandomString(AVAILABLE_SYMBOLS, 10),
       };
       const res = await request(server)
-        .post(pathToCategories)
+        .post(PATH_TO_CATEGORIES)
         .set(`cookie`, userCookie)
         .send(category);
       expect(res.statusCode).toBe(HttpCodes.FORBIDDEN);

@@ -11,20 +11,12 @@ const {getRandomString} = require(`../../utils`);
 
 
 const salt = +process.env.SALT_ROUND || commonParams.SALT_ROUND;
-const pathToArticles = `/api/articles`;
-const pathToLogin = `/api/user/login`;
-const pathToCategories = `/api/categories`;
-const pathToComments = `/api/comments`;
+const PATH_TO_ARTICLES = `/api/articles`;
+const PATH_TO_LOGIN = `/api/user/login`;
+const PATH_TO_CATEGORIES = `/api/categories`;
+const PATH_TO_COMMENTS = `/api/comments`;
 const AVAILABLE_SYMBOLS = `abcdefghijklmnopqrstuvwxyz`;
 
-const articleData = {
-  title: `Обзор новейшего смартфона test`,
-  image: `123.png`,
-  announce: `Золотое сечение — соотношение двух величин, гармоническая пропорция.`,
-  text: `Вы можете достичь всего. Стоит только немного постараться и запастись книгами. Это один из лучших рок-музыкантов. Собрать камни бесконечности легко, если вы прирожденный герой.`,
-  categories: [1, 2, 3],
-  date: `2020-09-10`,
-};
 const authAdminParams = {
   email: `admin@mail.ru`,
   password: `123456`,
@@ -84,9 +76,9 @@ describe(`Articles API end-points`, () => {
   beforeAll(async () => {
     await initTest();
     server = await apiContainer.getInstance();
-    const admin = await request(server).post(pathToLogin).send(authAdminParams);
+    const admin = await request(server).post(PATH_TO_LOGIN).send(authAdminParams);
     adminCookie = admin.headers[`set-cookie`];
-    const user = await request(server).post(pathToLogin).send(authUserParams);
+    const user = await request(server).post(PATH_TO_LOGIN).send(authUserParams);
     userCookie = user.headers[`set-cookie`];
   });
 
@@ -97,104 +89,104 @@ describe(`Articles API end-points`, () => {
 
   describe(`GET`, () => {
     test(`When GET article list status code should be 200`, async () => {
-      const res = await request(server).get(pathToArticles);
+      const res = await request(server).get(PATH_TO_ARTICLES);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
     test(`When GET article with title query param status code should be 200`, async () => {
       const article = getArticles(1)[0];
       await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article);
-      const res = await request(server).get(`${pathToArticles}?title=${article.title}`);
+      const res = await request(server).get(`${PATH_TO_ARTICLES}?title=${article.title}`);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
     test(`When GET article with title query param status have greater than 0 publications`, async () => {
       const article = getArticles(1)[0];
       await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article);
-      const res = await request(server).get(`${pathToArticles}?title=${article.title}`);
+      const res = await request(server).get(`${PATH_TO_ARTICLES}?title=${article.title}`);
       expect(res.body.length).toBeGreaterThan(0);
     });
 
     test(`When GET article with limit query param should return specified quantity publications`, async () => {
       await Promise.all(getArticles(10).map((article) => request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article)
       ));
       const limit = 8;
-      const res = await request(server).get(`${pathToArticles}?limit=${limit}`);
+      const res = await request(server).get(`${PATH_TO_ARTICLES}?limit=${limit}`);
       expect(res.body.list).toHaveLength(limit);
     });
 
     test(`When GET article without limit query param status code should be 200`, async () => {
       await Promise.all(getArticles(10).map((article) => request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article)
       ));
-      const res = await request(server).get(pathToArticles);
+      const res = await request(server).get(PATH_TO_ARTICLES);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
     test(`When GET article with page query param but without limit one status code should be 400`, async () => {
-      const res = await request(server).get(`${pathToArticles}?page=${1}`);
+      const res = await request(server).get(`${PATH_TO_ARTICLES}?page=${1}`);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
     test(`When GET article with page and limit query params status code should be 200`, async () => {
       const limit = 8;
-      const res = await request(server).get(`${pathToArticles}?page=${1}&limit=${limit}`);
+      const res = await request(server).get(`${PATH_TO_ARTICLES}?page=${1}&limit=${limit}`);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
     test(`When GET article with page and limit query params should return last publications`, async () => {
       await Promise.all(getArticles(10).map((article) => request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article)
       ));
-      const allArticlesRes = await request(server).get(pathToArticles);
+      const allArticlesRes = await request(server).get(PATH_TO_ARTICLES);
       const limit = 8;
       const lastPage = Math.ceil(allArticlesRes.body.length / limit);
       const countLastArticles = allArticlesRes.body.length % limit;
-      const res = await request(server).get(`${pathToArticles}?page=${countLastArticles !== 0 ? lastPage : lastPage + 1}&limit=${limit}`);
+      const res = await request(server).get(`${PATH_TO_ARTICLES}?page=${countLastArticles !== 0 ? lastPage : lastPage + 1}&limit=${limit}`);
       expect(res.body.list).toHaveLength(countLastArticles);
     });
 
     test(`When GET article with category should return existed publication with specified category`, async () => {
       const articleWithNewCategoryCount = 2;
       const categoryRes = await request(server)
-        .post(pathToCategories)
+        .post(PATH_TO_CATEGORIES)
         .set(`cookie`, adminCookie)
         .send({title: getRandomString(AVAILABLE_SYMBOLS, 15)});
       const newCategoryId = categoryRes.body.id;
       const articlesDate = getArticles(1);
       const articlesDateWithNewCategory = getArticles(articleWithNewCategoryCount, [newCategoryId]);
       const promisifyArticles = [...articlesDate, ...articlesDateWithNewCategory].map((article) => request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article)
       );
       await Promise.all(promisifyArticles);
-      const res = await request(server).get(`${pathToArticles}?category=${newCategoryId}`);
+      const res = await request(server).get(`${PATH_TO_ARTICLES}?category=${newCategoryId}`);
       expect(res.body.list).toHaveLength(articleWithNewCategoryCount);
     });
 
     test(`When GET article with minCommentCount param status code should be 200`, async () => {
-      const res = await request(server).get(`${pathToArticles}?minCommentCount=1`);
+      const res = await request(server).get(`${PATH_TO_ARTICLES}?minCommentCount=1`);
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
     test(`When GET article with minCommentCount param should return publication with comments`, async () => {
       const article = getArticles(1)[0];
       const articleRes = await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article);
       const commentData = {
@@ -203,10 +195,10 @@ describe(`Articles API end-points`, () => {
         text: getRandomString(AVAILABLE_SYMBOLS, 25),
       };
       await request(server)
-        .post(pathToComments)
+        .post(PATH_TO_COMMENTS)
         .set(`cookie`, adminCookie)
         .send(commentData);
-      const res = await request(server).get(`${pathToArticles}?minCommentCount=1`);
+      const res = await request(server).get(`${PATH_TO_ARTICLES}?minCommentCount=1`);
       expect(res.body.list).toHaveLength(1);
     });
   });
@@ -215,28 +207,28 @@ describe(`Articles API end-points`, () => {
     test(`When POST article status code should be 201`, async() => {
       const article = getArticles(1)[0];
       const res = await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
-      await request(server).delete(`${pathToArticles}/${res.body.id}`);
+      await request(server).delete(`${PATH_TO_ARTICLES}/${res.body.id}`);
     });
 
     test.each([`id`, `title`, `image`, `announce`, `text`, `date`, `categories`])(`When POST article should have %p property`, async(property) => {
       const article = getArticles(1)[0];
       const res = await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article);
       expect(res.body).toHaveProperty(property);
-      await request(server).delete(`${pathToArticles}/${res.body.id}`);
+      await request(server).delete(`${PATH_TO_ARTICLES}/${res.body.id}`);
     });
 
     test.each([`title`, `announce`, `categories`, `date`])(`When POST article without %p property status code should be 400`, async (property) => {
       const article = getArticles(1)[0];
       delete article[property];
       const res = await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
@@ -246,7 +238,7 @@ describe(`Articles API end-points`, () => {
       const article = getArticles(1)[0];
       article.title = getRandomString(AVAILABLE_SYMBOLS, 29);
       const res = await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
@@ -256,7 +248,7 @@ describe(`Articles API end-points`, () => {
       const article = getArticles(1)[0];
       article.title = getRandomString(AVAILABLE_SYMBOLS, 30);
       const res = await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
@@ -266,7 +258,7 @@ describe(`Articles API end-points`, () => {
       const article = getArticles(1)[0];
       article.title = getRandomString(AVAILABLE_SYMBOLS, 251);
       const res = await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
@@ -276,7 +268,7 @@ describe(`Articles API end-points`, () => {
       const article = getArticles(1)[0];
       article.title = getRandomString(AVAILABLE_SYMBOLS, 250);
       const res = await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
@@ -286,7 +278,7 @@ describe(`Articles API end-points`, () => {
       const article = getArticles(1)[0];
       article.announce = getRandomString(AVAILABLE_SYMBOLS, 29);
       const res = await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
@@ -296,7 +288,7 @@ describe(`Articles API end-points`, () => {
       const article = getArticles(1)[0];
       article.announce = getRandomString(AVAILABLE_SYMBOLS, 30);
       const res = await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
@@ -306,7 +298,7 @@ describe(`Articles API end-points`, () => {
       const article = getArticles(1)[0];
       article.announce = getRandomString(AVAILABLE_SYMBOLS, 251);
       const res = await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
@@ -316,7 +308,7 @@ describe(`Articles API end-points`, () => {
       const article = getArticles(1)[0];
       article.announce = getRandomString(AVAILABLE_SYMBOLS, 250);
       const res = await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
@@ -326,7 +318,7 @@ describe(`Articles API end-points`, () => {
       const article = getArticles(1)[0];
       article.text = getRandomString(AVAILABLE_SYMBOLS, 1001);
       const res = await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
@@ -336,7 +328,7 @@ describe(`Articles API end-points`, () => {
       const article = getArticles(1)[0];
       article.text = getRandomString(AVAILABLE_SYMBOLS, 1000);
       const res = await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.CREATED);
@@ -346,13 +338,13 @@ describe(`Articles API end-points`, () => {
       const article = getArticles(1)[0];
       article.image = `123.png`;
       const resWithPng = await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article);
       expect(resWithPng.statusCode).toBe(HttpCodes.CREATED);
       article.image = `123.jpg`;
       const resWithJpg = await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article);
       expect(resWithJpg.statusCode).toBe(HttpCodes.CREATED);
@@ -362,7 +354,7 @@ describe(`Articles API end-points`, () => {
       const article = getArticles(1)[0];
       article.image = `123.pmng`;
       const res = await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
@@ -372,7 +364,7 @@ describe(`Articles API end-points`, () => {
       const article = getArticles(1)[0];
       article.date = `10-09-2020`;
       const res = await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, adminCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
@@ -381,7 +373,7 @@ describe(`Articles API end-points`, () => {
     test(`When POST article without access token status code should be 401`, async () => {
       const article = getArticles(1)[0];
       const res = await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.UNAUTHORIZED);
     });
@@ -389,7 +381,7 @@ describe(`Articles API end-points`, () => {
     test(`When POST article with not admin access token status code should be 403`, async () => {
       const article = getArticles(1)[0];
       const res = await request(server)
-        .post(pathToArticles)
+        .post(PATH_TO_ARTICLES)
         .set(`cookie`, userCookie)
         .send(article);
       expect(res.statusCode).toBe(HttpCodes.FORBIDDEN);
