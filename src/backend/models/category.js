@@ -13,7 +13,7 @@ const getCategoryModel = (sequelize, DataTypes) => {
   class Category extends sequelize.Sequelize.Model {}
   Category.init({
     [ECategoryFieldName.TITLE]: {
-      type: new DataTypes.STRING(backendParams.db.category.MAX_TITLE_SYMBOL_COUNT),
+      type: new DataTypes.STRING(backendParams.db.Category.MAX_TITLE_SYMBOL_COUNT),
       allowNull: false,
     },
   }, {

@@ -7,7 +7,7 @@ const {db} = require(`../db`);
 const {middlewareMessages} = require(`../messages`);
 
 
-const {USER_NOT_EXISTS, WRONG_PASSWORD} = middlewareMessages.authenticate;
+const {USER_NOT_EXISTS, WRONG_PASSWORD} = middlewareMessages.Authenticate;
 
 module.exports = async (req, res, next) => {
   const {email, password} = req.body;

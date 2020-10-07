@@ -12,7 +12,7 @@ const getRefreshTokenModel = (sequelize, DataTypes) => {
   class RefreshToken extends sequelize.Sequelize.Model {}
   RefreshToken.init({
     [ERefreshTokenFieldName.TOKEN]: {
-      type: new DataTypes.STRING(backendParams.db.token.MAX_TOKEN_SYMBOL_COUNT)
+      type: new DataTypes.STRING(backendParams.db.Token.MAX_TOKEN_SYMBOL_COUNT)
     }
   }, {
     sequelize,

@@ -7,7 +7,7 @@ const {schemaMessages} = require(`../messages`);
 const {ECommentFieldName, EForeignKey} = require(`../models`);
 
 
-const {MIN_TEXT_SYMBOL_COUNT, MAX_TEXT_SYMBOL_COUNT} = backendParams.db.comment;
+const {MIN_TEXT_SYMBOL_COUNT, MAX_TEXT_SYMBOL_COUNT} = backendParams.db.Comment;
 
 const {
   MIN_TEXT_LENGTH,
