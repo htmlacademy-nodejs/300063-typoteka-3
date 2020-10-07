@@ -16,7 +16,7 @@ class EditArticleRoute {
     let {article, errorMessages} = this._parseQueryParams(req);
     const articleRes = await articleAdapter.getItemById(req.params.articleId);
     if (articleRes.content && articleRes.content.errorMessages) {
-      res.status(article.statusCode).send();
+      res.redirect(`/${routeName.NOT_FOUND}`);
       return;
     }
     const categories = await categoryAdapter.getList();

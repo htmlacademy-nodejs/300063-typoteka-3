@@ -41,7 +41,7 @@ class ApiArticle {
     if (article) {
       res.status(HttpCodes.OK).send(article);
     } else {
-      res.status(HttpCodes.NOT_FOUND).send({errorMessages: [`Публикации с ${articleId} не существует`]});
+      res.status(HttpCodes.NOT_FOUND).send({errorMessages: [`Публикации с ${articleId} id не существует`]});
     }
     logger.endRequest(req, res);
   }
@@ -61,7 +61,7 @@ class ApiArticle {
       ],
     });
     if (!article) {
-      res.status(HttpCodes.BAD_REQUEST).send({errorMessages: [`Публикации с ${articleId} не существует`]});
+      res.status(HttpCodes.BAD_REQUEST).send({errorMessages: [`Публикации с ${articleId} id не существует`]});
       logger.endRequest(req, res);
       return;
     }
@@ -98,7 +98,7 @@ class ApiArticle {
     if (articleDeletedCount > 0) {
       res.status(HttpCodes.NO_CONTENT).send();
     } else {
-      res.status(HttpCodes.BAD_REQUEST).send({message: `Публикации с id ${req.params.articleId} не существует`});
+      res.status(HttpCodes.BAD_REQUEST).send({message: `Публикации с ${req.params.articleId} id не существует`});
     }
     logger.endRequest(req, res);
   }
