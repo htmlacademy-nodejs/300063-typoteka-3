@@ -34,7 +34,7 @@
 * [destroy](#destroy)
 * [settings](#settings)
 * [middleware](#middleware)
-* [routes](#middleware)
+* [routes](#routes)
 
 
 ### <a name="#prefix"></a>prefix
