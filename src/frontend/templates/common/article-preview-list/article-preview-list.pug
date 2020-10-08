@@ -2,7 +2,7 @@ section.main-page__list.preview
   h2.visually-hidden Список превью статей
   ul.preview__list
     each article in articles
-      li.preview__item(class= !article.image && 'preview__item--noimage' || '')
+      li.preview__item(class= !article.image && 'preview__item--noimage' || '' data-id=article.id)
         ul.preview__breadcrumbs
           each category in article.categories
             li.preview__breadcrumbs-item
@@ -18,7 +18,7 @@ section.main-page__list.preview
           | Комментарии
           span.preview__cloud
           |
-          b.preview__comment-count  #{article.commentCount}
+          b.preview__comment-count= article.commentCount
   .preview__toggle-wrapper
     if paginator.end > 1
       include ../pagination

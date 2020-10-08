@@ -2,6 +2,7 @@
 
 const {articleAdapter, commentAdapter, categoryAdapter} = require(`../../adapters`);
 const routeName = require(`../../route-name`);
+const {appSocket, EntityName} = require(`../../socket`);
 const {getQueryString, logger} = require(`../../utils`);
 
 
@@ -88,6 +89,10 @@ class ArticleRoute {
       headers: {cookie},
     });
     const path = this._getPath(commentRes, commentData);
+    if (!commentRes.content || !commentRes.content.errorMessages) {
+      await appSocket.update(req, res, EntityName.COMMENTS);
+      await appSocket.update(req, res, EntityName.ARTICLES);
+    }
     res.redirect(path);
   }
 

@@ -43,6 +43,11 @@ class MainRoute {
       hotArticles: hotArticles.list,
       comments,
       paginator,
+      scriptList: [
+        `https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js`,
+        `js/hot-block.js`,
+        `js/preview-article-list.js`,
+      ],
     };
     res.render(`pages/main`, content);
     logger.endRequest(req, res);
