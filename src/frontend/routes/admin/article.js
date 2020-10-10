@@ -72,9 +72,16 @@ class ArticleRoute {
   async _deleteArticle(req, res) {
     const {articleId} = req.params;
     const {cookie} = req.headers;
-    await articleAdapter.deleteItem(articleId, {
+    const deletedArticleRes = await articleAdapter.deleteItem(articleId, {
       headers: {cookie},
     });
+    if (!deletedArticleRes.content || !deletedArticleRes.content.errorMessages) {
+      appSocket.update(req, {
+        name: EntityName.ARTICLES,
+        data: {articleId},
+      });
+      appSocket.update(EntityName.COMMENTS, {name: EntityName.COMMENTS});
+    }
     res.redirect(`/${routeName.MY}`);
   }
 

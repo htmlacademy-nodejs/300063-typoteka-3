@@ -21,24 +21,24 @@ class AppSocket {
   }
 
   create(req, entityParams) {
-    const {name, room, data} = entityParams;
+    const {name, data} = entityParams;
     this._entityMap
       .get(name)
-      .create(req, {room, data});
+      .create(req, {data});
   }
 
   update(req, entityParams) {
-    const {name, room, data} = entityParams;
+    const {name, data} = entityParams;
     this._entityMap
       .get(name)
-      .update(req, {room, data});
+      .update(req, {data});
   }
 
   delete(req, entityParams) {
-    const {name, room, data} = entityParams;
+    const {name, data} = entityParams;
     this._entityMap
       .get(name)
-      .delete(req, {room, data});
+      .delete(req, {data});
   }
 }
 
