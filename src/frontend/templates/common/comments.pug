@@ -3,7 +3,7 @@
     h2#comments.comments__title.title.title--middle= comments.length !== 0 ? `Комментарии` : `Комментарии отсутствуют`
     ul.comments__list
       each comment in comments
-        li.comments__comment
+        li.comments__comment(data-comment-id=comment.id)
           img.comments__avatar.avatar(src=`img/${comment.account.avatar || `icons/smile.svg`}` alt='аватар пользователя')
           .comments__text
             .comments__head

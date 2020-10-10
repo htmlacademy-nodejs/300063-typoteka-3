@@ -2,8 +2,8 @@
 
 const HttpCodes = require(`http-status-codes`);
 
-const {db, sequelize} = require(`../../db`);
-const {EArticleFieldName, ECategoryFieldName, EForeignKey, EModelName} = require(`../../models`);
+const {db} = require(`../../db`);
+const {EArticleFieldName, ECategoryFieldName, EModelName} = require(`../../models`);
 const {logger} = require(`../../utils`);
 
 
@@ -17,10 +17,6 @@ class ApiArticle {
   async get(req, res) {
     const {articleId} = req.params;
     const article = await db.Article.findByPk(articleId, {
-      group: [
-        [EModelName.ARTICLES, EArticleFieldName.ID].join(`.`),
-        [EModelName.CATEGORIES, EModelName.ARTICLE_CATEGORY, EForeignKey.ARTICLE_ID].join(`.`),
-      ],
       attributes: [
         EArticleFieldName.ID,
         EArticleFieldName.TITLE,
@@ -28,18 +24,31 @@ class ApiArticle {
         EArticleFieldName.TEXT,
         EArticleFieldName.IMAGE,
         EArticleFieldName.DATE,
-        [sequelize.Sequelize.fn(
-            `ARRAY_AGG`,
-            sequelize.Sequelize.col(
-                [EModelName.CATEGORIES, ECategoryFieldName.TITLE].join(`.`)
-            )
-        ), `categories`]
       ],
-      includeIgnoreAttributes: false,
-      include: [EModelName.CATEGORIES],
+      include: [{
+        attributes: [
+          ECategoryFieldName.ID,
+          ECategoryFieldName.TITLE
+        ],
+        model: db.Category,
+        as: EModelName.CATEGORIES,
+      }],
+    });
+    const commentCount = await db.Comment.count({
+      where: {articleId},
     });
     if (article) {
-      res.status(HttpCodes.OK).send(article);
+      const createdArticle = {
+        [EArticleFieldName.ID]: article[EArticleFieldName.ID],
+        [EArticleFieldName.TITLE]: article[EArticleFieldName.TITLE],
+        [EArticleFieldName.ANNOUNCE]: article[EArticleFieldName.ANNOUNCE],
+        [EArticleFieldName.TEXT]: article[EArticleFieldName.TEXT],
+        [EArticleFieldName.IMAGE]: article[EArticleFieldName.IMAGE],
+        [EArticleFieldName.DATE]: article[EArticleFieldName.DATE],
+        categories: article[EModelName.CATEGORIES],
+        commentCount,
+      };
+      res.status(HttpCodes.OK).send(createdArticle);
     } else {
       res.status(HttpCodes.NOT_FOUND).send({errorMessages: [`Публикации с ${articleId} id не существует`]});
     }

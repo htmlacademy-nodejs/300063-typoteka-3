@@ -7,26 +7,38 @@ class AppSocket {
   constructor() {
     this._entityMap = new Map([]);
     this.init = this.init.bind(this);
-    this.add = this.add.bind(this);
+    this.addEntity = this.addEntity.bind(this);
     this.update = this.update.bind(this);
   }
 
   init(server) {
-    this.io = socketIo(server);
-    this.io.on(`connection`, (socket) => {
-      this._socket = socket;
-    });
+    this._io = socketIo(server);
   }
 
-  add(name, Entity) {
-    const entity = new Entity();
+  addEntity(name, Entity) {
+    const entity = new Entity(this._io);
     this._entityMap.set(name, entity);
   }
 
-  update(req, res, entityName) {
+  create(req, entityParams) {
+    const {name, room, data} = entityParams;
     this._entityMap
-      .get(entityName)
-      .update(req, res, this.io);
+      .get(name)
+      .create(req, {room, data});
+  }
+
+  update(req, entityParams) {
+    const {name, room, data} = entityParams;
+    this._entityMap
+      .get(name)
+      .update(req, {room, data});
+  }
+
+  delete(req, entityParams) {
+    const {name, room, data} = entityParams;
+    this._entityMap
+      .get(name)
+      .delete(req, {room, data});
   }
 }
 

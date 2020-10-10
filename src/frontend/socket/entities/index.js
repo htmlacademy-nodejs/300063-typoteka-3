@@ -1,10 +1,10 @@
 'use strict';
 
-const initArticleEntity = require(`./article`);
-const initCommentEntity = require(`./comment`);
+const ArticleSocket = require(`./article`);
+const CommentSocket = require(`./comment`);
 
 
 module.exports = {
-  initArticleEntity,
-  initCommentEntity,
+  ArticleSocket,
+  CommentSocket,
 };

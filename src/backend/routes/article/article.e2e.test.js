@@ -103,7 +103,7 @@ describe(`Article ID API end-points`, () => {
       expect(res.statusCode).toBe(HttpCodes.OK);
     });
 
-    test.each([`id`, `title`, `image`, `announce`, `text`, `date`, `categories`])(`When GET exist article by ID should have %p property`, async (property) => {
+    test.each([`id`, `title`, `image`, `announce`, `text`, `date`, `categories`, `commentCount`])(`When GET exist article by ID should have %p property`, async (property) => {
       const res = await request(server).get(`${PATH_TO_ARTICLES}/${article.id}`);
       expect(res.body).toHaveProperty(property);
     });

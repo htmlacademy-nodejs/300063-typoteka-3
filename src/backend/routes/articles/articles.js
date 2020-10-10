@@ -86,7 +86,7 @@ class ApiArticles {
         "${EModelName.ARTICLES}"."${EArticleFieldName.TEXT}",
         "${EModelName.ARTICLES}"."${EArticleFieldName.IMAGE}",
         "${EModelName.ARTICLES}"."${EArticleFieldName.DATE}",
-        ARRAY_AGG("${EModelName.CATEGORIES}"."${ECategoryFieldName.TITLE}") AS "categories",
+        JSON_AGG("${EModelName.CATEGORIES}") AS "categories",
         COALESCE("comments"."count", 0) AS "commentCount"
       FROM "${EModelName.ARTICLES}"
       LEFT JOIN "${EModelName.ARTICLE_CATEGORY}"
@@ -110,7 +110,6 @@ class ApiArticles {
           ON "${EModelName.ARTICLE_CATEGORY}"."${EForeignKey.CATEGORY_ID}" = "${EModelName.CATEGORIES}"."${ECategoryFieldName.ID}"
         WHERE :category IS NULL OR "${EModelName.CATEGORIES}"."${ECategoryFieldName.ID}" = :category
         GROUP BY "${EModelName.ARTICLE_CATEGORY}"."${EForeignKey.ARTICLE_ID}"
-        ORDER BY "${EModelName.ARTICLE_CATEGORY}"."${EForeignKey.ARTICLE_ID}" DESC
       ) AS "filteredArticlesByCategory"
         ON "filteredArticlesByCategory"."${EForeignKey.ARTICLE_ID}" = "${EModelName.ARTICLES}"."${EArticleFieldName.ID}"
       WHERE
@@ -118,7 +117,7 @@ class ApiArticles {
         AND (:minCommentCount IS NULL OR "comments"."count" >= :minCommentCount)
         AND (:isAdmin = 'true' OR "${EModelName.ARTICLES}"."${EArticleFieldName.DATE}" <= NOW())
       GROUP BY "${EModelName.ARTICLES}"."${EArticleFieldName.ID}", "comments"."count"
-      ORDER BY "${sort}" DESC
+      ORDER BY "${sort}" DESC, "${EModelName.ARTICLES}"."${EArticleFieldName.ID}" DESC
       LIMIT :limit
       OFFSET :offset
     `;

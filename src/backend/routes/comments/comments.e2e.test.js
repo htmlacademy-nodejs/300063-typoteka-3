@@ -160,7 +160,7 @@ describe(`Comments API end-points`, () => {
       expect(postCommentResponse.statusCode).toBe(HttpCodes.BAD_REQUEST);
     });
 
-    test.each([`id`, `text`, `date`, `accountId`, `articleId`])(`When POST article comment should have %p property`, async (property) => {
+    test.each([`id`, `text`, `date`, `account`, `article`])(`When POST article comment should have %p property`, async (property) => {
       const comment = {
         ...commentData,
         articleId: article.id,

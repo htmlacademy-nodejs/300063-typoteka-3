@@ -103,39 +103,67 @@ describe(`Comment API end-points`, () => {
     server = null;
   });
 
-  test(`When DELETE existed comment status code should be 204`, async () => {
-    const res = await request(server)
-      .delete(`${PATH_TO_COMMENTS}/${commentId}`)
-      .set(`cookie`, adminCookie);
-    expect(res.statusCode).toBe(HttpCodes.NO_CONTENT);
+  describe(`GET`, () => {
+    test(`When GET existed comment status code should be 200`, async () => {
+      const res = await request(server)
+        .get(`${PATH_TO_COMMENTS}/${commentId}`)
+        .set(`cookie`, userCookie);
+      expect(res.statusCode).toBe(HttpCodes.OK);
+    });
+
+    test(`When GET doesn't exist comment status code should be 400`, async () => {
+      await request(server)
+        .delete(`${PATH_TO_COMMENTS}/${commentId}`)
+        .set(`cookie`, adminCookie);
+      const res = await request(server)
+        .get(`${PATH_TO_COMMENTS}/${commentId}`)
+        .set(`cookie`, userCookie);
+      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+    });
+
+    test.each([`id`, `text`, `date`, `account`, `article`])(`When GET article comment should have %p property`, async (property) => {
+      const postCommentResponse = await request(server)
+        .get(`${PATH_TO_COMMENTS}/${commentId}`)
+        .set(`cookie`, userCookie);
+      expect(postCommentResponse.body).toHaveProperty(property);
+    });
   });
 
-  test(`When DELETE not existed comment status code should be 400`, async () => {
-    await request(server)
-      .delete(`${PATH_TO_COMMENTS}/${commentId}`)
-      .set(`cookie`, adminCookie);
-    const res = await request(server)
-      .delete(`${PATH_TO_COMMENTS}/${commentId}`)
-      .set(`cookie`, adminCookie);
-    expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
-  });
+  describe(`DELETE`, () => {
+    test(`When DELETE existed comment status code should be 204`, async () => {
+      const res = await request(server)
+        .delete(`${PATH_TO_COMMENTS}/${commentId}`)
+        .set(`cookie`, adminCookie);
+      expect(res.statusCode).toBe(HttpCodes.NO_CONTENT);
+    });
 
-  test(`When DELETE invalid comment id status code should be 400`, async () => {
-    const res = await request(server)
-      .delete(`${PATH_TO_COMMENTS}/invalid-id`)
-      .set(`cookie`, adminCookie);
-    expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
-  });
+    test(`When DELETE not existed comment status code should be 400`, async () => {
+      await request(server)
+        .delete(`${PATH_TO_COMMENTS}/${commentId}`)
+        .set(`cookie`, adminCookie);
+      const res = await request(server)
+        .delete(`${PATH_TO_COMMENTS}/${commentId}`)
+        .set(`cookie`, adminCookie);
+      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+    });
 
-  test(`When DELETE comment without access token status code should be 401`, async () => {
-    const res = await request(server).delete(`${PATH_TO_COMMENTS}/${commentId}`);
-    expect(res.statusCode).toBe(HttpCodes.UNAUTHORIZED);
-  });
+    test(`When DELETE invalid comment id status code should be 400`, async () => {
+      const res = await request(server)
+        .delete(`${PATH_TO_COMMENTS}/invalid-id`)
+        .set(`cookie`, adminCookie);
+      expect(res.statusCode).toBe(HttpCodes.BAD_REQUEST);
+    });
 
-  test(`When DELETE comment with not admin access token status code should be 403`, async () => {
-    const res = await request(server)
-      .delete(`${PATH_TO_COMMENTS}/${commentId}`)
-      .set(`cookie`, userCookie);
-    expect(res.statusCode).toBe(HttpCodes.FORBIDDEN);
+    test(`When DELETE comment without access token status code should be 401`, async () => {
+      const res = await request(server).delete(`${PATH_TO_COMMENTS}/${commentId}`);
+      expect(res.statusCode).toBe(HttpCodes.UNAUTHORIZED);
+    });
+
+    test(`When DELETE comment with not admin access token status code should be 403`, async () => {
+      const res = await request(server)
+        .delete(`${PATH_TO_COMMENTS}/${commentId}`)
+        .set(`cookie`, userCookie);
+      expect(res.statusCode).toBe(HttpCodes.FORBIDDEN);
+    });
   });
 });

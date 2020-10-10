@@ -2,23 +2,33 @@
 
 const {frontendParams} = require(`../../../common/params`);
 const {commentAdapter} = require(`../../adapters`);
-const {appSocket} = require(`../socket`);
-const EntityName = require(`../entity-name`);
 
 
 const CommentSocketEvent = {
-  HOT_ARTICLES: `hot-articles`,
+  CREATE_COMMENT: `create-comment`,
+  DELETE_COMMENT: `delete-comment`,
   LAST_COMMENTS: `last-comments`,
 };
 
-class Comment {
-  constructor() {
-    this.update = this.update.bind(this);
+class CommentSocket {
+  constructor(io) {
+    this._io = io;
+    this.create = this.create.bind(this);
   }
 
-  async update(req, res, socket) {
+  async create(req, params) {
+    const {data} = params;
+    this._io.emit(CommentSocketEvent.CREATE_COMMENT, data);
+  }
+
+  async update() {
     const lastComments = await this._getLastComments();
-    socket.emit(CommentSocketEvent.LAST_COMMENTS, lastComments);
+    this._io.emit(CommentSocketEvent.LAST_COMMENTS, lastComments);
+  }
+
+  async delete(req, params) {
+    const {data} = params;
+    this._io.emit(CommentSocketEvent.DELETE_COMMENT, data);
   }
 
   async _getLastComments() {
@@ -36,6 +46,4 @@ class Comment {
   }
 }
 
-module.exports = () => {
-  appSocket.add(EntityName.COMMENTS, Comment);
-};
+module.exports = CommentSocket;

@@ -15,6 +15,10 @@ class CommentsRoute {
     const content = {
       account,
       commentList,
+      scriptList: [
+        `js/socket.io.js`,
+        `js/comments.js`
+      ],
     };
     res.render(`pages/my/comments`, content);
     logger.endRequest(req, res);

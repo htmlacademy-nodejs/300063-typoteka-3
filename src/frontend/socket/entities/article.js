@@ -1,9 +1,7 @@
 'use strict';
 
 const {frontendParams} = require(`../../../common/params`);
-const {articleAdapter, commentAdapter} = require(`../../adapters`);
-const {appSocket} = require(`../socket`);
-const EntityName = require(`../entity-name`);
+const {articleAdapter} = require(`../../adapters`);
 
 
 const ArticleSocketEvent = {
@@ -11,37 +9,26 @@ const ArticleSocketEvent = {
   HOT_ARTICLES: `hot-articles`,
 };
 
-class Article {
-  constructor() {
+class ArticleSocket {
+  constructor(socket) {
+    this._socket = socket;
     this.update = this.update.bind(this);
   }
 
-  async update(req, res, socket) {
-    const article = await this._getArticle(req);
-    const commentCount = await this._getArticleCommentCount(req);
+  async update(req, params) {
+    const article = await this._getArticle(req, params);
     const hotArticles = await this._getHotArticles();
-    socket.emit(ArticleSocketEvent.ARTICLES, {
-      ...article,
-      commentCount,
-    });
-    socket.emit(ArticleSocketEvent.HOT_ARTICLES, hotArticles.list);
+    this._socket.emit(ArticleSocketEvent.ARTICLES, article);
+    this._socket.emit(ArticleSocketEvent.HOT_ARTICLES, hotArticles.list);
   }
 
-  async _getArticle(req) {
-    const {articleId} = req.params;
+  async _getArticle(req, params) {
+    const {articleId} = params.data;
     return await articleAdapter.getItemById(articleId, {
       headers: {
         cookie: req.headers.cookie,
       },
     });
-  }
-
-  async _getArticleCommentCount(req) {
-    const {articleId} = req.params;
-    const comments = await commentAdapter.getList({
-      query: {articleId},
-    });
-    return comments.length;
   }
 
   async _getHotArticles() {
@@ -62,6 +49,4 @@ class Article {
   }
 }
 
-module.exports = () => {
-  appSocket.add(EntityName.ARTICLES, Article);
-};
+module.exports = ArticleSocket;

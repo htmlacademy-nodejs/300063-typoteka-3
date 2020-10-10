@@ -43,7 +43,11 @@ class ArticleRoute {
       article,
       categories,
       comments,
-      scriptList: [`js/main.js`],
+      scriptList: [
+        `js/main.js`,
+        `js/socket.io.js`,
+        `js/delete-comment.js`,
+      ],
       errorMessages,
       newComment,
     };
@@ -90,8 +94,15 @@ class ArticleRoute {
     });
     const path = this._getPath(commentRes, commentData);
     if (!commentRes.content || !commentRes.content.errorMessages) {
-      await appSocket.update(req, res, EntityName.COMMENTS);
-      await appSocket.update(req, res, EntityName.ARTICLES);
+      await appSocket.update(req, {name: EntityName.COMMENTS});
+      await appSocket.create(req, {
+        name: EntityName.COMMENTS,
+        data: commentRes,
+      });
+      await appSocket.update(req, {
+        name: EntityName.ARTICLES,
+        data: {articleId},
+      });
     }
     res.redirect(path);
   }

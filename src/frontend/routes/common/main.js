@@ -44,7 +44,7 @@ class MainRoute {
       comments,
       paginator,
       scriptList: [
-        `https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js`,
+        `js/socket.io.js`,
         `js/hot-block.js`,
         `js/preview-article-list.js`,
       ],
