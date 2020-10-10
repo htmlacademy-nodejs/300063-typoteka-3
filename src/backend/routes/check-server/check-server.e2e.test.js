@@ -15,6 +15,11 @@ describe(`Articles API end-points`, () => {
     server = await apiContainer.getInstance();
   });
 
+  afterAll(async () => {
+    await apiContainer.destroyInstance();
+    server = null;
+  });
+
   test(`When GET check status code should be 200`, async () => {
     const checkRes = await request(server).get(pathToCheck);
     expect(checkRes.statusCode).toBe(HttpCodes.OK);
