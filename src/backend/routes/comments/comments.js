@@ -31,17 +31,46 @@ class ApiComments {
 
   async post(req, res) {
     const {text, accountId, articleId} = req.body;
-    const comment = await db.Comment.create({
+    const createdCommentRes = await db.Comment.create({
       [ECommentFieldName.TEXT]: text,
       [EForeignKey.ARTICLE_ID]: articleId,
       [EForeignKey.ACCOUNT_ID]: accountId,
+    });
+
+    const comment = await db.Comment.findByPk(createdCommentRes.id, {
+      attributes: [
+        ECommentFieldName.ID,
+        ECommentFieldName.TEXT,
+        ECommentFieldName.DATE,
+      ],
+      include: [
+        {
+          model: db.Account,
+          as: EModelName.ACCOUNTS,
+          attributes: [
+            EAccountFieldName.ID,
+            EAccountFieldName.FIRSTNAME,
+            EAccountFieldName.LASTNAME,
+            EAccountFieldName.EMAIL,
+            EAccountFieldName.AVATAR
+          ],
+        },
+        {
+          model: db.Article,
+          as: EModelName.ARTICLES,
+          attributes: [
+            EArticleFieldName.ID,
+            EArticleFieldName.TITLE,
+          ],
+        }
+      ],
     });
     res.status(HttpCodes.CREATED).send({
       [ECommentFieldName.ID]: comment[ECommentFieldName.ID],
       [ECommentFieldName.TEXT]: comment[ECommentFieldName.TEXT],
       date: comment[ECommentFieldName.DATE],
-      [EForeignKey.ACCOUNT_ID]: comment[EForeignKey.ACCOUNT_ID],
-      [EForeignKey.ARTICLE_ID]: comment[EForeignKey.ARTICLE_ID],
+      account: comment[EModelName.ACCOUNTS],
+      article: comment[EModelName.ARTICLES],
     });
     logger.endRequest(req, res);
   }

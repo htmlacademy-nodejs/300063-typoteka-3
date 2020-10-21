@@ -6,13 +6,18 @@ const {adaptDate} = require(`../../utils`);
 
 class CommentAdapter {
   async getList(params) {
-    const res = await request.get(`comments`, params);
-    return this._adaptComment(res.data);
+    const commentRes = await request.get(`comments`, params);
+    return commentRes.data.map((comment) => this._adaptComment(comment));
+  }
+
+  async getItemById(commentId, params) {
+    const commentRes = await request.get(`comments/${commentId}`, params);
+    return this._adaptComment(commentRes.data);
   }
 
   async addItem(commentBody, params) {
     const res = await request.post(`comments`, commentBody, params);
-    return res.data;
+    return this._adaptComment(res.data);
   }
 
   async deleteItem(commentId, params) {
@@ -20,11 +25,11 @@ class CommentAdapter {
     return res.data;
   }
 
-  _adaptComment(comments) {
-    return comments.map((comment) => ({
+  _adaptComment(comment) {
+    return {
       ...comment,
       date: adaptDate(comment.date),
-    }));
+    };
   }
 }
 

@@ -2,6 +2,7 @@
 
 const {articleAdapter, commentAdapter, categoryAdapter} = require(`../../adapters`);
 const routeName = require(`../../route-name`);
+const {appSocket, EntityName} = require(`../../socket`);
 const {getQueryString, logger} = require(`../../utils`);
 
 
@@ -42,7 +43,11 @@ class ArticleRoute {
       article,
       categories,
       comments,
-      scriptList: [`js/main.js`],
+      scriptList: [
+        `js/main.js`,
+        `js/socket.io.js`,
+        `js/delete-comment.js`,
+      ],
       errorMessages,
       newComment,
     };
@@ -67,9 +72,16 @@ class ArticleRoute {
   async _deleteArticle(req, res) {
     const {articleId} = req.params;
     const {cookie} = req.headers;
-    await articleAdapter.deleteItem(articleId, {
+    const deletedArticleRes = await articleAdapter.deleteItem(articleId, {
       headers: {cookie},
     });
+    if (!deletedArticleRes.content || !deletedArticleRes.content.errorMessages) {
+      appSocket.update(req, {
+        name: EntityName.ARTICLES,
+        data: {articleId},
+      });
+      appSocket.update(EntityName.COMMENTS, {name: EntityName.COMMENTS});
+    }
     res.redirect(`/${routeName.MY}`);
   }
 
@@ -88,6 +100,17 @@ class ArticleRoute {
       headers: {cookie},
     });
     const path = this._getPath(commentRes, commentData);
+    if (!commentRes.content || !commentRes.content.errorMessages) {
+      await appSocket.update(req, {name: EntityName.COMMENTS});
+      await appSocket.create(req, {
+        name: EntityName.COMMENTS,
+        data: commentRes,
+      });
+      await appSocket.update(req, {
+        name: EntityName.ARTICLES,
+        data: {articleId},
+      });
+    }
     res.redirect(path);
   }
 

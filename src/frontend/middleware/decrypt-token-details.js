@@ -12,14 +12,16 @@ const refreshTokens = async (req, res, next) => {
   const refreshTokenRes = await accountAdapter.refreshToken({
     headers: req.headers,
   });
-  if (refreshTokenRes.status === `failed`) {
-    res.clearCookie(`accessToken`);
-    res.clearCookie(`refreshToken`);
-    next();
+  if (refreshTokenRes.status !== `failed`) {
+    res.set(`set-cookie`, refreshTokenRes);
+    res.redirect(req.originalUrl);
     return;
   }
-  res.set(`set-cookie`, refreshTokenRes);
-  res.redirect(req.originalUrl);
+  if (res.clearCookie) {
+    res.clearCookie(`accessToken`);
+    res.clearCookie(`refreshToken`);
+  }
+  next();
 };
 
 module.exports = async (req, res, next) => {

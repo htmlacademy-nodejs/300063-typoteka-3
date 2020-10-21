@@ -41,6 +41,10 @@ class ArticlesByCategoryRoute {
         categories,
         articles: articles.list,
         paginator,
+        scriptList: [
+          `js/socket.io.js`,
+          `js/preview-article-list.js`
+        ],
       };
       res.render(`pages/main`, content);
     } else {
