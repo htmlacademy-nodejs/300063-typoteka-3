@@ -21,7 +21,7 @@ module.exports = {
   FILE_AVATARS_PATH: `./data/avatars.txt`,
   FILE_IMAGES_PATH: `./data/images.txt`,
   db: {
-    account: {
+    Account: {
       MAX_FIRSTNAME_SYMBOL_COUNT: 50,
       MAX_LASTNAME_SYMBOL_COUNT: 50,
       MAX_EMAIL_SYMBOL_COUNT: 100,
@@ -29,7 +29,7 @@ module.exports = {
       PASSWORD_SYMBOL_COUNT: 72,
       MIN_PASSWORD_SYMBOL_COUNT: 6,
     },
-    article: {
+    Article: {
       MAX_TITLE_SYMBOL_COUNT: 250,
       MIN_TITLE_SYMBOL_COUNT: 30,
       MAX_ANNOUNCE_SYMBOL_COUNT: 250,
@@ -38,14 +38,15 @@ module.exports = {
       MAX_TEXT_SYMBOL_COUNT: 1000,
       MIN_CHOOSE_CATEGORY_ITEMS: 1,
     },
-    category: {
+    Category: {
       MAX_TITLE_SYMBOL_COUNT: 30,
       MIN_TITLE_SYMBOL_COUNT: 5,
     },
-    comment: {
+    Comment: {
+      MIN_TEXT_SYMBOL_COUNT: 20,
       MAX_TEXT_SYMBOL_COUNT: 1000,
     },
-    token: {
+    Token: {
       MAX_TOKEN_SYMBOL_COUNT: 1000,
     }
   },

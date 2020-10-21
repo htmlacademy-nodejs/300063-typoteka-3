@@ -13,23 +13,23 @@ class ArticleAdapter {
     return articles;
   }
 
-  async addItem(params) {
-    const res = await request.post(`articles`, params);
+  async addItem(articleBody, params) {
+    const res = await request.post(`articles`, articleBody, params);
     return res.data;
   }
 
-  async getItemById(articleId) {
-    const articleRes = await request.get(`articles/${articleId}`);
+  async getItemById(articleId, params) {
+    const articleRes = await request.get(`articles/${articleId}`, params);
     return this._adaptArticle(articleRes.data);
   }
 
-  async deleteItem(articleId) {
-    const res = await request.delete(`articles/${articleId}`);
+  async deleteItem(articleId, params) {
+    const res = await request.delete(`articles/${articleId}`, params);
     return res.data;
   }
 
-  async updateItemById(articleId, params) {
-    const res = await request.put(`articles/${articleId}`, params);
+  async updateItemById(articleId, articleBody, params) {
+    const res = await request.put(`articles/${articleId}`, articleBody, params);
     return res.data;
   }
 

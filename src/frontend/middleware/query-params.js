@@ -13,6 +13,7 @@ const getQueryParams = (params, paramNames) => {
   }, {});
 };
 
+
 module.exports = (paramNames) => (req, res, next) => {
   if (req.query.params) {
     const queryParams = getQueryParams(req.query.params, paramNames);

@@ -9,14 +9,11 @@ const {initDb} = require(`../../db`);
 const {getRandomString, getRandomEmail} = require(`../../utils`);
 
 
-const pathToUser = `/api/user`;
-const pathToLogin = `/api/user/login`;
+const PATH_TO_USER = `/api/user`;
+const PATH_TO_LOGIN = `/api/user/login`;
 const pathToLogout = `/api/user/logout`;
 const AVAILABLE_SYMBOLS = `abcdefghijklmnopqrstuvwxyz`;
-
-
 const password = getRandomString(AVAILABLE_SYMBOLS, 6);
-
 const userDate = {
   firstname: getRandomString(AVAILABLE_SYMBOLS, 10),
   lastname: getRandomString(AVAILABLE_SYMBOLS, 10),
@@ -25,7 +22,6 @@ const userDate = {
   password,
   repeatedPassword: password,
 };
-
 const auth = {
   email: userDate.email,
   password: userDate.password,
@@ -38,11 +34,11 @@ describe(`Auth API end-points`, () => {
   beforeAll(async () => {
     await initDb(true);
     server = await apiContainer.getInstance();
-    await request(server).post(pathToUser).send(userDate);
+    await request(server).post(PATH_TO_USER).send(userDate);
   });
 
   beforeEach(async () => {
-    const postAuthRes = await request(server).post(pathToLogin).send(auth);
+    const postAuthRes = await request(server).post(PATH_TO_LOGIN).send(auth);
     cookies = postAuthRes.headers[`set-cookie`];
   });
 
@@ -51,7 +47,7 @@ describe(`Auth API end-points`, () => {
     server = null;
   });
 
-  test(`When POST logout with valid refresh token status code should be ${HttpCodes.NO_CONTENT}`, async () => {
+  test(`When POST logout with valid refresh token status code should be 204`, async () => {
     const logoutRes = await request(server)
       .post(pathToLogout)
       .set('cookie', cookies)
@@ -59,7 +55,7 @@ describe(`Auth API end-points`, () => {
     expect(logoutRes.statusCode).toBe(HttpCodes.NO_CONTENT);
   });
 
-  test(`When POST logout without refresh token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+  test(`When POST logout without refresh token status code should be 400`, async () => {
     const newCookies = cookies.filter((cookie) => !cookie.match(`refreshToken`));
     const logoutRes = await request(server)
       .post(pathToLogout)
@@ -68,7 +64,7 @@ describe(`Auth API end-points`, () => {
     expect(logoutRes.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 
-  test(`When POST logout with empty refresh token status code should be ${HttpCodes.BAD_REQUEST}`, async () => {
+  test(`When POST logout with empty refresh token status code should be 400`, async () => {
     const newCookies = cookies.map((cookie) => cookie.match(`refreshToken`) ? `refreshToken=; Path=/` : cookie);
     const logoutRes = await request(server)
       .post(pathToLogout)
@@ -77,7 +73,7 @@ describe(`Auth API end-points`, () => {
     expect(logoutRes.statusCode).toBe(HttpCodes.BAD_REQUEST);
   });
 
-  test(`When POST logout without access token status code should be ${HttpCodes.UNAUTHORIZED}`, async () => {
+  test(`When POST logout without access token status code should be 401`, async () => {
     const newCookies = cookies.filter((cookie) => !cookie.match(`accessToken`));
     const logoutRes = await request(server)
       .post(pathToLogout)
@@ -86,16 +82,8 @@ describe(`Auth API end-points`, () => {
     expect(logoutRes.statusCode).toBe(HttpCodes.UNAUTHORIZED);
   });
 
-  test(`When POST logout with invalid access token status code should be ${HttpCodes.FORBIDDEN}`, async () => {
+  test(`When POST logout with invalid access token status code should be 401`, async () => {
     const newCookies = cookies.map((cookie) => cookie.match(`accessToken`) ? `accessToken=not-exist-token; Path=/` : cookie);
-    const logoutRes = await request(server).post(pathToLogout)
-      .set('cookie', newCookies)
-      .send();
-    expect(logoutRes.statusCode).toBe(HttpCodes.FORBIDDEN);
-  });
-
-  test(`When POST logout without access token status code should be ${HttpCodes.UNAUTHORIZED}`, async () => {
-    const newCookies = cookies.filter((cookie) => !cookie.match(`accessToken`));
     const logoutRes = await request(server).post(pathToLogout)
       .set('cookie', newCookies)
       .send();

@@ -10,7 +10,7 @@ const {ECategoryFieldName} = require(`../models`);
 const {
   MIN_TITLE_SYMBOL_COUNT,
   MAX_TITLE_SYMBOL_COUNT,
-} = backendParams.db.category;
+} = backendParams.db.Category;
 const {
   REQUIRED_TITLE_FIELD,
   MIN_TITLE_LENGTH,

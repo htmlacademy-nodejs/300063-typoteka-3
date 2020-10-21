@@ -1,6 +1,6 @@
 'use strict';
 
-const accountAdapter = require(`./account.adapter`);
+const accountAdapter = require(`./account-adapter`);
 
 
 module.exports = {

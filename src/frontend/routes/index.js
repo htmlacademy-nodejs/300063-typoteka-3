@@ -2,6 +2,7 @@
 
 const {
   AddArticleRoute,
+  ArticleRoute,
   CategoriesRoute,
   CategoryRoute,
   CommentRoute,
@@ -10,7 +11,6 @@ const {
   PublicationsRoute,
 } = require(`./admin`);
 const {
-  ArticleRoute,
   ArticlesByCategoryRoute,
   MainRoute,
   SearchRoute,

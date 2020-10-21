@@ -1,13 +1,13 @@
 'use strict';
 
 const bcrypt = require(`bcrypt`);
-const httpCodes = require(`http-status-codes`);
+const HttpCodes = require(`http-status-codes`);
 
 const {db} = require(`../db`);
 const {middlewareMessages} = require(`../messages`);
 
 
-const {USER_NOT_EXISTS, WRONG_PASSWORD} = middlewareMessages.authenticate;
+const {USER_NOT_EXISTS, WRONG_PASSWORD} = middlewareMessages.Authenticate;
 
 module.exports = async (req, res, next) => {
   const {email, password} = req.body;
@@ -16,7 +16,7 @@ module.exports = async (req, res, next) => {
     raw: true,
   });
   if (!user) {
-    res.status(httpCodes.FORBIDDEN)
+    res.status(HttpCodes.FORBIDDEN)
       .json({
         errorMessages: [USER_NOT_EXISTS],
       });
@@ -24,7 +24,7 @@ module.exports = async (req, res, next) => {
   }
   const isPasswordCompare = await bcrypt.compare(password, user.password.trim());
   if (!isPasswordCompare) {
-    res.status(httpCodes.FORBIDDEN)
+    res.status(HttpCodes.FORBIDDEN)
       .json({
         errorMessages: [WRONG_PASSWORD],
       });

@@ -15,7 +15,7 @@ const {
   MAX_TEXT_SYMBOL_COUNT,
   MIN_CHOOSE_CATEGORY_ITEMS,
   MAX_IMAGE_NAME_SYMBOL_COUNT,
-} = backendParams.db.article;
+} = backendParams.db.Article;
 
 const {
   MIN_TITLE_LENGTH,

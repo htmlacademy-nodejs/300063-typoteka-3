@@ -6,6 +6,7 @@ const {
   ApiArticles,
   ApiCategories,
   ApiCategory,
+  ApiCheckServer,
   ApiComments,
   ApiComment,
   ApiUser,
@@ -14,7 +15,13 @@ const {
   ApiLogout,
   ApiRefresh,
 } = require(`./routes`);
-const {authentication, authenticationJwt, schemaValidator, paramsValidator} = require(`./middleware`);
+const {
+  authentication,
+  authenticationJwt,
+  checkAdmin,
+  schemaValidator,
+  paramsValidator,
+} = require(`./middleware`);
 const {newArticleSchema, newCategorySchema, newComment, newUser, loginSchema, updatedArticleSchema} = require(`./schemas`);
 const {getRouteParamsValidationSchema} = require(`./utils`);
 
@@ -29,7 +36,11 @@ module.exports = [
     path: routeName.ARTICLES,
     Component: ApiArticles,
     middleware: {
-      post: [schemaValidator(newArticleSchema)],
+      post: [
+        authenticationJwt,
+        checkAdmin,
+        schemaValidator(newArticleSchema)
+      ],
     },
     children: [
       {
@@ -38,10 +49,16 @@ module.exports = [
         middleware: {
           get: [routeArticleIdParamsValidationMiddleware],
           put: [
+            authenticationJwt,
+            checkAdmin,
             routeArticleIdParamsValidationMiddleware,
             schemaValidator(updatedArticleSchema)
           ],
-          delete: [routeArticleIdParamsValidationMiddleware],
+          delete: [
+            authenticationJwt,
+            checkAdmin,
+            routeArticleIdParamsValidationMiddleware
+          ],
         },
       }
     ],
@@ -50,7 +67,11 @@ module.exports = [
     path: routeName.CATEGORIES,
     Component: ApiCategories,
     middleware: {
-      post: [schemaValidator(newCategorySchema)],
+      post: [
+        authenticationJwt,
+        checkAdmin,
+        schemaValidator(newCategorySchema)
+      ],
     },
     children: [
       {
@@ -58,10 +79,16 @@ module.exports = [
         Component: ApiCategory,
         middleware: {
           put: [
+            authenticationJwt,
+            checkAdmin,
             routeCategoryIdParamsValidationMiddleware,
             schemaValidator(newCategorySchema)
           ],
-          delete: [routeCategoryIdParamsValidationMiddleware],
+          delete: [
+            authenticationJwt,
+            checkAdmin,
+            routeCategoryIdParamsValidationMiddleware
+          ],
         }
       }
     ],
@@ -70,14 +97,21 @@ module.exports = [
     path: routeName.COMMENTS,
     Component: ApiComments,
     middleware: {
-      post: [schemaValidator(newComment)],
+      post: [
+        authenticationJwt,
+        schemaValidator(newComment)
+      ],
     },
     children: [
       {
         path: `:commentId`,
         Component: ApiComment,
         middleware: {
-          delete: [routeCommentIdParamsValidationMiddleware]
+          delete: [
+            authenticationJwt,
+            checkAdmin,
+            routeCommentIdParamsValidationMiddleware
+          ],
         }
       }
     ],
@@ -114,6 +148,15 @@ module.exports = [
         path: routeName.REFRESH,
         Component: ApiRefresh,
       },
+    ],
+  },
+  {
+    path: routeName.CHECK,
+    children: [
+      {
+        path: routeName.SERVER,
+        Component: ApiCheckServer,
+      }
     ],
   }
 ];

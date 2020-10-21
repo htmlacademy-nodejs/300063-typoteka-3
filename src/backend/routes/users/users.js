@@ -3,11 +3,12 @@
 const bcrypt = require(`bcrypt`);
 const HttpCodes = require(`http-status-codes`);
 
+const {commonParams} = require(`../../../common/params`);
 const {db} = require(`../../db`);
 const {EAccountFieldName} = require(`../../models`);
 
 
-const salt = 10;
+const SALT_ROUND = +process.env.SALT_ROUND || commonParams.SALT_ROUND;
 
 class ApiUsers {
   constructor() {
@@ -22,7 +23,7 @@ class ApiUsers {
       return;
     }
     const userCount = await db.Account.count();
-    const hash = await bcrypt.hash(password, salt);
+    const hash = await bcrypt.hash(password, SALT_ROUND);
     const user = await db.Account.create({
       [EAccountFieldName.FIRSTNAME]: firstname,
       [EAccountFieldName.LASTNAME]: lastname,

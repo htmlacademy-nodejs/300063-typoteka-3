@@ -4,6 +4,7 @@ const {commentAdapter} = require(`../../adapters`);
 const routeName = require(`../../route-name`);
 const {logger} = require(`../../utils`);
 
+
 class CommentRoute {
   constructor() {
     this.post = this.post.bind(this);
@@ -11,11 +12,10 @@ class CommentRoute {
 
   async post(req, res) {
     const {commentId} = req.params;
-    const {action} = req.body;
-
-    if (action === `delete`) {
-      await commentAdapter.deleteItem(commentId);
-    }
+    const {cookie} = req.headers;
+    await commentAdapter.deleteItem(commentId, {
+      headers: {cookie},
+    });
     res.redirect(`/${routeName.MY}/${routeName.COMMENTS}`);
     logger.endRequest(req, res);
   }

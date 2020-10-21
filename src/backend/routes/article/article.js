@@ -38,7 +38,11 @@ class ApiArticle {
       includeIgnoreAttributes: false,
       include: [EModelName.CATEGORIES],
     });
-    res.status(HttpCodes.OK).send(article);
+    if (article) {
+      res.status(HttpCodes.OK).send(article);
+    } else {
+      res.status(HttpCodes.NOT_FOUND).send({errorMessages: [`Публикации с ${articleId} id не существует`]});
+    }
     logger.endRequest(req, res);
   }
 
@@ -56,6 +60,11 @@ class ApiArticle {
         EArticleFieldName.DATE,
       ],
     });
+    if (!article) {
+      res.status(HttpCodes.BAD_REQUEST).send({errorMessages: [`Публикации с ${articleId} id не существует`]});
+      logger.endRequest(req, res);
+      return;
+    }
     article[EArticleFieldName.TITLE] = title || article[EArticleFieldName.TITLE];
     article[EArticleFieldName.ANNOUNCE] = announce || article[EArticleFieldName.ANNOUNCE];
     article[EArticleFieldName.TEXT] = text || article[EArticleFieldName.TEXT];
@@ -89,7 +98,7 @@ class ApiArticle {
     if (articleDeletedCount > 0) {
       res.status(HttpCodes.NO_CONTENT).send();
     } else {
-      res.status(HttpCodes.BAD_REQUEST).send({message: `Публикации с id ${req.params.articleId} не существует`});
+      res.status(HttpCodes.BAD_REQUEST).send({message: `Публикации с ${req.params.articleId} id не существует`});
     }
     logger.endRequest(req, res);
   }

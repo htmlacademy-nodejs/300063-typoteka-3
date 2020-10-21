@@ -22,6 +22,7 @@ const {
 } = require(`./routes`);
 const {
   checkAdmin,
+  checkServer,
   setUniqueFileName,
   checkUnauthorized,
   uploadFile,
@@ -32,9 +33,15 @@ module.exports = [
   {
     path: routeName.MAIN,
     Component: MainRoute,
+    middleware: {
+      all: [checkServer],
+    },
   },
   {
     path: routeName.ARTICLES,
+    middleware: {
+      route: [checkServer],
+    },
     children: [
       {
         path: routeName.ADD,
@@ -72,7 +79,10 @@ module.exports = [
     path: routeName.CATEGORIES,
     Component: CategoriesRoute,
     middleware: {
-      route: [checkAdmin],
+      route: [
+        checkServer,
+        checkAdmin
+      ],
     },
     children: [
       {
@@ -85,18 +95,27 @@ module.exports = [
     path: routeName.LOGIN,
     Component: LoginRoute,
     middleware: {
-      all: [checkUnauthorized],
+      all: [
+        checkServer,
+        checkUnauthorized
+      ],
     },
   },
   {
     path: routeName.LOGOUT,
     Component: LogoutRoute,
+    middleware: {
+      all: [checkServer],
+    },
   },
   {
     path: routeName.MY,
     Component: PublicationsRoute,
     middleware: {
-      route: [checkAdmin],
+      route: [
+        checkServer,
+        checkAdmin
+      ],
 
     },
     children: [
@@ -116,7 +135,10 @@ module.exports = [
     path: routeName.REGISTER,
     Component: RegisterRoute,
     middleware: {
-      all: [checkUnauthorized],
+      all: [
+        checkServer,
+        checkUnauthorized
+      ],
       post: [
         uploadFile(`picture`),
         setUniqueFileName(`avatar`)
@@ -126,6 +148,9 @@ module.exports = [
   {
     path: routeName.SEARCH,
     Component: SearchRoute,
+    middleware: {
+      all: [checkServer],
+    },
   },
   {
     path: routeName.NOT_FOUND,

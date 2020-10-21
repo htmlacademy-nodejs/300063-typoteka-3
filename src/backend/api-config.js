@@ -2,12 +2,17 @@
 
 const cookieParser = require(`cookie-parser`);
 const express = require(`express`);
-const HttpCodes = require(`http-status-codes`);
 
-const {initDb, disconnectDb} = require(`./db`);
-const {debug} = require(`./middleware`);
-const {logger} = require(`./utils`);
 const apiRoutes = require(`./api-routes`);
+const {initDb, disconnectDb} = require(`./db`);
+const {
+  getAccountById,
+  debug,
+  decryptTokenDetails,
+  initLocals,
+  notFound,
+} = require(`./middleware`);
+const {logger} = require(`./utils`);
 
 
 module.exports = {
@@ -20,19 +25,17 @@ module.exports = {
     sync: [],
     async: [disconnectDb],
   },
-  middlewares: {
-    before: [
+  middleware: {
+    routes: [
       cookieParser(),
       logger.expressPinoLogger,
       express.json(),
-      debug
+      debug,
+      initLocals,
+      decryptTokenDetails,
+      getAccountById,
     ],
-    after: [
-      (req, res) => {
-        res.status(HttpCodes.NOT_FOUND).send(`Not found`);
-        logger.endRequest(req, res);
-      }
-    ],
+    after: [notFound],
   },
   routes: apiRoutes,
 };

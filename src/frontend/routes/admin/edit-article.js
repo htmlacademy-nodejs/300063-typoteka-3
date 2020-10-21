@@ -16,7 +16,7 @@ class EditArticleRoute {
     let {article, errorMessages} = this._parseQueryParams(req);
     const articleRes = await articleAdapter.getItemById(req.params.articleId);
     if (articleRes.content && articleRes.content.errorMessages) {
-      res.status(article.statusCode).send();
+      res.redirect(`/${routeName.NOT_FOUND}`);
       return;
     }
     const categories = await categoryAdapter.getList();
@@ -48,6 +48,7 @@ class EditArticleRoute {
 
   async post(req, res) {
     const {date, title, announce, categories, text, image} = req.body;
+    const {cookie} = req.headers;
     const {articleId} = req.params;
     const articleParams = {
       title,
@@ -55,21 +56,18 @@ class EditArticleRoute {
       text,
       categories: categories && categories.map((category) => +category),
       image,
-      date: transformDate(date),
+      date,
     };
-    const articleRes = await articleAdapter.updateItemById(articleId, articleParams);
-    let path = `/${routeName.MY}`;
-    if (articleRes.content && articleRes.content.errorMessages) {
-      const query = getQueryString({
-        article: JSON.stringify({
-          ...articleParams,
-          id: articleId,
-          date,
-        }),
-        errorMessages: JSON.stringify(articleRes.content.errorMessages),
-      });
-      path = `/${routeName.ARTICLES}/${routeName.EDIT}/${articleId}?${query}`;
-    }
+    const articleRes = await articleAdapter.updateItemById(articleId, {
+      ...articleParams,
+      date: transformDate(date),
+    }, {
+      headers: {cookie},
+    });
+    const path = this._getPath(articleRes, {
+      ...articleParams,
+      id: articleId,
+    });
     res.redirect(path);
     logger.endRequest(req, res);
   }
@@ -83,6 +81,19 @@ class EditArticleRoute {
       errorMessages = JSON.parse(errorMessages);
     }
     return {article, errorMessages};
+  }
+
+  _getPath(articleRes, articleParams) {
+    const {id} = articleParams;
+    let path = `/${routeName.MY}`;
+    if (articleRes.content && articleRes.content.errorMessages) {
+      const query = getQueryString({
+        article: JSON.stringify(articleParams),
+        errorMessages: JSON.stringify(articleRes.content.errorMessages),
+      });
+      path = `/${routeName.ARTICLES}/${routeName.EDIT}/${id}?${query}`;
+    }
+    return path;
   }
 }
 

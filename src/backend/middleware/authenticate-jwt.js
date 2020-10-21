@@ -1,25 +1,17 @@
 'use strict';
 
 const HttpCodes = require(`http-status-codes`);
-const jwt = require(`jsonwebtoken`);
 
-const {commonParams} = require(`../../common/params`);
-
-
-let JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || commonParams.JWT_ACCESS_SECRET_DEFAULT;
 
 module.exports = (req, res, next) => {
-  const {accessToken} = req.cookies;
-  if (!accessToken) {
+  const {tokenData, account} = req.locals;
+  if (!tokenData) {
     res.sendStatus(HttpCodes.UNAUTHORIZED);
     return;
   }
-
-  jwt.verify(accessToken, JWT_ACCESS_SECRET, (error) => {
-    if (error) {
-      res.sendStatus(HttpCodes.FORBIDDEN);
-      return;
-    }
-    next();
-  });
+  if (!account) {
+    res.sendStatus(HttpCodes.FORBIDDEN);
+    return;
+  }
+  next();
 };

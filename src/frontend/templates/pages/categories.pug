@@ -11,6 +11,9 @@ block content
             name='title'
             value= createdCategory && createdCategory.title || ``
             placeholder='Новая категория'
+            minlength='5'
+            maxlength='30'
+            required
           )
           label(for='add-form-add-category')
             span.visually-hidden Добавить категорию
@@ -23,10 +26,16 @@ block content
         each category in categories
           li.category__list-item
             form(action=`/categories/${category.id}` method='POST')
-              if updatedCategory && updatedCategory.id === category.id
-                input(id=category.id type='text' name='title' value=updatedCategory.title)
-              else
-                input(id=category.id type='text' name='title' value=category.title)
+              input(
+                id=category.id
+                type='text'
+                name='title'
+                value= updatedCategory && updatedCategory.id === category.id && updatedCategory.title || category.title
+                minlength='5'
+                maxlength='30'
+                required
+              )
+
               label(for=category.id)
                 span.visually-hidden Редактировать категорию
               button.category__button.button.button--category(type='submit' name='action' value='save') Сохранить

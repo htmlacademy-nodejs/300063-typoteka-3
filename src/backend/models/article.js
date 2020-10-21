@@ -8,7 +8,7 @@ const {
   MAX_TITLE_SYMBOL_COUNT,
   MAX_ANNOUNCE_SYMBOL_COUNT,
   MAX_IMAGE_NAME_SYMBOL_COUNT,
-} = backendParams.db.article;
+} = backendParams.db.Article;
 
 const EArticleFieldName = {
   ID: `id`,

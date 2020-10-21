@@ -10,6 +10,9 @@ class AppBuilder {
   }
 
   async getInstance() {
+    if (!this._config.routes || this._config.routes === 0) {
+      throw new Error(`"routes" должен быть в конфигурации`);
+    }
     if (!this._app) {
       await this._init();
       await this._build();
@@ -18,9 +21,17 @@ class AppBuilder {
   }
 
   async destroyInstance() {
-    this._config.destroy.async.forEach(async (func) => await func());
-    this._config.destroy.sync.forEach((func) => func());
     this._app = null;
+    const destroyParams = this._config.destroy;
+    if (!destroyParams) {
+      return;
+    }
+    if (destroyParams.async) {
+      this._config.destroy.async.forEach(async (func) => await func());
+    }
+    if (destroyParams.sync) {
+      this._config.destroy.sync.forEach((func) => func());
+    }
   }
 
   async _init() {
@@ -39,10 +50,14 @@ class AppBuilder {
 
   async _build() {
     this._setAppSettings(this._config.settings);
-    this._setAppMiddlewares(this._config.middlewares.before);
+    if (this._config.middleware) {
+      this._setAppMiddleware(this._config.middleware.before);
+    }
     this._initPrefixRouter();
     this._buildRoutes(this._config.routes);
-    this._setAppMiddlewares(this._config.middlewares.after);
+    if (this._config.middleware) {
+      this._setAppMiddleware(this._config.middleware.after);
+    }
   }
 
   _setAppSettings(settings) {
@@ -52,21 +67,18 @@ class AppBuilder {
     settings.forEach((setting) => this._app.set(...setting));
   }
 
-  _setAppMiddlewares(middlewares) {
-    if (!middlewares) {
+  _setAppMiddleware(middleware) {
+    if (!middleware || middleware.length === 0) {
       return;
     }
-    middlewares.forEach((middleware) => this._app.use(middleware));
+    middleware.forEach((item) => this._app.use(item));
   }
 
   _initPrefixRouter() {
     const prefix = this._config.prefix ? `/${this._config.prefix}` : ``;
-    let router = this._app;
-    if (prefix) {
-      router = new express.Router();
-      this._app.use(prefix, router);
-    }
-    this._prefixRouter = router;
+    this._prefixRouter = new express.Router();
+    const middleware = this._config.middleware && this._config.middleware.routes || [];
+    this._app.use(prefix, middleware, this._prefixRouter);
   }
 
   _buildRoutes(routes, router = this._prefixRouter) {

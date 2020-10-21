@@ -11,7 +11,11 @@ class PublicationsRoute {
 
   async get(req, res) {
     const {account} = req.locals;
-    const articles = await articleAdapter.getList();
+    const articles = await articleAdapter.getList({
+      headers: {
+        cookie: req.headers.cookie,
+      },
+    });
     const content = {
       account,
       articleList: articles.list,

@@ -23,17 +23,19 @@ module.exports = {
     [`views`, path.resolve(__dirname, process.env.VIEW_DIR || frontendParams.DEFAULT_VIEW_DIR)],
     [`view engine`, `pug`]
   ],
-  middlewares: {
+  middleware: {
     before: [
+      staticMiddleware(path.resolve(__dirname, process.env.PUBLIC_DIR || frontendParams.DEFAULT_PUBLIC_DIR))
+    ],
+    routes: [
       logger.expressPinoLogger,
       cookieParser(),
       json(),
       debug,
-      staticMiddleware(path.resolve(__dirname, process.env.PUBLIC_DIR || frontendParams.DEFAULT_PUBLIC_DIR)),
       urlencoded({extended: false}),
       initializeLocals,
       decryptTokenDetails,
-      getAccountById
+      getAccountById,
     ],
     after: [
       redirectToNotFound,

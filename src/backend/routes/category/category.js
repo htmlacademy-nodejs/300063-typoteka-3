@@ -26,13 +26,21 @@ class ApiCategory {
   }
 
   async delete(req, res) {
-    const {categoryId: id} = req.params;
-    await db.Category.destroy({
-      where: {
-        [ECategoryFieldName.ID]: id,
-      },
-    });
-    res.status(HttpCodes.NO_CONTENT).send();
+    const {categoryId} = req.params;
+    const category = await db.Category.findByPk(categoryId);
+    const countArticles = await category.countArticles();
+    if (countArticles !== 0) {
+      res.status(HttpCodes.BAD_REQUEST).json({
+        errorMessages: [`Нельзя удалить категорию у которой есть хотябы 1 статья`],
+      });
+    } else {
+      await db.Category.destroy({
+        where: {
+          [ECategoryFieldName.ID]: categoryId,
+        },
+      });
+      res.status(HttpCodes.NO_CONTENT).send();
+    }
     logger.endRequest(req, res);
   }
 }

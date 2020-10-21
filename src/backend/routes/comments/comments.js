@@ -6,6 +6,7 @@ const {db} = require(`../../db`);
 const {
   EModelName,
   EAccountFieldName,
+  EArticleFieldName,
   ECommentFieldName,
   EForeignKey,
 } = require(`../../models`);
@@ -20,8 +21,8 @@ class ApiComments {
 
   async get(req, res) {
     const isNotArticleError = await this._checkArticle(req);
-    let status = isNotArticleError ? HttpCodes.OK : HttpCodes.BAD_REQUEST;
-    let content = isNotArticleError
+    const status = isNotArticleError ? HttpCodes.OK : HttpCodes.BAD_REQUEST;
+    const content = isNotArticleError
       ? await this._getComments(req)
       : `Публикации с id ${req.params.articleId} не существует`;
     res.status(status).send(content);
@@ -47,7 +48,7 @@ class ApiComments {
 
   async _checkArticle(req) {
     const {articleId = null} = req.query;
-    let article = articleId && await db.Article.findByPk(articleId);
+    const article = articleId && await db.Article.findByPk(articleId);
     return !articleId || Boolean(article);
   }
 
@@ -64,19 +65,28 @@ class ApiComments {
         ECommentFieldName.ID,
         ECommentFieldName.TEXT,
         ECommentFieldName.DATE,
-        EForeignKey.ARTICLE_ID,
       ],
-      include: [{
-        model: db.Account,
-        as: EModelName.ACCOUNTS,
-        attributes: [
-          EAccountFieldName.ID,
-          EAccountFieldName.FIRSTNAME,
-          EAccountFieldName.LASTNAME,
-          EAccountFieldName.EMAIL,
-          EAccountFieldName.AVATAR
-        ],
-      }],
+      include: [
+        {
+          model: db.Account,
+          as: EModelName.ACCOUNTS,
+          attributes: [
+            EAccountFieldName.ID,
+            EAccountFieldName.FIRSTNAME,
+            EAccountFieldName.LASTNAME,
+            EAccountFieldName.EMAIL,
+            EAccountFieldName.AVATAR
+          ],
+        },
+        {
+          model: db.Article,
+          as: EModelName.ARTICLES,
+          attributes: [
+            EArticleFieldName.ID,
+            EArticleFieldName.TITLE,
+          ],
+        }
+      ],
       order: [
         [ECommentFieldName.DATE, `DESC`],
       ],
@@ -103,6 +113,10 @@ class ApiComments {
         email: comment[EModelName.ACCOUNTS][EAccountFieldName.EMAIL],
         avatar: comment[EModelName.ACCOUNTS][EAccountFieldName.AVATAR],
       },
+      article: {
+        id: comment[EModelName.ARTICLES][EArticleFieldName.ID],
+        title: comment[EModelName.ARTICLES][EArticleFieldName.TITLE],
+      }
     }));
   }
 }

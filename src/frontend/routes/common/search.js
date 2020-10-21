@@ -11,19 +11,19 @@ class SearchRoute {
 
   async get(req, res) {
     const {account} = req.locals;
-    const search = req.query.title ? req.query.title.trim() : ``;
+    const {title: search = null} = req.query;
     const articleRes = await articleAdapter.getList({
       query: {
         title: encodeURIComponent(search),
-        isSearch: true,
       },
     });
-
+    const isEmpty = articleRes.list && articleRes.list.length === 0 && search !== null;
     const content = {
       title: `Типотека`,
       hiddenTitle: ` Страница поиска личного блога Типотека`,
       account,
       search,
+      isEmpty,
       articles: articleRes.list,
       scriptList: [`js/main.js`],
     };

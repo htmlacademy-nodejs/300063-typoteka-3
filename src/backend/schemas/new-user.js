@@ -13,7 +13,7 @@ const {
   MAX_EMAIL_SYMBOL_COUNT,
   MAX_AVATAR_SYMBOL_COUNT,
   MIN_PASSWORD_SYMBOL_COUNT,
-} = backendParams.db.account;
+} = backendParams.db.Account;
 
 const {
   PATTERN_FIRSTNAME_FIELD,

@@ -17,7 +17,8 @@ class RegisterRoute {
       title: `Типотека`,
       user,
       scriptList: [
-        `js/main.js`
+        `js/main.js`,
+        `js/avatar.js`
       ],
       errorMessages,
     };
@@ -39,24 +40,29 @@ class RegisterRoute {
       repeatedPassword,
     });
 
-    let path = `/${routeName.LOGIN}`;
-    if (createdUserRes.content && createdUserRes.content.errorMessages) {
-      const query = getQueryString({
-        user: JSON.stringify(userParams),
-        errorMessages: JSON.stringify(createdUserRes.content.errorMessages),
-      });
-      path = `/${routeName.REGISTER}?${query}`;
-    }
+    const path = this._getPath(createdUserRes, userParams);
     res.redirect(path);
     logger.endRequest(req, res);
   }
 
   _parseQueryParams(req) {
-    let {user, errorMessages} = req.query;
+    const {user, errorMessages} = req.query;
     return {
       user: user && JSON.parse(user) || {},
       errorMessages: errorMessages && JSON.parse(errorMessages),
     };
+  }
+
+  _getPath(userRes, userParams) {
+    let path = `/${routeName.LOGIN}`;
+    if (userRes.content && userRes.content.errorMessages) {
+      const query = getQueryString({
+        user: JSON.stringify(userParams),
+        errorMessages: JSON.stringify(userRes.content.errorMessages),
+      });
+      path = `/${routeName.REGISTER}?${query}`;
+    }
+    return path;
   }
 }
 

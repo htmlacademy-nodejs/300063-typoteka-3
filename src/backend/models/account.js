@@ -10,7 +10,7 @@ const {
   MAX_EMAIL_SYMBOL_COUNT,
   MAX_AVATAR_SYMBOL_COUNT,
   PASSWORD_SYMBOL_COUNT,
-} = backendParams.db.account;
+} = backendParams.db.Account;
 
 const EAccountFieldName = {
   ID: `id`,

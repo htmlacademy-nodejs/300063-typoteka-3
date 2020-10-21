@@ -2,7 +2,7 @@
 
 const {accountAdapter} = require(`../../adapters`);
 const routeName = require(`../../route-name`);
-const {logger} = require(`../../utils`);
+const {getQueryString, logger} = require(`../../utils`);
 
 
 class LoginRoute {
@@ -12,12 +12,11 @@ class LoginRoute {
   }
 
   async get(req, res) {
+    const {authParams, errorMessages} = this._parseQueryParams(req);
     const content = {
       title: `Типотека`,
-      error: {
-        email: false,
-        password: false,
-      },
+      authParams,
+      errorMessages
     };
     res.render(`pages/login`, content);
     logger.endRequest(req, res);
@@ -25,16 +24,39 @@ class LoginRoute {
 
   async post(req, res) {
     const {email, password} = req.body;
-    const loginCookies = await accountAdapter.login({
+    const loginRes = await accountAdapter.login({
       email,
       password,
     });
-    if (loginCookies.status === `failed`) {
-      res.redirect(`/${routeName.LOGIN}`);
+    const path = this._getPath(loginRes, email);
+    if (loginRes.status !== `failed`) {
+      res.set(`set-cookie`, loginRes).redirect(path);
     }
-    res.set(`set-cookie`, loginCookies);
-    res.redirect(routeName.MAIN);
+    res.redirect(path);
     logger.endRequest(req, res);
+  }
+
+  _parseQueryParams(req) {
+    let {authParams, errorMessages} = req.query;
+    if (authParams) {
+      authParams = JSON.parse(authParams);
+    }
+    if (errorMessages) {
+      errorMessages = JSON.parse(errorMessages);
+    }
+    return {authParams, errorMessages};
+  }
+
+  _getPath(loginRes, email) {
+    let path = `/${routeName.MAIN}`;
+    if (loginRes.content && loginRes.content.errorMessages) {
+      const query = getQueryString({
+        authParams: JSON.stringify({email}),
+        errorMessages: JSON.stringify(loginRes.content.errorMessages),
+      });
+      path = `/${routeName.LOGIN}?${query}`;
+    }
+    return path;
   }
 }
 
