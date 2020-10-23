@@ -8,12 +8,26 @@
     DEBUG - set debugger for using debug package    
 ##### DBMS params:
     DB_DRIVER - this parameter set a database driver (`postgres`)
+##### Authentication params:
+    JWT_ACCESS_SECRET - this parameter set a secret for JWT access token generation
+    JWT_REFRESH_SECRET - this parameter set a secret for JWT refresh token generation
+    MAX_AGE_ACCESS_TOKEN_COOKIE - this paramets set an access token lifetime
+    MAX_AGE_REFRESH_TOKEN_COOKIE - this paramets set a refresh token lifetime
+    SALT_ROUND - this paramets set salt for password encryption
 
 
-### Unimportant params:
-##### DBMS params:
-    PGUSER - this parameter set a database user necessary to work with API server
-    PGHOST - this parameter set database host
-    PGPASSWORD - this parameter set a database user password necessary to connect a database server
-    PGDATABASE - this parameter set a database it keeps business entities 
-    PGPORT - this parameter set a port which database used
+
+### Important params:
+##### DBMS develop and production params:
+    DEV_USER - this parameter set a database user necessary to work with API server
+    DEV_HOST - this parameter set database host
+    DEV_PASSWORD - this parameter set a database user password necessary to connect a database server
+    DEV_DATABASE - this parameter set a database it keeps business entities
+    DEV_PORT - this parameter set a port which database used
+
+##### DBMS test params:
+    TEST_USER - this parameter set a database user necessary to work with API server
+    TEST_HOST - this parameter set database host
+    TEST_PASSWORD - this parameter set a database user password necessary to connect a database server
+    TEST_DATABASE - this parameter set a database it keeps business entities
+    TEST_PORT - this parameter set a port which database used
