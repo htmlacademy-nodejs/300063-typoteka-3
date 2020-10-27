@@ -3,8 +3,8 @@
 const {frontendParams} = require(`../../common/params`);
 
 
-const PAGE_DIFFERENTIAL = Math.floor(frontendParams.MAX_DISPLAYED_PAGES / 2);
-const DIFFERENT_BETWEEN_FIRST_AND_LAST_PAGE = frontendParams.MAX_DISPLAYED_PAGES - 1;
+const pageDifferential = Math.floor(frontendParams.MAX_DISPLAYED_PAGES / 2);
+const differentBetweenFirstAndLastPage = frontendParams.MAX_DISPLAYED_PAGES - 1;
 
 module.exports = (params) => {
   const {page, itemCount, path = ``} = params;
@@ -17,14 +17,14 @@ module.exports = (params) => {
       path,
     };
   }
-  let start = page - PAGE_DIFFERENTIAL;
+  let start = page - pageDifferential;
   if (start < frontendParams.FIRST_PAGE) {
     start = frontendParams.FIRST_PAGE;
   }
-  let end = start + DIFFERENT_BETWEEN_FIRST_AND_LAST_PAGE;
+  let end = start + differentBetweenFirstAndLastPage;
   if (lastPage < end) {
     end = lastPage;
-    start = end - DIFFERENT_BETWEEN_FIRST_AND_LAST_PAGE;
+    start = end - differentBetweenFirstAndLastPage;
   }
   return {
     start,
