@@ -4,7 +4,7 @@
   const socket = io(`http://localhost:8080`);
   const commentListElement = document.querySelector(`.publication__list`);
 
-  const createComment = (comment) => {
+  const createCommentHandler = (comment) => {
     const commentHtml = getCommentElement(comment);
     commentListElement.children[0].insertAdjacentHTML(`beforebegin`, commentHtml);
   };
@@ -35,5 +35,5 @@
     `;
   };
 
-  socket.addEventListener(`create-comment`, createComment);
+  socket.addEventListener(`create-comment`, createCommentHandler);
 })();

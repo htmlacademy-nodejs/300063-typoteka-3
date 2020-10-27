@@ -14,7 +14,7 @@ class LoggerCenter {
     this.expressPinoLogger = expressPinoLogger({logger: this._logger});
   }
 
-  info(infoText) {
+  registerInfo(infoText) {
     this._logger.info(infoText);
   }
 

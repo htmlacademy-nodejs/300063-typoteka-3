@@ -60,7 +60,7 @@ Category.belongsToMany(Article, {
 
 
 const initDb = async (force = false) => {
-  logger.info(`DB is connecting...`);
+  logger.registerInfo(`DB is connecting...`);
   await sequelize.sync({force});
 };
 
