@@ -1,8 +1,8 @@
 'use strict';
 
-const ApiComment = require(`./comment`);
+const CommentRoute = require(`./comment`);
 
 
 module.exports = {
-  ApiComment,
+  CommentRoute,
 };

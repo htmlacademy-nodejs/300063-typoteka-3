@@ -7,7 +7,7 @@ const {EModelName, EArticleFieldName, ECategoryFieldName, EForeignKey} = require
 const {logger} = require(`../../utils`);
 
 
-class ApiCategories {
+class CategoriesRoute {
   constructor() {
     this.get = this.get.bind(this);
     this.post = this.post.bind(this);
@@ -66,4 +66,4 @@ class ApiCategories {
   }
 }
 
-module.exports = ApiCategories;
+module.exports = CategoriesRoute;

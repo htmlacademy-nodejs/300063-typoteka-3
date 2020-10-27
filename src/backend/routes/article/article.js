@@ -7,7 +7,7 @@ const {EArticleFieldName, ECategoryFieldName, EModelName} = require(`../../model
 const {logger} = require(`../../utils`);
 
 
-class ApiArticle {
+class ArticleRoute {
   constructor() {
     this.get = this.get.bind(this);
     this.put = this.put.bind(this);
@@ -113,4 +113,4 @@ class ApiArticle {
   }
 }
 
-module.exports = ApiArticle;
+module.exports = ArticleRoute;

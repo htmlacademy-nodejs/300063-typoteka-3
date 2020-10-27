@@ -6,7 +6,7 @@ const {db} = require(`../../db`);
 const {EAccountFieldName} = require(`../../models`);
 
 
-class ApiUser {
+class UserRoute {
   async get(req, res) {
     const {userId} = req.params;
     const user = await db.Account.findByPk(userId, {
@@ -23,4 +23,4 @@ class ApiUser {
   }
 }
 
-module.exports = ApiUser;
+module.exports = UserRoute;

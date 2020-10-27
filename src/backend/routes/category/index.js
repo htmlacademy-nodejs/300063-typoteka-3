@@ -1,8 +1,8 @@
 'use strict';
 
-const ApiCategory = require(`./category`);
+const CategoryRoute = require(`./category`);
 
 
 module.exports = {
-  ApiCategory,
+  CategoryRoute,
 };

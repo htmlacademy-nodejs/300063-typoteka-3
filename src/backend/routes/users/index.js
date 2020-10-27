@@ -1,8 +1,8 @@
 'use strict';
 
-const ApiUsers = require(`./users`);
+const UsersRoute = require(`./users`);
 
 
 module.exports = {
-  ApiUsers,
+  UsersRoute,
 };

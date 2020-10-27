@@ -2,18 +2,18 @@
 
 const routeName = require(`./route-name`);
 const {
-  ApiArticle,
-  ApiArticles,
-  ApiCategories,
-  ApiCategory,
-  ApiCheckServer,
-  ApiComments,
-  ApiComment,
-  ApiUser,
-  ApiUsers,
-  ApiLogin,
-  ApiLogout,
-  ApiRefresh,
+  ArticleRoute,
+  ArticlesRoute,
+  CategoriesRoute,
+  CategoryRoute,
+  CheckServerRoute,
+  CommentsRoute,
+  CommentRoute,
+  UserRoute,
+  UsersRoute,
+  LoginRoute,
+  LogoutRoute,
+  RefreshRoute,
 } = require(`./routes`);
 const {
   authentication,
@@ -34,7 +34,7 @@ const routeCategoryIdParamsValidationMiddleware = paramsValidator(getRouteParams
 module.exports = [
   {
     path: routeName.ARTICLES,
-    Component: ApiArticles,
+    Component: ArticlesRoute,
     middleware: {
       post: [
         authenticationJwt,
@@ -45,7 +45,7 @@ module.exports = [
     children: [
       {
         path: `:articleId`,
-        Component: ApiArticle,
+        Component: ArticleRoute,
         middleware: {
           get: [routeArticleIdParamsValidationMiddleware],
           put: [
@@ -65,7 +65,7 @@ module.exports = [
   },
   {
     path: routeName.CATEGORIES,
-    Component: ApiCategories,
+    Component: CategoriesRoute,
     middleware: {
       post: [
         authenticationJwt,
@@ -76,7 +76,7 @@ module.exports = [
     children: [
       {
         path: `:categoryId`,
-        Component: ApiCategory,
+        Component: CategoryRoute,
         middleware: {
           put: [
             authenticationJwt,
@@ -95,7 +95,7 @@ module.exports = [
   },
   {
     path: routeName.COMMENTS,
-    Component: ApiComments,
+    Component: CommentsRoute,
     middleware: {
       post: [
         authenticationJwt,
@@ -105,7 +105,7 @@ module.exports = [
     children: [
       {
         path: `:commentId`,
-        Component: ApiComment,
+        Component: CommentRoute,
         middleware: {
           delete: [
             authenticationJwt,
@@ -118,35 +118,35 @@ module.exports = [
   },
   {
     path: routeName.USER,
-    Component: ApiUsers,
+    Component: UsersRoute,
     middleware: {
       post: [schemaValidator(newUser)]
     },
     children: [
       {
         path: `:userId`,
-        Component: ApiUser,
+        Component: UserRoute,
         middleware: {
           get: [routeUserIdParamsValidationMiddleware],
         }
       },
       {
         path: routeName.LOGIN,
-        Component: ApiLogin,
+        Component: LoginRoute,
         middleware: {
           post: [schemaValidator(loginSchema), authentication],
         },
       },
       {
         path: routeName.LOGOUT,
-        Component: ApiLogout,
+        Component: LogoutRoute,
         middleware: {
           post: [authenticationJwt],
         },
       },
       {
         path: routeName.REFRESH,
-        Component: ApiRefresh,
+        Component: RefreshRoute,
       },
     ],
   },
@@ -155,7 +155,7 @@ module.exports = [
     children: [
       {
         path: routeName.SERVER,
-        Component: ApiCheckServer,
+        Component: CheckServerRoute,
       }
     ],
   }

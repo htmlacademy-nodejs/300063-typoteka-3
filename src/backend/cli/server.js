@@ -13,7 +13,7 @@ module.exports = {
     const port = parseInt(customPort, 10) || parseInt(process.env.BACKED_PORT, 10) || commonParams.DEFAULT_BACKEND_PORT;
     const server = await apiContainer.getInstance();
     server
-      .listen(port, () => logger.startServer(port))
-      .on(`error`, (error) => logger.errorStart(error));
+      .listen(port, () => logger.registerStartServer(port))
+      .on(`error`, (error) => logger.registerErrorStart(error));
   }
 };

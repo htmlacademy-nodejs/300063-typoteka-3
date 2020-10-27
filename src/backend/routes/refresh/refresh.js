@@ -13,7 +13,7 @@ const JWT_REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || commonParams.JWT_RE
 const MAX_AGE_ACCESS_TOKEN_COOKIE = process.env.MAX_AGE_ACCESS_TOKEN_COOKIE || commonParams.MAX_AGE_ACCESS_TOKEN_COOKIE;
 const MAX_AGE_REFRESH_TOKEN_COOKIE = process.env.MAX_AGE_REFRESH_TOKEN_COOKIE || commonParams.MAX_AGE_REFRESH_TOKEN_COOKIE;
 
-class ApiRefresh {
+class RefreshRoute {
   async post(req, res) {
     const {refreshToken: token} = req.cookies;
     if (!token) {
@@ -60,4 +60,4 @@ class ApiRefresh {
   }
 }
 
-module.exports = ApiRefresh;
+module.exports = RefreshRoute;
