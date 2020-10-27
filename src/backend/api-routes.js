@@ -19,13 +19,14 @@ const {
   authentication,
   authenticationJwt,
   checkAdmin,
-  schemaValidator,
-  paramsValidator,
+  validateSchema,
 } = require(`./middleware`);
 const {newArticleSchema, newCategorySchema, newComment, newUser, loginSchema, updatedArticleSchema} = require(`./schemas`);
 const {getRouteParamsValidationSchema} = require(`./utils`);
 
 
+const schemaValidator = validateSchema(`body`);
+const paramsValidator = validateSchema(`params`);
 const routeArticleIdParamsValidationMiddleware = paramsValidator(getRouteParamsValidationSchema([`articleId`]));
 const routeCommentIdParamsValidationMiddleware = paramsValidator(getRouteParamsValidationSchema([`commentId`]));
 const routeUserIdParamsValidationMiddleware = paramsValidator(getRouteParamsValidationSchema([`userId`]));
