@@ -78,7 +78,7 @@ const fillArticleCategoryTable = async () => {
 };
 
 module.exports = {
-  name: `--filldb`,
+  name: `--fill-db`,
   alias: `-fdb`,
   async run(argv) {
     const count = Number(argv) || backendParams.generate.Count.DEFAULT;
