@@ -12,4 +12,5 @@ module.exports = {
   MAX_AGE_ACCESS_TOKEN_COOKIE: 900000,
   MAX_AGE_REFRESH_TOKEN_COOKIE: 86400000,
   SALT_ROUND: 10,
+  MODE: `development`,
 };
