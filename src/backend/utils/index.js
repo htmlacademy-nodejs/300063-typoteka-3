@@ -1,5 +1,6 @@
 'use strict';
 
+const getDbParamsConfig = require(`./get-db-params-config`);
 const getNumbersDayInMilliseconds = require(`./get-number-day-in-milliseconds`);
 const getRandomEmail = require(`./get-random-email`);
 const getRandomInt = require(`./get-random-int`);
@@ -12,6 +13,7 @@ const shuffle = require(`./shuffle`);
 
 
 module.exports = {
+  getDbParamsConfig,
   getNumbersDayInMilliseconds,
   getRandomEmail,
   getRandomInt,

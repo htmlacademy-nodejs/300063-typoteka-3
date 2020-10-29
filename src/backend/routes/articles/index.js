@@ -1,8 +1,8 @@
 'use strict';
 
-const ApiArticles = require(`./articles`);
+const ArticlesRoute = require(`./articles`);
 
 
 module.exports = {
-  ApiArticles,
+  ArticlesRoute,
 };

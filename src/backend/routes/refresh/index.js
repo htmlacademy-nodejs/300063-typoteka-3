@@ -1,8 +1,8 @@
 'use strict';
 
-const ApiRefresh = require(`./refresh`);
+const RefreshRoute = require(`./refresh`);
 
 
 module.exports = {
-  ApiRefresh,
+  RefreshRoute,
 };

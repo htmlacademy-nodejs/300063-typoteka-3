@@ -1,8 +1,8 @@
 'use strict';
 
-const ApiLogin = require(`./login`);
+const LoginRoute = require(`./login`);
 
 
 module.exports = {
-  ApiLogin,
+  LoginRoute,
 };

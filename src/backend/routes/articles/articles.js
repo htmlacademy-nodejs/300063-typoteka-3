@@ -7,7 +7,7 @@ const {EModelName, EArticleFieldName, ECategoryFieldName, EForeignKey} = require
 const {logger} = require(`../../utils`);
 
 
-class ApiArticles {
+class ArticlesRoute {
   constructor() {
     this._sortingTypes = [`commentCount`, EArticleFieldName.DATE];
     this.get = this.get.bind(this);
@@ -137,4 +137,4 @@ class ApiArticles {
   }
 }
 
-module.exports = ApiArticles;
+module.exports = ArticlesRoute;

@@ -12,7 +12,7 @@ const {
 const {logger} = require(`../../utils`);
 
 
-class ApiComment {
+class CommentRoute {
   constructor() {
     this.delete = this.delete.bind(this);
   }
@@ -77,4 +77,4 @@ class ApiComment {
   }
 }
 
-module.exports = ApiComment;
+module.exports = CommentRoute;

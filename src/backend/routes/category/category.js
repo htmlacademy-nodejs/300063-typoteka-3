@@ -7,7 +7,7 @@ const {ECategoryFieldName} = require(`../../models`);
 const {logger} = require(`../../utils`);
 
 
-class ApiCategory {
+class CategoryRoute {
   constructor() {
     this.put = this.put.bind(this);
     this.delete = this.delete.bind(this);
@@ -45,4 +45,4 @@ class ApiCategory {
   }
 }
 
-module.exports = ApiCategory;
+module.exports = CategoryRoute;

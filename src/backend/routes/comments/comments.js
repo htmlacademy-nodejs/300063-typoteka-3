@@ -13,7 +13,7 @@ const {
 const {logger} = require(`../../utils`);
 
 
-class ApiComments {
+class CommentsRoute {
   constructor() {
     this.get = this.get.bind(this);
     this.post = this.post.bind(this);
@@ -150,4 +150,4 @@ class ApiComments {
   }
 }
 
-module.exports = ApiComments;
+module.exports = CommentsRoute;

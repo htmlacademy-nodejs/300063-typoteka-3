@@ -11,7 +11,7 @@ const {ERefreshTokenFieldName} = require(`../../models`);
 const MAX_AGE_ACCESS_TOKEN_COOKIE = process.env.MAX_AGE_ACCESS_TOKEN_COOKIE || commonParams.MAX_AGE_ACCESS_TOKEN_COOKIE;
 const MAX_AGE_REFRESH_TOKEN_COOKIE = process.env.MAX_AGE_REFRESH_TOKEN_COOKIE || commonParams.MAX_AGE_REFRESH_TOKEN_COOKIE;
 
-class ApiLogin {
+class LoginRoute {
   async post(req, res) {
     const {id} = res.locals.user;
     const {accessToken, refreshToken} = await makeJwt({id});
@@ -31,4 +31,4 @@ class ApiLogin {
   }
 }
 
-module.exports = ApiLogin;
+module.exports = LoginRoute;

@@ -7,8 +7,8 @@ const {initDb} = require(`../db`);
 
 
 module.exports = {
-  name: `--initdb`,
-  alias: `-idb`,
+  name: `--init-db-tables`,
+  alias: `-idbt`,
   async run(force) {
     const isForce = force === `force`;
     try {

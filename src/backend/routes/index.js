@@ -1,30 +1,30 @@
 'use strict';
 
-const {ApiArticle} = require(`./article`);
-const {ApiArticles} = require(`./articles`);
-const {ApiCategories} = require(`./categories`);
-const {ApiCategory} = require(`./category`);
-const {ApiCheckServer} = require(`./check-server`);
-const {ApiComments} = require(`./comments`);
-const {ApiComment} = require(`./comment`);
-const {ApiUser} = require(`./user`);
-const {ApiUsers} = require(`./users`);
-const {ApiLogin} = require(`./login`);
-const {ApiLogout} = require(`./logout`);
-const {ApiRefresh} = require(`./refresh`);
+const {ArticleRoute} = require(`./article`);
+const {ArticlesRoute} = require(`./articles`);
+const {CategoriesRoute} = require(`./categories`);
+const {CategoryRoute} = require(`./category`);
+const {CheckServerRoute} = require(`./check-server`);
+const {CommentsRoute} = require(`./comments`);
+const {CommentRoute} = require(`./comment`);
+const {UserRoute} = require(`./user`);
+const {UsersRoute} = require(`./users`);
+const {LoginRoute} = require(`./login`);
+const {LogoutRoute} = require(`./logout`);
+const {RefreshRoute} = require(`./refresh`);
 
 
 module.exports = {
-  ApiArticle,
-  ApiArticles,
-  ApiCategories,
-  ApiCategory,
-  ApiCheckServer,
-  ApiComments,
-  ApiComment,
-  ApiUser,
-  ApiUsers,
-  ApiLogin,
-  ApiLogout,
-  ApiRefresh,
+  ArticleRoute,
+  ArticlesRoute,
+  CategoriesRoute,
+  CategoryRoute,
+  CheckServerRoute,
+  CommentsRoute,
+  CommentRoute,
+  UserRoute,
+  UsersRoute,
+  LoginRoute,
+  LogoutRoute,
+  RefreshRoute,
 };

@@ -15,6 +15,6 @@ const appContainer = new AppBuilder(appConfig);
   const server = http.createServer(app);
   initAppSocket(server);
   const port = parseInt(process.env.FRONTEND_PORT, 10) || commonParams.DEFAULT_FRONTEND_PORT;
-  server.listen(port, () => logger.startServer(port))
-    .on(`error`, (error) => logger.errorStart(error));
+  server.listen(port, () => logger.registerStartServer(port))
+    .on(`error`, (error) => logger.registerErrorStart(error));
 })();

@@ -8,8 +8,7 @@ const debug = require(`./debug`);
 const decryptTokenDetails = require(`./decrypt-token-details`);
 const initLocals = require(`./init-locals`);
 const notFound = require(`./not-found`);
-const paramsValidator = require(`./params-validator`);
-const schemaValidator = require(`./schema-validator`);
+const validateSchema = require(`./validate-schema`);
 
 
 module.exports = {
@@ -21,6 +20,5 @@ module.exports = {
   decryptTokenDetails,
   initLocals,
   notFound,
-  paramsValidator,
-  schemaValidator,
+  validateSchema,
 };

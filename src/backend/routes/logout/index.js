@@ -1,8 +1,8 @@
 'use strict';
 
-const ApiLogout = require(`./logout`);
+const LogoutRoute = require(`./logout`);
 
 
 module.exports = {
-  ApiLogout,
+  LogoutRoute,
 };

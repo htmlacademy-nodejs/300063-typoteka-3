@@ -58,7 +58,7 @@ class Request {
   _getUrl(path, queryParams) {
     const queryString = getQueryString(queryParams);
     const query = queryString && `?${queryString}`;
-    return `${this._url}/${path}${query}`;
+    return `${this._url}/${path + query}`;
   }
 }
 

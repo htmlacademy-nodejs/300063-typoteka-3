@@ -1,8 +1,8 @@
 'use strict';
 
-const ApiCheckServer = require(`./check-server`);
+const CheckServerRoute = require(`./check-server`);
 
 
 module.exports = {
-  ApiCheckServer,
+  CheckServerRoute,
 };

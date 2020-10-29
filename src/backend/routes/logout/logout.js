@@ -6,7 +6,7 @@ const {db} = require(`../../db`);
 const {ERefreshTokenFieldName} = require(`../../models`);
 
 
-class ApiLogout {
+class LogoutRoute {
   async post(req, res) {
     const {refreshToken} = req.cookies;
     if (!refreshToken) {
@@ -23,4 +23,4 @@ class ApiLogout {
   }
 }
 
-module.exports = ApiLogout;
+module.exports = LogoutRoute;

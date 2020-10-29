@@ -10,7 +10,7 @@ const {EAccountFieldName} = require(`../../models`);
 
 const SALT_ROUND = +process.env.SALT_ROUND || commonParams.SALT_ROUND;
 
-class ApiUsers {
+class UsersRoute {
   constructor() {
     this.post = this.post.bind(this);
   }
@@ -60,4 +60,4 @@ class ApiUsers {
   }
 }
 
-module.exports = ApiUsers;
+module.exports = UsersRoute;

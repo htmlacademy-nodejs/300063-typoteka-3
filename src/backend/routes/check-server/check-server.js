@@ -3,7 +3,7 @@
 const HttpCodes = require(`http-status-codes`);
 
 
-class ApiCheckServer {
+class CheckServerRoute {
   constructor() {
     this.get = this.get.bind(this);
   }
@@ -13,4 +13,4 @@ class ApiCheckServer {
   }
 }
 
-module.exports = ApiCheckServer;
+module.exports = CheckServerRoute;

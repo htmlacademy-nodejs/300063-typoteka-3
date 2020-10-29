@@ -6,7 +6,7 @@ const {commonParams} = require(`../../common/params`);
 const {accountAdapter} = require(`../adapters`);
 
 
-let JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || commonParams.JWT_ACCESS_SECRET_DEFAULT;
+const JWT_ACCESS_SECRET = process.env.JWT_ACCESS_SECRET || commonParams.JWT_ACCESS_SECRET_DEFAULT;
 
 const refreshTokens = async (req, res, next) => {
   const refreshTokenRes = await accountAdapter.refreshToken({
