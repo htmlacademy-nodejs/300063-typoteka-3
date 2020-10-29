@@ -3,7 +3,7 @@
 const {commonParams} = require(`../common/params`);
 
 
-const environment = process.env.NODE_ENV || `development`;
+const environment = process.env.NODE_ENV || commonParams.MODE;
 
 const config = {
   development: {
